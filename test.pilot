@@ -1,0 +1,23 @@
+1 R: this is a test of PILOT by William Mortl
+2 *mainmenu T: select a test:
+3 T: 1 - numeric
+4 T: 2 - string
+5 T: 3 - exit
+6 T: Your choice - \
+7 A:
+8 M: 1, 2, 3
+9 JM: *numerictest, *stringtest, *exit
+10 *numerictest T: Enter a number - \
+11 A: #num1
+12 T: Enter another number - \
+13 A: #num2
+14 T: #num1 + #num2 = \
+15 C: #sum = #num1 + #num2
+16 T: #sum
+17 J: *mainmenu
+18 *stringtest T: Enter your name - \
+19 A: $name
+20 T: Hello $name!
+21 J: *mainmenu
+22 *exit
+23 E:

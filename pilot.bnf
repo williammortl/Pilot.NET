@@ -1,0 +1,74 @@
+<prog>	::= <statement_list>
+
+<statement_list> ::= <statement> {statement_list}
+
+<statement> ::= <type> | <accept> | <match> | <remark> | <jump>
+	      | <end>  | <use> | <compute>  | <label>  | 
+		<type_cont>
+
+<type> 	  ::= 'T' {cond_rel} ':' {arg_list}
+
+<accept>  ::= 'A' ':' {identifier}
+
+<match>   ::= 'M' ':' {arg_list}
+
+<remark>  ::= 'R' ':' <string>
+
+<jump>    ::= 'J' {cond_rel} ':' <label>
+
+<end>     ::= 'E' {cond_rel}
+
+<use>     ::= 'U' {cond_rel} ':' <label>
+
+<compute> ::= 'C' {cond_rel} ':' <exp>
+
+<label>   ::= '*' <identifier>
+
+<type_cont>::= ':' {arg_list}
+
+<cond_rel>::= 'Y' | 'N' | '(' <rel_exp> ')'
+
+<rel_exp> ::= <identifier> | <expression> <rel_op> <expression>
+
+<exp>	  ::= (<string_ident> '=' <arg_list>) | 
+	      (<numeric_ident> '=' <expression>)
+
+<expression> ::= <term> {expression2}
+
+<expression2>::= <addop> <term> {expression2}
+
+<term>	     ::= <factor> {term2}
+
+<term2>	     ::= <mulop> <factor> {term2}
+
+<factor>     ::= <numeric_ident> | <number> | 
+		'(' <expression> ')'
+
+<arg_list> ::= ( <string> | <identifier> ) {arg_list}
+
+<ident_const> ::= <identifier> | <number> | <string>
+
+<identifier>  ::= <numeric_ident> | <string_ident>
+
+<numeric_ident> ::= '#' <a_thru_z> <restricted_string>
+
+<string_ident>  ::= '$' <a_thru_z> <restricted_string>
+
+<string>	::= <char> {string}
+
+<restricted_string> ::= <limited_char> {restricted_string}
+
+<char>		::= .. any ascii character ..
+
+<limited_char>  ::= 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_'
+
+<a_thru_z>	::= 'a' .. 'z' | 'A' .. 'Z'
+
+<number>	::= '0' .. '9' {number}
+
+<rel_op>        ::= '<' | '>' | '=' | '<>' | '<=' | '>='
+
+<mulop>	        ::= '*' | '/'
+
+<addop>	        ::= '+' | '-' 
+

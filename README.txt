@@ -6,7 +6,7 @@ http://www.williammortl.com
 
 This implemetation's permanent home is:
 
-https://bitbucket.org/williammortl/PILOT.net
+https://github.com/williammortl/Pilot.NET
 
 The Facebook fan page for PILOT is:
 

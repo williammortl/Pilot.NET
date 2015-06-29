@@ -11,7 +11,7 @@
 
         /// <summary>
         /// This is the PictureBox that the PILOT translator will output graphics to, 
-        /// if null this means text only, and the PILOT interpreter will not draw graphics,
+        /// if null this means only text, and the PILOT interpreter will not draw graphics,
         /// it will just skip the statements
         /// </summary>
         PictureBox GraphicsOutput { get; }
@@ -20,12 +20,12 @@
         /// Called by the PILOT translator to write text to the screen
         /// </summary>
         /// <param name="text">the text to write</param>
-        void WriteText(String text);
+        void WriteTextLine(String text);
 
         /// <summary>
-        /// Called by the PILOT translator to prompt the user for input
+        /// Called by the PILOT translator to prompt the user for input, reads a whole line
         /// </summary>
         /// <returns>a line of text from the user</returns>
-        String ReadText();
+        String ReadTextLine();
     }
 }

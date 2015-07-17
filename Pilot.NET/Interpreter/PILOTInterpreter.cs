@@ -1,13 +1,17 @@
 ﻿namespace Pilot.NET.Interpreter
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Interpreter.InterpreterInterfaces;
     using Pilot.NET.Lang;
-    using Pilot.NET.Lang.Exceptions;
+    using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
     using Pilot.NET.Lang.Expressions.StringExpressions;
+    using Pilot.NET.Lang.Statements;
+    using Pilot.NET.PILOTParser;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
 
     /// <summary>
@@ -15,6 +19,11 @@
     /// </summary>
     public sealed class PILOTInterpreter : IDisposable
     {
+
+        /// <summary>
+        /// For the random number generator
+        /// </summary>
+        private static Random randomGenerator = new Random();
 
         /// <summary>
         /// The interface to use for the PILOT translator to use for text IO and graphics output
@@ -60,25 +69,31 @@
         }
 
         /// <summary>
-        /// Creates or updates a string variable
+        /// Gets a variable value, can throw RunTimeException
         /// </summary>
         /// <param name="varName">the var name</param>
-        /// <param name="val">the value</param>
-        public void SetStringVar(String varName, String val)
+        /// <returns>the value</returns>
+        public double GetNumericVar(String varName)
         {
+
+            // var init
+            double retVal = 0;
 
             // adjust name if neccessary
             varName = varName.Trim().ToLower();
-            varName = (varName.StartsWith("$") == true) ? varName.Substring(1) : varName;
+            varName = (varName.StartsWith("#") == true) ? varName.Substring(1) : varName;
 
-            // add the variable if neccessary
-            if (this.stringVariables.Keys.Contains(varName) == false)
+            // look for variable
+            if (this.stringVariables.Keys.Contains(varName) == true)
             {
-                this.stringVariables.Add(varName, String.Empty);
+                retVal = this.numericVariables[varName];
+            }
+            else
+            {
+                throw new RunTimeException(String.Format("Could not find numeric variable: #{0}", varName));
             }
 
-            // update the value
-            this.stringVariables[varName] = val;
+            return retVal;
         }
 
         /// <summary>
@@ -108,13 +123,115 @@
 
             return retVal;
         }
+        
+        /// <summary>
+        /// Runs a PILOT program
+        /// </summary>
+        /// <param name="prog">the program to execute</param>
+        public void Run(PILOTProgram prog)
+        {
+
+            // clear current memory first
+            this.ClearMemoryState();
+
+            // initialize a call stack
+            Stack<int> CallStack = new Stack<int>();
+        }
+
+        /// <summary>
+        /// Runs a PILOT program
+        /// </summary>
+        /// <param name="text">the program in a string, each line is sperated by \r\n</param>
+        public void Run(String text)
+        {
+            this.Run(Parser.ParseProgram(text));
+        }
+
+        /// <summary>
+        /// Runs a PILOT program
+        /// </summary>
+        /// <param name="file">the file name of the program to execute</param>
+        public void Run(FileInfo file)
+        {
+            using (StreamReader sr = new StreamReader(file.FullName))
+            {
+                this.Run(sr.ReadToEnd());
+            }
+        }
+
+        /// <summary>
+        /// Evaluates an immediate statement
+        /// </summary>
+        /// <param name="statement">the statement to evaluate</param>
+        public void EvaluateImmediateStatement(String statement)
+        {
+
+            // try to parse the statement and cast as an immediate statement
+            IImmediateStatement iis = null;
+            try
+            {
+                iis = (IImmediateStatement)Parser.ParseStatement(statement);
+            }
+            catch (InvalidCastException)
+            {
+                throw new RunTimeException(String.Format("The following statement is not allowed to immediately execute: {0}", statement));
+            }
+
+            // execute the statement
+            this.EvaluateImmediateStatement(iis);
+        }
+
+        /// <summary>
+        /// Evaluates an immediate statement
+        /// </summary>
+        /// <param name="statement">the statement to evaluate</param>
+        internal void EvaluateImmediateStatement(IImmediateStatement statement)
+        {
+
+            // execute statement
+            if (statement is Compute)
+            {
+                Compute cs = (Compute)statement;
+                if (this.EvaluateBooleanCondition(cs.IfCondition) == true)
+                {
+                    if (cs.ExpressionToCompute is INumericExpression)
+                    {
+                        INumericExpression ne = (INumericExpression)cs.ExpressionToCompute;
+                        this.EvaluateNumericExpression(ne).ToString();
+                    }
+                    else if (cs.ExpressionToCompute is IStringExpression)
+                    {
+                        IStringExpression se = (IStringExpression)cs.ExpressionToCompute;
+                        this.EvaluateStringExpression(se);
+                    }
+                }
+            }
+            else if (statement is Text)
+            {
+                Text ts = (Text)statement;
+                if (this.EvaluateBooleanCondition(ts.IfCondition) == true)
+                {
+                    this.EvaluateStringExpression(ts.TextToDisplay);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Dispose this object
+        /// </summary>
+        public void Dispose()
+        {
+        
+            // dispose the interface
+            pilotInterface.Dispose();
+        }
 
         /// <summary>
         /// Creates or updates a numeric variable
         /// </summary>
         /// <param name="varName">the var name</param>
         /// <param name="val">the value</param>
-        public void SetNumericVar(String varName, Double val)
+        internal void SetNumericVar(String varName, Double val)
         {
 
             // adjust name if neccessary
@@ -132,46 +249,25 @@
         }
 
         /// <summary>
-        /// Gets a variable value, can throw RunTimeException
+        /// Creates or updates a string variable
         /// </summary>
         /// <param name="varName">the var name</param>
-        /// <returns>the value</returns>
-        public double GetNumericVar(String varName)
+        /// <param name="val">the value</param>
+        internal void SetStringVar(String varName, String val)
         {
-
-            // var init
-            double retVal = 0;
 
             // adjust name if neccessary
             varName = varName.Trim().ToLower();
-            varName = (varName.StartsWith("#") == true) ? varName.Substring(1) : varName;
+            varName = (varName.StartsWith("$") == true) ? varName.Substring(1) : varName;
 
-            // look for variable
-            if (this.stringVariables.Keys.Contains(varName) == true)
+            // add the variable if neccessary
+            if (this.stringVariables.Keys.Contains(varName) == false)
             {
-                retVal = this.numericVariables[varName];
-            }
-            else
-            {
-                throw new RunTimeException(String.Format("Could not find numeric variable: #{0}", varName));
+                this.stringVariables.Add(varName, String.Empty);
             }
 
-            return retVal;
-        }
-
-        /// <summary>
-        /// Runs the PILOT program
-        /// </summary>
-        /// <param name="prog">the program to execute</param>
-        public void Run(PILOTProgram prog)
-        {
-
-            // clear current memory first
-            this.ClearMemoryState();
-
-            // initialize a call stack
-            Stack<int> CallStack = new Stack<int>();
-
+            // update the value
+            this.stringVariables[varName] = val;
         }
 
         /// <summary>
@@ -179,7 +275,7 @@
         /// </summary>
         /// <param name="ne">the numeric expression to evaluate</param>
         /// <returns>the value of evaluating the expression(s)</returns>
-        public double EvaluateNumericExpression(INumericExpression ne)
+        internal double EvaluateNumericExpression(INumericExpression ne)
         {
 
             // short circuit on null
@@ -200,9 +296,9 @@
                 }
                 else if (ne is RandomNumber)
                 {
-                    Random rnd = new Random();
-                    double sign = ((rnd.NextDouble() * 2.0) > 1) ? -1 : 1;
-                    double value = Math.Ceiling(rnd.NextDouble() * ((sign > 0) ? 32767 : 32768));
+                    
+                    double sign = ((PILOTInterpreter.randomGenerator.NextDouble() * 2.0) > 1) ? -1 : 1;
+                    double value = Math.Ceiling(PILOTInterpreter.randomGenerator.NextDouble() * ((sign > 0) ? 32767 : 32768));
                     retVal = sign * value;
                 }
                 else if (ne is NumericVariable)
@@ -216,16 +312,8 @@
                     double rightResult = this.EvaluateNumericExpression(opExpression.Right);
                     if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Eq)
                     {
-                        if (opExpression.Left is NumericVariable)
-                        {
-
-                            // store the new variable value in the state
-                            this.SetNumericVar(opExpression.Left.ToString(), rightResult);
-                        }
-                        else
-                        {
-                            throw new CannotAssignException(String.Format("Cannot assign to non-numeric variable: {0}", ne.ToString()));
-                        }
+                        this.SetNumericVar(opExpression.Left.ToString(), rightResult);
+                        retVal = rightResult;
                     }
                     else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Add)
                     {
@@ -253,10 +341,6 @@
                         retVal = leftResult - rightResult;
                     }
                 }
-                else
-                {
-                    throw new RunTimeException(String.Format("Unknown numeric expression type: {0}", ne.ToString()));
-                }
             }
             catch (Exception e)
             {
@@ -271,7 +355,7 @@
         /// </summary>
         /// <param name="se">the string expression to evaluate</param>
         /// <returns>a String value of the evaluation</returns>
-        public String EvaluateStringExpression(IStringExpression se)
+        internal String EvaluateStringExpression(IStringExpression se)
         {
 
             // short circuit on null
@@ -283,7 +367,7 @@
             // var init
             String retVal = String.Empty;
 
-            // evaluate based upon what type of numeric expression
+            // evaluate based upon what type of string expression
             try
             {
                 if (se is StringVariable)
@@ -293,30 +377,32 @@
                 else if (se is StringAssignExpression)
                 {
                     StringAssignExpression sae = (StringAssignExpression)se;
-                    this.SetStringVar(sae.Left.VariableName, this.EvaluateStringExpression(sae.Right));
+                    retVal = this.EvaluateStringExpression(sae.Right);
+                    this.SetStringVar(sae.Left.VariableName, retVal);
                 }
                 else if (se is StringLiteral)
                 {
-                    StringLiteral sl = (StringLiteral)se;
-                    String[] splitText = sl.StringText.Split(new char[] { ' ' });
-                    retVal = String.Empty;
-
-                    // check for embedded text, i.e. PRINT OUT VAR $VAR1 and #VAR2 BEFORE THESE WORDS
+                    String[] splitText = ((StringLiteral)se).StringText.Split(new char[] { ' ' });
                     foreach (String s in splitText)
                     {
-                        if (s.Trim() == String.Empty)
+                        String word = s.Trim();
+                        if ((word.Length > 1) && ((word[0] == '#') || (word[0] == '$')))
                         {
-                            retVal += " ";
+                            int puncLoc = PILOTInterpreter.FirstPunctuation(word.Substring(1)) + 1;
+                            if (puncLoc > 1)
+                            {
+                                String afterPunc = word.Substring(puncLoc);
+                                word = word.Substring(0, puncLoc);
+                                word = (word[0] == '#') ? this.GetNumericVar(word).ToString() : this.GetStringVar(word);
+                                word += afterPunc;
+                            }
+                            else
+                            {
+                                word = (word[0] == '#') ? this.GetNumericVar(word).ToString() : this.GetStringVar(word);
+                            }
                         }
-                        else
-                        {
-
-                        }
+                        retVal += word + " ";
                     }
-                }
-                else
-                {
-                    throw new RunTimeException(String.Format("Unknown string expression type: {0}", se.ToString()));
                 }
             }
             catch (Exception e)
@@ -332,7 +418,7 @@
         /// </summary>
         /// <param name="bc"></param>
         /// <returns></returns>
-        public Boolean EvaluateBooleanCondition(BooleanCondition bc)
+        internal Boolean EvaluateBooleanCondition(BooleanCondition bc)
         {
 
             // short circuit on null
@@ -344,19 +430,66 @@
             // var init
             Boolean retVal = false;
 
-
+            // evaluate the boolean condition
+            try
+            {
+                double left = this.EvaluateNumericExpression(bc.Left);
+                double right = this.EvaluateNumericExpression(bc.Right);
+                if (bc.Operator == BooleanConditionOperators.Eq)
+                {
+                    retVal = (left == right);
+                }
+                else if (bc.Operator == BooleanConditionOperators.GT)
+                {
+                    retVal = (left > right);
+                }
+                else if (bc.Operator == BooleanConditionOperators.GTEq)
+                {
+                    retVal = (left >= right);
+                }
+                else if (bc.Operator == BooleanConditionOperators.LT)
+                {
+                    retVal = (left < right);
+                }
+                else if (bc.Operator == BooleanConditionOperators.LTEq)
+                {
+                    retVal = (left <= right);
+                }
+                else if (bc.Operator == BooleanConditionOperators.NotEq)
+                {
+                    retVal = (left != right);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new RunTimeException(String.Format("Could not evaluate the boolean condition: {0}", bc.ToString()), e);
+            }
 
             return retVal;
         }
 
         /// <summary>
-        /// Dispose this object
+        /// Gives you the location of the first punctuation
         /// </summary>
-        public void Dispose()
+        /// <param name="stringToCheck">the string to check for punctuation</param>
+        /// <returns>the location of the first punctuation, -1 no punctuation</returns>
+        private static int FirstPunctuation(String stringToCheck)
         {
-        
-            // dispose the interface
-            pilotInterface.Dispose();
+
+            // var init
+            int retVal = -1;
+
+            // loop through string, look for punctutation
+            for (int i = 0; i < stringToCheck.Length; i++)
+            {
+                if (Char.IsPunctuation(stringToCheck[i]) == true)
+                {
+                    retVal = i;
+                    break;
+                }
+            }
+
+            return retVal;
         }
     }
 }

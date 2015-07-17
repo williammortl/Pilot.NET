@@ -1,4 +1,4 @@
-﻿namespace Pilot.NET.Lang.Exceptions
+﻿namespace Pilot.NET.Exception
 {
     using System;
     using System.Runtime.Serialization;
@@ -7,7 +7,7 @@
     /// This is the exception thrown if there is an error parsing the file
     /// </summary>
     [Serializable]
-    public sealed class ParserException : PILOTException
+    public class ParserException : PILOTException
     {
 
         /// <summary>
@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="si">SerializationInfo</param>
         /// <param name="sc">StreamingContext</param>
-        private ParserException(SerializationInfo si, StreamingContext sc)
+        protected ParserException(SerializationInfo si, StreamingContext sc)
             : base(si, sc)
         {
 

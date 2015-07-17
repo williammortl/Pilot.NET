@@ -1,23 +1,12 @@
 ﻿namespace Pilot.NET.Lang.Expressions.NumericExpressions
 {
-    using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Expressions;
 
     /// <summary>
     /// This is a numeric literal
     /// </summary>
-    public sealed class NumericLiteral : INumericExpression
+    internal sealed class NumericLiteral : INumericExpression
     {
-
-        /// <summary>
-        /// The type of expression
-        /// </summary>
-        public ExpressionTypes TypeOfExpression { get; private set; }
-
-        /// <summary>
-        /// The type of numeric expression
-        /// </summary>
-        public NumericExpressionTypes TypeOfNumericExpression { get; private set; }
 
         /// <summary>
         /// The name of the variable
@@ -30,8 +19,6 @@
         /// <param name="number">the numeric literal</param>
         public NumericLiteral(double number)
         {
-            this.TypeOfExpression = ExpressionTypes.NumericExpression;
-            this.TypeOfNumericExpression = NumericExpressionTypes.NumericVariable;
             this.Number = number;
         }
 
@@ -41,8 +28,6 @@
         /// <param name="toDup">the variable to duplicate</param>
         public NumericLiteral(NumericLiteral toDup)
         {
-            this.TypeOfExpression = toDup.TypeOfExpression;
-            this.TypeOfNumericExpression = toDup.TypeOfNumericExpression;
             this.Number = toDup.Number;
         }
 

@@ -1,14 +1,14 @@
 ﻿namespace Pilot.NET.Lang.Expressions.NumericExpressions
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions;
     using System;
 
     /// <summary>
     /// This is a math operator expression
     /// </summary>
-    public sealed class NumericBinaryOperation : INumericExpression
+    internal sealed class NumericBinaryOperation : INumericExpression
     {
 
         /// <summary>
@@ -20,16 +20,6 @@
         /// numeric expression right of the assignment
         /// </summary>
         private INumericExpression right;
-
-        /// <summary>
-        /// The type of expression
-        /// </summary>
-        public ExpressionTypes TypeOfExpression { get; private set; }
-
-        /// <summary>
-        /// The type of numeric expression
-        /// </summary>
-        public NumericExpressionTypes TypeOfNumericExpression { get; private set; }
 
         /// <summary>
         /// This is the operation being performed
@@ -108,8 +98,6 @@
         /// <param name="right">expression right of the operator</param>
         public NumericBinaryOperation(NumericBinaryOperators op, INumericExpression left, INumericExpression right)
         {
-            this.TypeOfExpression = ExpressionTypes.NumericExpression;
-            this.TypeOfNumericExpression = NumericExpressionTypes.BinaryOperation;
             this.Operator = op;
             this.Left = left;
             this.Right = right;
@@ -121,8 +109,6 @@
         /// <param name="toDup">the math expression to duplicate</param>
         public NumericBinaryOperation(NumericBinaryOperation toDup)
         {
-            this.TypeOfExpression = toDup.TypeOfExpression;
-            this.TypeOfNumericExpression = toDup.TypeOfNumericExpression;
             this.Operator = toDup.Operator;
             this.Left = (INumericExpression)((toDup.Left == null) ? null : toDup.Left.Copy());
             this.Right = (INumericExpression)((toDup.Right == null) ? null : toDup.Right.Copy());

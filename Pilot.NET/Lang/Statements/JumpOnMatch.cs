@@ -1,7 +1,7 @@
 ﻿namespace Pilot.NET.Lang.Statements
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@
     /// <summary>
     /// A jump on match statement, JM
     /// </summary>
-    public sealed class JumpOnMatch : IStatement
+    internal sealed class JumpOnMatch : IStatement
     {
 
         /// <summary>

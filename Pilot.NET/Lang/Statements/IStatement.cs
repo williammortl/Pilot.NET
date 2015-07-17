@@ -6,7 +6,7 @@
     /// <summary>
     /// This represents a PILOT statement
     /// </summary>
-    public interface IStatement
+    internal interface IStatement
     {
 
         /// <summary>

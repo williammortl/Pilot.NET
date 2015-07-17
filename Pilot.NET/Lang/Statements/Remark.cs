@@ -7,7 +7,7 @@
     /// <summary>
     /// A remark statement, R
     /// </summary>
-    public sealed class Remark : IStatement
+    internal sealed class Remark : IStatement
     {
 
         /// <summary>

@@ -1,13 +1,13 @@
-﻿namespace Pilot.NET.Lang.Exceptions
+﻿namespace Pilot.NET.Exception
 {
     using System;
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// This is the exception thrown if there is a null statement without the line containing a label
+    /// This is the exception thrown if an error occurs at run time
     /// </summary>
     [Serializable]
-    public sealed class NullStatementException : PILOTException
+    public class RunTimeException : PILOTException
     {
 
         /// <summary>
@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="si">SerializationInfo</param>
         /// <param name="sc">StreamingContext</param>
-        private NullStatementException(SerializationInfo si, StreamingContext sc)
+        protected RunTimeException(SerializationInfo si, StreamingContext sc)
             : base(si, sc)
         {
 
@@ -25,7 +25,7 @@
         /// <summary>
         /// Default constructor
         /// </summary>
-        public NullStatementException()
+        public RunTimeException()
             : base()
         {
 
@@ -36,7 +36,7 @@
         /// Basic constructor
         /// </summary>
         /// <param name="theException">exception text</param>
-        public NullStatementException(String theException)
+        public RunTimeException(String theException)
             : base(theException)
         {
 
@@ -48,7 +48,7 @@
         /// </summary>
         /// <param name="theException">the exception text</param>
         /// <param name="innerException">inner exception</param>
-        public NullStatementException(String theException, Exception innerException)
+        public RunTimeException(String theException, Exception innerException)
             : base(theException, innerException)
         {
 

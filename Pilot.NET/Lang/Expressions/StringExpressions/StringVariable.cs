@@ -1,35 +1,19 @@
 ﻿namespace Pilot.NET.Lang.Expressions.StringExpressions
 {
-    using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Expressions;
     using System;
 
     /// <summary>
     /// This is a string variable expression
     /// </summary>
-    public sealed class StringVariable : IStringExpression, IVariable
+    internal sealed class StringVariable : IStringExpression, IVariable
     {
 
         /// <summary>
         /// The name of the variable
         /// </summary>
         private String variableName;
-
-        /// <summary>
-        /// The type of expression
-        /// </summary>
-        public ExpressionTypes TypeOfExpression { get; private set; }
-
-        /// <summary>
-        /// The type of string expression
-        /// </summary>
-        public StringExpressionTypes TypeOfStringExpression { get; private set; }
-
-        /// <summary>
-        /// The type of variable
-        /// </summary>
-        public VariableTypes TypeOfVariable { get; private set; }
 
         /// <summary>
         /// The name of the variable
@@ -72,9 +56,6 @@
         /// <param name="variableName">name</param>
         public StringVariable(String variableName)
         {
-            this.TypeOfExpression = ExpressionTypes.StringExpression;
-            this.TypeOfStringExpression = StringExpressionTypes.StringVariable;
-            this.TypeOfVariable = VariableTypes.String;
             this.VariableName = variableName;
         }
 
@@ -84,9 +65,6 @@
         /// <param name="toDup">the string variable to duplicate</param>
         public StringVariable(StringVariable toDup)
         {
-            this.TypeOfExpression = toDup.TypeOfExpression;
-            this.TypeOfStringExpression = toDup.TypeOfStringExpression;
-            this.TypeOfVariable = toDup.TypeOfVariable; 
             this.VariableName = toDup.VariableName;
         }
 

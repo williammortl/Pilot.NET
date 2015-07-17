@@ -31,7 +31,7 @@
             prog[2] = Parser.ParseLine("2 T:WORLD");
             prog[4] = Parser.ParseLine("4 E:");
             prog.DeleteLine(3);
-            int[] programLineNumbers = prog.GetLineNumebers();
+            int[] programLineNumbers = prog.LineNumbers.ToArray();
 
             // check the constructions
             Assert.AreEqual(prog["*testlabel"].LineNumber, 1);

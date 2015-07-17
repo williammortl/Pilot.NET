@@ -4,7 +4,7 @@
     /// <summary>
     /// Binary operators (use 2 numbers) for numeric expressions, in ascending order of precedence
     /// </summary>
-    public enum NumericBinaryOperators
+    internal enum NumericBinaryOperators
     {
     
         /// <summary>

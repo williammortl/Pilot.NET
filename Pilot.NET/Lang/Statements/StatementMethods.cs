@@ -7,7 +7,7 @@
     /// <summary>
     /// Class for shared statement methods
     /// </summary>
-    public static class StatementMethods
+    internal class StatementMethods
     {
 
         /// <summary>

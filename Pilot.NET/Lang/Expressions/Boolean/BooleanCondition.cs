@@ -1,7 +1,7 @@
 ﻿namespace Pilot.NET.Lang.Expressions.Boolean
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
     using System;
@@ -9,7 +9,7 @@
     /// <summary>
     /// A boolean condition expression
     /// </summary>
-    public sealed class BooleanCondition : IExpression
+    internal sealed class BooleanCondition : IExpression
     {
 
         /// <summary>
@@ -21,11 +21,6 @@
         /// expression right of the assignment
         /// </summary>
         private INumericExpression right;
-
-        /// <summary>
-        /// What kind of expression
-        /// </summary>
-        public ExpressionTypes TypeOfExpression { get; private set; }
 
         /// <summary>
         /// This is the boolean operation
@@ -98,7 +93,6 @@
         /// <param name="right">expression right of the operator</param>
         public BooleanCondition(BooleanConditionOperators op, INumericExpression left, INumericExpression right)
         {
-            this.TypeOfExpression = ExpressionTypes.BooleanConditionExpression;
             this.Operator = op;
             this.Left = left;
             this.Right = right;
@@ -110,7 +104,6 @@
         /// <param name="toDup">the boolean condition to duplicate</param>
         public BooleanCondition(BooleanCondition toDup)
         {
-            this.TypeOfExpression = toDup.TypeOfExpression;
             this.Operator = toDup.Operator;
             this.Left = (INumericExpression)((toDup == null) ? null : toDup.Left.Copy());
             this.Right = (INumericExpression)((toDup == null) ? null : toDup.Right.Copy());

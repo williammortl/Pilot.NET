@@ -1,7 +1,7 @@
 ﻿namespace Pilot.NET.Lang.Statements
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.StringExpressions;
     using System;
@@ -9,7 +9,7 @@
     /// <summary>
     /// A display text statement, T
     /// </summary>
-    public sealed class Text : IStatement
+    internal sealed class Text : IImmediateStatement
     {
 
         /// <summary>

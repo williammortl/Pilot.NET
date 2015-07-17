@@ -1,6 +1,6 @@
 ﻿namespace Pilot.NET.Lang
 {
-    using Pilot.NET.Lang.Exceptions;
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Statements;
     using System;
     
@@ -23,13 +23,13 @@
         /// <summary>
         /// The PILOT statement for the line, can be null if the line is just a label
         /// </summary>
-        public IStatement LineStatement { get; private set; }
+        internal IStatement LineStatement { get; private set; }
 
         /// <summary>
         /// Copy constructor
         /// </summary>
         /// <param name="toDup">line to duplicate</param>
-        public Line(Line toDup)
+        internal Line(Line toDup)
         {
 
             // deep copy
@@ -50,7 +50,7 @@
         /// <param name="lineNumber">what line number</param>
         /// <param name="lineLabel">the label</param>
         /// <param name="lineStatement">what statement, can be null if this is just a label</param>
-        public Line(int lineNumber, Label lineLabel, IStatement lineStatement)
+        internal Line(int lineNumber, Label lineLabel, IStatement lineStatement)
         {
 
             // var init

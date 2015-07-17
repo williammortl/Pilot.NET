@@ -16,32 +16,6 @@
         private Dictionary<int, Line> programLines;
 
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public PILOTProgram()
-        {
-            this.programLines = new Dictionary<int, Line>();
-        }
-
-        /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">program to dup</param>
-        public PILOTProgram(PILOTProgram toDup)
-        {
-
-            // deep copy if not null
-            this.programLines = new Dictionary<int, Line>();
-            if (toDup != null)
-            {
-                foreach (int lineNumber in toDup.programLines.Keys)
-                {
-                    this.programLines.Add(lineNumber, toDup.programLines[lineNumber].Copy());
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the line by the line number 
         /// </summary>
         /// <param name="lineNumber">the line number</param>
@@ -101,6 +75,48 @@
         }
 
         /// <summary>
+        /// A sorted list of line numbers for the program
+        /// </summary>
+        public List<int> LineNumbers
+        {
+            get
+            {
+
+                // get a sorted list of line numbers
+                List<int> retVal = this.programLines.Keys.ToList<int>();
+                retVal.Sort();
+
+                return retVal;
+            }
+        }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        internal PILOTProgram()
+        {
+            this.programLines = new Dictionary<int, Line>();
+        }
+
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="toDup">program to dup</param>
+        internal PILOTProgram(PILOTProgram toDup)
+        {
+
+            // deep copy if not null
+            this.programLines = new Dictionary<int, Line>();
+            if (toDup != null)
+            {
+                foreach (int lineNumber in toDup.programLines.Keys)
+                {
+                    this.programLines.Add(lineNumber, toDup.programLines[lineNumber].Copy());
+                }
+            }
+        }
+
+        /// <summary>
         /// Delete a line by index, if that index doesn't exist, does nothing
         /// </summary>
         /// <param name="lineNumber">the line number to delete</param>
@@ -141,10 +157,9 @@
 
             // get the index of the label
             label = label.Trim().ToLower();
-            int[] lineNumbers = this.GetLineNumebers();
-            if (lineNumbers != null)
+            if (this.LineNumbers.Count > 0)
             {
-                foreach (int lineNumber in lineNumbers)
+                foreach (int lineNumber in this.LineNumbers)
                 {
                     if (this.programLines[lineNumber].LineLabel.ToString().ToLower() == label)
                     {
@@ -167,26 +182,6 @@
         }
 
         /// <summary>
-        /// Gets an arrary of sorted line numbers
-        /// </summary>
-        /// <returns>null if no lines, otherwise the array of line numbers</returns>
-        public int[] GetLineNumebers()
-        {
-
-            // var init
-            int[] retVal = null;
-
-            // get and sort the line numbers
-            if (this.programLines.Keys.Count > 0)
-            {
-                retVal = this.programLines.Keys.ToArray<int>();
-                Array.Sort(retVal);
-            }
-
-            return retVal;
-        }
-
-        /// <summary>
         /// To string
         /// </summary>
         /// <returns>the string representation</returns>
@@ -197,10 +192,9 @@
             String retVal = String.Empty;
 
             // convert all lines to a string
-            int[] lineNumbers = this.GetLineNumebers();
-            if (lineNumbers != null)
+            if (this.LineNumbers.Count > 0)
             {
-                foreach (int lineNumber in lineNumbers)
+                foreach (int lineNumber in this.LineNumbers)
                 {
                     Line line = this.programLines[lineNumber];
                     String lineString = (line == null) ? String.Empty : line.ToString();
@@ -224,7 +218,7 @@
             // test to make sure there are lines
             if (this.programLines.Keys.Count > 0)
             {
-                retVal = this.GetLineNumebers().AsEnumerable<int>().GetEnumerator();
+                retVal = this.LineNumbers.GetEnumerator();
             }
 
             return retVal;

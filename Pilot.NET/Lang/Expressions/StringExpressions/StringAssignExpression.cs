@@ -1,30 +1,19 @@
 ﻿namespace Pilot.NET.Lang.Expressions.StringExpressions
 {
-    using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Expressions;
     using System;
 
     /// <summary>
     /// This is a string assignment expression
     /// </summary>
-    public sealed class StringAssignExpression : IStringExpression
+    internal sealed class StringAssignExpression : IStringExpression
     {
 
         /// <summary>
         /// String expression right of the assignment
         /// </summary>
         private IStringExpression right;
-
-        /// <summary>
-        /// The type of expression
-        /// </summary>
-        public ExpressionTypes TypeOfExpression { get; private set; }
-
-        /// <summary>
-        /// The type of string expression
-        /// </summary>
-        public StringExpressionTypes TypeOfStringExpression { get; private set; }
 
         /// <summary>
         /// Variable left of the assignment
@@ -61,8 +50,6 @@
         /// <param name="right">string expression on the right of the assignment</param>
         public StringAssignExpression(StringVariable left, IStringExpression right)
         {
-            this.TypeOfExpression = ExpressionTypes.StringExpression;
-            this.TypeOfStringExpression = StringExpressionTypes.StringAssignment;
             this.Left = left;
             this.Right = right;
         }
@@ -73,8 +60,6 @@
         /// <param name="toDup">the string expression to duplicate</param>
         public StringAssignExpression(StringAssignExpression toDup)
         {
-            this.TypeOfExpression = toDup.TypeOfExpression;
-            this.TypeOfStringExpression = toDup.TypeOfStringExpression;
             this.Left = (StringVariable)((toDup.Left == null) ? null : toDup.Left.Copy());
             this.Right = (IStringExpression)((toDup.Left == null) ? null : toDup.Left.Copy());
         }

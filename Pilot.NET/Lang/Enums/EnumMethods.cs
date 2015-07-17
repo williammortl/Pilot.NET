@@ -1,12 +1,12 @@
 ﻿namespace Pilot.NET.Lang.Enums
 {
-    using Pilot.NET.Lang.Exceptions;
+    using Pilot.NET.Exception;
     using System;
 
     /// <summary>
     /// Class with enum conversion functions
     /// </summary>
-    public static class EnumMethods
+    internal static class EnumMethods
     {
 
         /// <summary>
@@ -105,14 +105,14 @@
             Boolean retVal = false;
 
             // check char value
-            if ((c == '=') || 
-                (c == '+') || 
-                (c == '/') || 
-                (c == '\\') || 
-                (c == '*') ||
-                (c == '-'))
+            foreach(NumericBinaryOperators op in Enum.GetValues(typeof(NumericBinaryOperators)))
             {
-                retVal = true;
+                String opString = EnumMethods.NumericBinaryOperatorToString(op);
+                if (c.ToString() == opString)
+                {
+                    retVal = true;
+                    break;
+                }
             }
 
             return retVal;

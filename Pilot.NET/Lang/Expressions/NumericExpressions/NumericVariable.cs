@@ -1,35 +1,19 @@
 ﻿namespace Pilot.NET.Lang.Expressions.NumericExpressions
 {
-    using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Expressions;
     using System;
 
     /// <summary>
     /// This is a numeric variable
     /// </summary>
-    public sealed class NumericVariable : INumericExpression, IVariable
+    internal sealed class NumericVariable : INumericExpression, IVariable
     {
 
         /// <summary>
         /// The name of the variable
         /// </summary>
         private String variableName;
-
-        /// <summary>
-        /// The type of expression
-        /// </summary>
-        public ExpressionTypes TypeOfExpression { get; private set; }
-
-        /// <summary>
-        /// The type of numeric expression
-        /// </summary>
-        public NumericExpressionTypes TypeOfNumericExpression { get; private set; }
-
-        /// <summary>
-        /// The type of variable
-        /// </summary>
-        public VariableTypes TypeOfVariable { get; private set; }
 
         /// <summary>
         /// The name of the variable
@@ -72,9 +56,6 @@
         /// <param name="variableName">name</param>
         public NumericVariable(String variableName)
         {
-            this.TypeOfExpression = ExpressionTypes.NumericExpression;
-            this.TypeOfNumericExpression = NumericExpressionTypes.NumericVariable;
-            this.TypeOfVariable = VariableTypes.Numeric;
             this.VariableName = variableName;
         }
 
@@ -84,9 +65,6 @@
         /// <param name="toDup">the variable to duplicate</param>
         public NumericVariable(NumericVariable toDup)
         {
-            this.TypeOfExpression = toDup.TypeOfExpression;
-            this.TypeOfNumericExpression = toDup.TypeOfNumericExpression;
-            this.TypeOfVariable = toDup.TypeOfVariable;
             this.VariableName = toDup.VariableName;
         }
 

@@ -1,14 +1,14 @@
 ﻿namespace Pilot.NET.Lang.Statements
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using System;
 
     /// <summary>
     /// A jump statement, J
     /// </summary>
-    public sealed class Jump : IStatement
+    internal sealed class Jump : IStatement
     {
 
         /// <summary>

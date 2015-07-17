@@ -1,8 +1,8 @@
 ﻿namespace Pilot.NET.PILOTParser
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
@@ -21,27 +21,43 @@
         /// <summary>
         /// Parse the file into a program, can throw ParserException
         /// </summary>
-        /// <param name="filename">the filename</param>
-        public static PILOTProgram ParseFile(String filename)
+        /// <param name="file">the filename</param>
+        /// <returns>the PILOT program</returns>
+        public static PILOTProgram ParseProgram(FileInfo file)
         {
 
             // init vars
-            PILOTProgram retVal = new PILOTProgram();
+            PILOTProgram retVal = null;
 
             // parse file
-            using (StreamReader sr = new StreamReader(filename))
+            using (StreamReader sr = new StreamReader(file.FullName))
             {
-                String[] lines = sr.ReadToEnd().Split(new char[] { '\n' });
-                foreach (String line in lines)
-                {
-                    String trimmedLine = line.Trim();
-                    if (trimmedLine != String.Empty)
-                    {
+                retVal = Parser.ParseProgram(sr.ReadToEnd());
+            }
 
-                        // create and add the new line
-                        Line newLine = Parser.ParseLine(trimmedLine);
-                        retVal[newLine.LineNumber] = newLine;
-                    }
+            return retVal;
+        }
+
+        /// <summary>
+        /// Parse the file into a program, can throw ParserException
+        /// </summary>
+        /// <param name="text">the program, lines seperated by \n</param>
+        /// <returns>the PILOT program</returns>
+        public static PILOTProgram ParseProgram(String text)
+        {
+
+            // init vars
+            String[] lines = text.Split(new char[] { '\n' });
+            PILOTProgram retVal = null;
+
+            // loop through each line, create line object
+            foreach (String line in lines)
+            {
+                String trimmedLine = line.Trim();
+                if (trimmedLine != String.Empty)
+                {
+                    Line newLine = Parser.ParseLine(trimmedLine);
+                    retVal[newLine.LineNumber] = newLine;
                 }
             }
 
@@ -103,7 +119,7 @@
         /// </summary>
         /// <param name="text">the text</param>
         /// <returns>a new Label or null if the string is empty</returns>
-        public static Label ParseLabel(String text)
+        internal static Label ParseLabel(String text)
         {
 
             // var init
@@ -125,7 +141,7 @@
         /// </summary>
         /// <param name="text">the statement string</param>
         /// <returns>a statement object, null if the string is empty</returns>
-        public static IStatement ParseStatement(String text)
+        internal static IStatement ParseStatement(String text)
         {
 
             // short circuit on String.Empty
@@ -292,7 +308,7 @@
         /// </summary>
         /// <param name="text">the text to parse</param>
         /// <returns>the numeric expression object, null if empty string or a problem</returns>
-        public static INumericExpression ParseNumericExpression(String text)
+        internal static INumericExpression ParseNumericExpression(String text)
         {
 
             // short circuit on String.Empty
@@ -379,7 +395,7 @@
         /// </summary>
         /// <param name="text">the text to parse</param>
         /// <returns>the string expression, null if empty string</returns>
-        public static IStringExpression ParseStringExpression(String text)
+        internal static IStringExpression ParseStringExpression(String text)
         {
 
             // short circuit if String.Empty
@@ -434,7 +450,7 @@
         /// </summary>
         /// <param name="text">the text to parse</param>
         /// <returns>the boolean condition, null if empty string</returns>
-        public static BooleanCondition ParseBooleanCondition(String text)
+        internal static BooleanCondition ParseBooleanCondition(String text)
         {
 
             // short circuit on String.Empty
@@ -502,7 +518,7 @@
         /// </summary>
         /// <param name="text">the text to parse</param>
         /// <returns>the assignment expression object, null if empty string</returns>
-        public static IExpression ParseAssignmentExpression(String text)
+        internal static IExpression ParseAssignmentExpression(String text)
         {
 
             // short circuit if String.Empty
@@ -540,7 +556,7 @@
         /// </summary>
         /// <param name="text">the text to parse into a variable</param>
         /// <returns>an IVariable, null if the string is String.Empty</returns>
-        public static IVariable ParseVariable(String text)
+        internal static IVariable ParseVariable(String text)
         {
 
             //short circuit
@@ -582,7 +598,7 @@
         /// </summary>
         /// <param name="text">the string expression to analyze, this string should already be cleansed (no whitespace, no wrapping parens)</param>
         /// <returns>the starting position of the operator, 0 if no binary operator was found or error</returns>
-        public static int NextBinaryOperatorToEvaluate(String text)
+        internal static int NextBinaryOperatorToEvaluate(String text)
         {
 
             // short circuit on empty string
@@ -665,7 +681,7 @@
         /// </summary>
         /// <param name="text">>the string expression to analyze, this string should already be cleansed (no whitespace, no wrapping parens)</param>
         /// <returns>the starting position of the operator, 0 if no binary operator was found or error</returns>
-        public static int BooleanOperatorToEvaluate(String text)
+        internal static int BooleanOperatorToEvaluate(String text)
         {
 
             // var init
@@ -690,7 +706,7 @@
         /// </summary>
         /// <param name="text">the expression in string form to anaylyze, this string should already be checked for consistency</param>
         /// <returns>the unwrapped string</returns>
-        public static String UnwrapParentheses(String text)
+        internal static String UnwrapParentheses(String text)
         {
 
             // var init
@@ -741,7 +757,7 @@
         /// <param name="toLookFor">char to look for</param>
         /// <param name="text">text to search</param>
         /// <returns>the count</returns>
-        private static int CountOf(String toLookFor, string text)
+        internal static int CountOf(String toLookFor, string text)
         {
 
             // var init
@@ -768,7 +784,7 @@
         /// </summary>
         /// <param name="text">the string the cleanse</param>
         /// <returns>the cleansed string</returns>
-        private static String CleanupNumericExpression(String text)
+        internal static String CleanupNumericExpression(String text)
         {
 
             // cleanup white space

@@ -1,9 +1,10 @@
-﻿namespace Pilot.NET.Cmd
+﻿namespace Pilot.NET.Console
 {
     using System;
     using Pilot.NET.Lang;
     using Pilot.NET.PILOTParser;
     using Pilot.NET.Interpreter;
+    using Pilot.NET.Exception;
 
     /// <summary>
     /// Entry point for the command line application
@@ -18,8 +19,20 @@
         static void Main(string[] args)
         {
 
-            // wait for key
-            String wait = Console.In.ReadLine();
+            // init the console colors
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Clear();
+
+            // display the banner for Pilot.NET
+
+            // loop in the input loop
+            Program.InputLoop();
+        }
+
+        private static void InputLoop()
+        {
+
         }
     }
 }

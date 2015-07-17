@@ -1,7 +1,7 @@
 ﻿namespace Pilot.NET.Lang.Statements
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
@@ -11,7 +11,7 @@
     /// <summary>
     /// A compute statement, C
     /// </summary>
-    public sealed class Compute : IStatement
+    internal sealed class Compute : IImmediateStatement
     {
 
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿namespace Pilot.NET.Lang.Statements
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
     using System;
@@ -9,7 +9,7 @@
     /// <summary>
     /// A pause statement, PA
     /// </summary>
-    public sealed class Pause : IStatement
+    internal sealed class Pause : IStatement
     {
 
         /// <summary>

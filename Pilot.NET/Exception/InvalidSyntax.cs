@@ -1,4 +1,4 @@
-﻿namespace Pilot.NET.Lang.Exceptions
+﻿namespace Pilot.NET.Exception
 {
     using System;
     using System.Runtime.Serialization;
@@ -7,7 +7,7 @@
     /// This is the exception thrown if invalid syntax is detected
     /// </summary>
     [Serializable]
-    public sealed class InvalidSyntax : PILOTException
+    public sealed class InvalidSyntax : ParserException
     {
 
         /// <summary>

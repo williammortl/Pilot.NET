@@ -1,7 +1,6 @@
 ﻿namespace Pilot.NET.Lang.Statements
 {
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using System;
@@ -9,7 +8,7 @@
     /// <summary>
     /// An accept statement, A
     /// </summary>
-    public sealed class Accept : IStatement
+    internal sealed class Accept : IStatement
     {
 
         /// <summary>

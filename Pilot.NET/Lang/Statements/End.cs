@@ -7,7 +7,7 @@
     /// <summary>
     /// An end statement, E
     /// </summary>
-    public sealed class End : IStatement
+    internal sealed class End : IStatement
     {
 
         /// <summary>

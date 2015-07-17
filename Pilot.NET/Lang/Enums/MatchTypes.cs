@@ -4,7 +4,7 @@
     /// <summary>
     /// Does this command relate to a match? If so, how?
     /// </summary>
-    public enum MatchTypes
+    internal enum MatchTypes
     {
 
         /// <summary>

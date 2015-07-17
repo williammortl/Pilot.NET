@@ -4,7 +4,7 @@
     /// <summary>
     /// Operators for boolean expressions
     /// </summary>
-    public enum BooleanConditionOperators
+    internal enum BooleanConditionOperators
     {
 
         /// <summary>

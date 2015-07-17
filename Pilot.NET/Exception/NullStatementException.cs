@@ -1,13 +1,13 @@
-﻿namespace Pilot.NET.Lang.Exceptions
+﻿namespace Pilot.NET.Exception
 {
     using System;
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// This is the exception thrown if you try to assign to anything other than a variable
+    /// This is the exception thrown if there is a null statement without the line containing a label
     /// </summary>
     [Serializable]
-    public sealed class CannotAssignException : PILOTException
+    public sealed class NullStatementException : ParserException
     {
 
         /// <summary>
@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="si">SerializationInfo</param>
         /// <param name="sc">StreamingContext</param>
-        private CannotAssignException(SerializationInfo si, StreamingContext sc)
+        private NullStatementException(SerializationInfo si, StreamingContext sc)
             : base(si, sc)
         {
 
@@ -25,7 +25,7 @@
         /// <summary>
         /// Default constructor
         /// </summary>
-        public CannotAssignException()
+        public NullStatementException()
             : base()
         {
 
@@ -36,7 +36,7 @@
         /// Basic constructor
         /// </summary>
         /// <param name="theException">exception text</param>
-        public CannotAssignException(String theException)
+        public NullStatementException(String theException)
             : base(theException)
         {
 
@@ -48,7 +48,7 @@
         /// </summary>
         /// <param name="theException">the exception text</param>
         /// <param name="innerException">inner exception</param>
-        public CannotAssignException(String theException, Exception innerException)
+        public NullStatementException(String theException, Exception innerException)
             : base(theException, innerException)
         {
 

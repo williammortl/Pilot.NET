@@ -1,6 +1,6 @@
 ﻿namespace Pilot.NET.Lang
 {
-    using Pilot.NET.Lang.Exceptions;
+    using Pilot.NET.Exception;
     using System;
     using System.Collections.Generic;
 
@@ -46,7 +46,7 @@
         /// Constructor
         /// </summary>
         /// <param name="labelName">the label name</param>
-        public Label(String labelName)
+        internal Label(String labelName)
         {
             
             // var init
@@ -57,7 +57,7 @@
         /// Copy constructor
         /// </summary>
         /// <param name="toDup">the label to duplicate</param>
-        public Label(Label toDup)
+        internal Label(Label toDup)
         {
             this.LabelName = toDup.LabelName;
         }
@@ -66,7 +66,7 @@
         /// Create a copy of this label
         /// </summary>
         /// <returns>the copy</returns>
-        public Label Copy()
+        internal Label Copy()
         {
             return new Label(this);
         }

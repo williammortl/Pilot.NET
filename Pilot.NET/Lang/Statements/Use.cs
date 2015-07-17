@@ -1,14 +1,14 @@
 ﻿namespace Pilot.NET.Lang.Statements
 {
+    using Pilot.NET.Exception;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Exceptions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using System;
 
     /// <summary>
     /// A use statement, U
     /// </summary>
-    public sealed class Use : IStatement
+    internal sealed class Use : IStatement
     {
 
         /// <summary>

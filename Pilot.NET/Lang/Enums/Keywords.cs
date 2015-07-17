@@ -4,7 +4,7 @@
     /// <summary>
     /// The keywords for the PILOT programming language
     /// </summary>
-    public enum Keywords
+    internal enum Keywords
     {
 
         /// <summary>

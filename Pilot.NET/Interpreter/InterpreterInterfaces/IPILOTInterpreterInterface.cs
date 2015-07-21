@@ -1,6 +1,7 @@
 ﻿namespace Pilot.NET.Interpreter.InterpreterInterfaces
 {
     using System;
+    using System.Drawing;
     using System.Windows.Forms;
     
     /// <summary>
@@ -10,11 +11,16 @@
     {
 
         /// <summary>
-        /// This is the PictureBox that the PILOT translator will output graphics to, 
+        /// This is the Image that the PILOT translator will output graphics to, 
         /// if null this means only text, and the PILOT interpreter will not draw graphics,
         /// it will just skip the statements
         /// </summary>
-        PictureBox GraphicsOutput { get; }
+        Image GraphicsOutput { get; }
+
+        /// <summary>
+        /// After any new graphics are drawn on the image, call this to redraw the graphics
+        /// </summary>
+        void RedrawGraphics();
 
         /// <summary>
         /// Called by the PILOT translator to write text to the screen

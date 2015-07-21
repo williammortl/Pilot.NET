@@ -1,12 +1,14 @@
 ﻿namespace Pilot.NET.Test
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Pilot.NET.Interpreter.InterpreterInterfaces;
     using Pilot.NET.Lang;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Expressions.NumericExpressions;
     using Pilot.NET.Lang.Statements;
     using Pilot.NET.PILOTParser;
     using System;
+    using System.Drawing;
+    using System.Threading;
 
     /// <summary>
     /// General tests for Pilot.NET
@@ -43,6 +45,23 @@
             Assert.AreEqual(programLineNumbers[0], 1);
             Assert.AreEqual(programLineNumbers[1], 2);
             Assert.AreEqual(programLineNumbers[2], 4);
+        }
+
+        /// <summary>
+        /// Tests DefaultInterpreterInterfaceGraphicsForm
+        /// </summary>
+        [TestMethod]
+        public void TestDefaultInterpreterInterfaceGraphicsForm()
+        {
+            Image i = new Bitmap(300, 300);
+            DefaultInterpreterInterfaceGraphicsForm f = DefaultInterpreterInterfaceGraphicsForm.ShowForm(i, "Graphics Test");
+            Graphics g = Graphics.FromImage(i);
+            g.DrawLine(new Pen(Color.Blue, 10), new Point(0, 0), new Point(200, 200));
+            g.DrawLine(new Pen(Color.Red, 10), new Point(0, 200), new Point(200, 0));
+            f.Invoke(new Action(f.Invalidate));
+            Thread.Sleep(1000);
+            f.Invoke(new Action(f.Close));
+            i.Dispose();
         }
     }
 }

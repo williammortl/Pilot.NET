@@ -93,7 +93,7 @@
         /// <summary>
         /// Default constructor
         /// </summary>
-        internal PILOTProgram()
+        public PILOTProgram()
         {
             this.programLines = new Dictionary<int, Line>();
         }

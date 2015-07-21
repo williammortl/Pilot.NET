@@ -41,6 +41,18 @@
         private Dictionary<String, double> numericVariables;
 
         /// <summary>
+        /// Default constructor
+        /// </summary>
+        public PILOTInterpreter()
+        {
+
+            // attribute init
+            this.pilotInterface = new DefaultInterpreterInterface();
+            this.stringVariables = new Dictionary<string, string>();
+            this.numericVariables = new Dictionary<string, double>();
+        }
+
+        /// <summary>
         /// Constructor for the interpreter
         /// </summary>
         /// <param name="pilotInterface">the interface to use for the PILOT translator to use for text IO and graphics output</param>
@@ -174,7 +186,7 @@
             }
             catch (InvalidCastException)
             {
-                throw new RunTimeException(String.Format("The following statement is not allowed to immediately execute: {0}", statement));
+                this.pilotInterface.WriteTextLine(String.Format("The following statement is not allowed to immediately execute: {0}", statement));
             }
 
             // execute the statement
@@ -188,32 +200,45 @@
         internal void EvaluateImmediateStatement(IImmediateStatement statement)
         {
 
+            // var init
+            String textToOutput = String.Empty;
+
             // execute statement
-            if (statement is Compute)
+            try
             {
-                Compute cs = (Compute)statement;
-                if (this.EvaluateBooleanCondition(cs.IfCondition) == true)
+                if (statement is Compute)
                 {
-                    if (cs.ExpressionToCompute is INumericExpression)
+                    Compute cs = (Compute)statement;
+                    if (this.EvaluateBooleanCondition(cs.IfCondition) == true)
                     {
-                        INumericExpression ne = (INumericExpression)cs.ExpressionToCompute;
-                        this.EvaluateNumericExpression(ne).ToString();
+                        if (cs.ExpressionToCompute is INumericExpression)
+                        {
+                            INumericExpression ne = (INumericExpression)cs.ExpressionToCompute;
+                            textToOutput = this.EvaluateNumericExpression(ne).ToString();
+                        }
+                        else if (cs.ExpressionToCompute is IStringExpression)
+                        {
+                            IStringExpression se = (IStringExpression)cs.ExpressionToCompute;
+                            textToOutput = this.EvaluateStringExpression(se);
+                        }
                     }
-                    else if (cs.ExpressionToCompute is IStringExpression)
+                }
+                else if (statement is Text)
+                {
+                    Text ts = (Text)statement;
+                    if (this.EvaluateBooleanCondition(ts.IfCondition) == true)
                     {
-                        IStringExpression se = (IStringExpression)cs.ExpressionToCompute;
-                        this.EvaluateStringExpression(se);
+                        textToOutput = this.EvaluateStringExpression(ts.TextToDisplay);
                     }
                 }
             }
-            else if (statement is Text)
+            catch (Exception e)
             {
-                Text ts = (Text)statement;
-                if (this.EvaluateBooleanCondition(ts.IfCondition) == true)
-                {
-                    this.EvaluateStringExpression(ts.TextToDisplay);
-                }
+                textToOutput = e.ToString();
             }
+
+            // output text
+            this.pilotInterface.WriteTextLine(textToOutput);
         }
 
         /// <summary>

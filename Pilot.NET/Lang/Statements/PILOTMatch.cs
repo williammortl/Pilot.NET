@@ -56,41 +56,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">to duplicate</param>
-        public PILOTMatch(PILOTMatch toDup)
-        {
-
-            // deep copy
-            this.Keyword = toDup.Keyword;
-            this.MatchType = toDup.MatchType;
-            this.IfCondition = (BooleanCondition)((toDup.IfCondition == null) ? null : toDup.IfCondition.Copy());
-            this.Conditions = new LinkedList<StringLiteral>();
-
-            // verify at least 1 condition is present
-            if ((toDup.Conditions == null) || (toDup.Conditions.Count < 1))
-            {
-                throw new InvalidSyntax("Match needs to have at least 1 condition to match");
-            }
-
-            // deep copy conditions
-            foreach (StringLiteral condition in toDup.Conditions)
-            {
-                this.Conditions.AddLast((StringLiteral)condition.Copy());
-            }
-        }
-
-        /// <summary>
-        /// Returns a copy of the match
-        /// </summary>
-        /// <returns>the copy</returns>
-        public IStatement Copy()
-        {
-            return new PILOTMatch(this);
-        }
-
-        /// <summary>
         /// To string
         /// </summary>
         /// <returns>string representation of the match</returns>

@@ -43,27 +43,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">to duplicate</param>
-        public Remark(Remark toDup)
-        {
-            this.Keyword = toDup.Keyword;
-            this.MatchType = MatchTypes.None;
-            this.IfCondition = null;
-            this.Comment = toDup.Comment;
-        }
-
-        /// <summary>
-        /// Returns a copy of the remark
-        /// </summary>
-        /// <returns>the copy</returns>
-        public IStatement Copy()
-        {
-            return new Remark(this);
-        }
-
-        /// <summary>
         /// To string
         /// </summary>
         /// <returns>string representation of the remark</returns>

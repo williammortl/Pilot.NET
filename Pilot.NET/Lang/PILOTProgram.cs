@@ -7,7 +7,7 @@
     /// <summary>
     /// Represents a program written in PILOT
     /// </summary>
-    public sealed class PILOTProgram : IEnumerable<int>
+    public sealed class PILOTProgram
     {
 
         /// <summary>
@@ -83,8 +83,12 @@
             {
 
                 // get a sorted list of line numbers
-                List<int> retVal = this.programLines.Keys.ToList<int>();
-                retVal.Sort();
+                List<int> retVal = new List<int>();
+                if ((this.programLines != null) && (this.programLines.Count > 0))
+                {
+                    retVal = this.programLines.Keys.ToList<int>();
+                    retVal.Sort();
+                }
 
                 return retVal;
             }
@@ -96,24 +100,6 @@
         public PILOTProgram()
         {
             this.programLines = new Dictionary<int, Line>();
-        }
-
-        /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">program to dup</param>
-        internal PILOTProgram(PILOTProgram toDup)
-        {
-
-            // deep copy if not null
-            this.programLines = new Dictionary<int, Line>();
-            if (toDup != null)
-            {
-                foreach (int lineNumber in toDup.programLines.Keys)
-                {
-                    this.programLines.Add(lineNumber, toDup.programLines[lineNumber].Copy());
-                }
-            }
         }
 
         /// <summary>
@@ -173,15 +159,6 @@
         }
 
         /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>the copy</returns>
-        public PILOTProgram Copy()
-        {
-            return new PILOTProgram(this);
-        }
-
-        /// <summary>
         /// To string
         /// </summary>
         /// <returns>the string representation</returns>
@@ -192,45 +169,14 @@
             String retVal = String.Empty;
 
             // convert all lines to a string
-            if (this.LineNumbers.Count > 0)
+            foreach (int lineNumber in this.LineNumbers)
             {
-                foreach (int lineNumber in this.LineNumbers)
-                {
-                    Line line = this.programLines[lineNumber];
-                    String lineString = (line == null) ? String.Empty : line.ToString();
-                    retVal += lineString + "\r\n";
-                }
+                Line line = this[lineNumber];
+                String lineString = (line == null) ? String.Empty : line.ToString();
+                retVal += lineString + "\r\n";
             }
 
             return retVal;
-        }
-
-        /// <summary>
-        /// Gets an enumerator to the line numbers in the program
-        /// </summary>
-        /// <returns>null if no lines, otherwise an iterator</returns>
-        public IEnumerator<int> GetEnumerator()
-        {
-
-            // var init
-            IEnumerator<int> retVal = null;
-
-            // test to make sure there are lines
-            if (this.programLines.Keys.Count > 0)
-            {
-                retVal = this.LineNumbers.GetEnumerator();
-            }
-
-            return retVal;
-        }
-
-        /// <summary>
-        /// Gets an enumerator to the line numbers in the program
-        /// </summary>
-        /// <returns>null if no lines, otherwise an iterator</returns>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable<int>)this).GetEnumerator();
         }
     }
 }

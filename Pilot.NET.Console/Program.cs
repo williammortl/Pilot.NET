@@ -6,6 +6,7 @@
     using Pilot.NET.Lang;
     using System.Reflection;
     using System.ComponentModel;
+    using System.IO;
 
     /// <summary>
     /// Entry point for the command line application
@@ -21,7 +22,12 @@
         /// <summary>
         /// Pilot.NET masthead
         /// </summary>
-        private const String PILOT_MASTHEAD = "PILOT.NET (c) COPYRIGHT WILLIAM MORTL 2015\r\nLOVINGLY DEDICATED TO ATARI PILOT & JOHN AMSDEN STARKWEATHER\r\nBY WILLIAM MICHAEL MORTL - HTTP://WWW.WILLIAMMORTL.COM";
+        private const String PILOT_MASTHEAD = "PILOT.NET (c) COPYRIGHT WILLIAM MORTL 2015";
+
+        /// <summary>
+        /// Pilot.NET about
+        /// </summary>
+        private const String PILOT_ABOUT = "LOVINGLY DEDICATED TO ATARI PILOT & JOHN AMSDEN STARKWEATHER\r\nBY WILLIAM MICHAEL MORTL - HTTP://WWW.WILLIAMMORTL.COM";
 
         /// <summary>
         /// Pilot.NET prompt
@@ -70,6 +76,12 @@
                         {
                             Console.WriteLine();
                             Console.WriteLine(Program.PILOT_MASTHEAD);
+                            Console.WriteLine(Program.PILOT_ABOUT);
+                            break;
+                        }
+                        case ConsoleCommands.CLEAR:
+                        {
+                            Console.Clear();
                             break;
                         }
                         case ConsoleCommands.QUIT:
@@ -79,12 +91,60 @@
                         case ConsoleCommands.HELP:
                         {
                             Console.WriteLine();
+                            Console.WriteLine("Console Commands:");
+                            Console.WriteLine("-----------------");
                             ConsoleCommands[] commands = (ConsoleCommands[])Enum.GetValues(typeof(ConsoleCommands));
                             foreach(ConsoleCommands command in commands)
                             {
                                 FieldInfo fi = command.GetType().GetField(command.ToString());
                                 DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                                Console.WriteLine(String.Format("{0} - {1}", command.ToString(), attributes[0].Description));
+                                Console.WriteLine(String.Format("{0}\t- {1}", command.ToString(), attributes[0].Description));
+                            }
+                            break;
+                        }
+                        case ConsoleCommands.NEW:
+                        {
+                            prog = new PILOTProgram();
+                            break;
+                        }
+                        case ConsoleCommands.LIST:
+                        {
+                            String progText = prog.ToString().Trim();
+                            if (String.IsNullOrWhiteSpace(progText) == false)
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine(progText);
+                            }
+                            break;
+                        }
+                        case ConsoleCommands.LOAD:
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine(prog.ToString());
+                            break;
+                        }
+                        case ConsoleCommands.SAVE:
+                        {
+                            Console.WriteLine();
+                            if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
+                            {
+
+                                // create directory if it doesn't exist
+                                String path = Path.GetDirectoryName(split[1]);
+                                if (Directory.Exists(path) == false)
+                                {
+                                    Directory.CreateDirectory(path);
+                                }
+
+                                // write the program to a file
+                                using (StreamWriter sw = new StreamWriter(split[1]))
+                                {
+                                    sw.Write(prog.ToString());
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("INVALID SAVE COMMAND");
                             }
                             break;
                         }

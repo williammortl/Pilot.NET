@@ -55,25 +55,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">the string expression to duplicate</param>
-        public StringAssignExpression(StringAssignExpression toDup)
-        {
-            this.Left = (StringVariable)((toDup.Left == null) ? null : toDup.Left.Copy());
-            this.Right = (IStringExpression)((toDup.Left == null) ? null : toDup.Left.Copy());
-        }
-
-        /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>a copy of this PILOT string expression</returns>
-        public IExpression Copy()
-        {
-            return new StringAssignExpression(this);
-        }
-
-        /// <summary>
         /// Convert this variable to a string
         /// </summary>
         /// <returns>the string expression</returns>

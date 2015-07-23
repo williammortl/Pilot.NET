@@ -99,29 +99,9 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">the boolean condition to duplicate</param>
-        public BooleanCondition(BooleanCondition toDup)
-        {
-            this.Operator = toDup.Operator;
-            this.Left = (INumericExpression)((toDup == null) ? null : toDup.Left.Copy());
-            this.Right = (INumericExpression)((toDup == null) ? null : toDup.Right.Copy());
-        }
-
-        /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>a copy of this boolean condition</returns>
-        public IExpression Copy()
-        {
-            return new BooleanCondition(this);
-        }
-
-        /// <summary>
         /// Convert this variable to a string
         /// </summary>
-        /// <returns></returns>
+        /// <returns>the string representation</returns>
         public override string ToString()
         {
             return String.Format("({0} {1} {2})", this.Left.ToString(), EnumMethods.BooleanOperatorToString(this.Operator), this.Right.ToString());

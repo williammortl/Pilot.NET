@@ -26,7 +26,8 @@
         /// Called by the PILOT translator to write text to the screen
         /// </summary>
         /// <param name="text">the text to write</param>
-        void WriteTextLine(String text);
+        /// <param name="lineBreak">add a line break</param>
+        void WriteText(String text, Boolean lineBreak);
 
         /// <summary>
         /// Called by the PILOT translator to prompt the user for input, reads a whole line

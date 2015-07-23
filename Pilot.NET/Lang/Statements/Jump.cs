@@ -69,27 +69,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">to duplicate</param>
-        public Jump(Jump toDup)
-        {
-            this.Keyword = toDup.Keyword;
-            this.MatchType = toDup.MatchType;
-            this.IfCondition = (BooleanCondition)((toDup.IfCondition == null) ? null : toDup.IfCondition.Copy());
-            this.LabelToJumpTo = (Label)((toDup.LabelToJumpTo == null) ? null : toDup.LabelToJumpTo.Copy());
-        }
-
-        /// <summary>
-        /// Returns a copy of the jump
-        /// </summary>
-        /// <returns>the copy</returns>
-        public IStatement Copy()
-        {
-            return new Jump(this);
-        }
-
-        /// <summary>
         /// To string
         /// </summary>
         /// <returns>string representation of the jump</returns>

@@ -60,24 +60,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">the string variable to duplicate</param>
-        public StringVariable(StringVariable toDup)
-        {
-            this.VariableName = toDup.VariableName;
-        }
-
-        /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>a copy of this PILOT string variable</returns>
-        public IExpression Copy()
-        {
-            return new StringVariable(this);
-        }
-
-        /// <summary>
         /// Convert this string variable to a string
         /// </summary>
         /// <returns>the string variable</returns>

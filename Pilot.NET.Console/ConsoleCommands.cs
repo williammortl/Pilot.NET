@@ -48,6 +48,12 @@
         /// About Pilot.NET
         /// </summary>
         [Description("ABOUT PILOT.NET")]
-        ABOUT
+        ABOUT,
+
+        /// <summary>
+        /// Clear the screen
+        /// </summary>
+        [Description("CLEAR THE SCREEN")]
+        CLEAR
     }
 }

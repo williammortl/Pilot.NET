@@ -78,27 +78,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">to duplicate</param>
-        public Compute(Compute toDup)
-        {
-            this.Keyword = toDup.Keyword;
-            this.MatchType = toDup.MatchType;
-            this.IfCondition = (BooleanCondition)((toDup.IfCondition == null) ? null : toDup.IfCondition.Copy());
-            this.ExpressionToCompute = (IExpression)((toDup.ExpressionToCompute == null) ? null : toDup.ExpressionToCompute.Copy());
-        }
-
-        /// <summary>
-        /// Returns a copy of the compute
-        /// </summary>
-        /// <returns>the copy</returns>
-        public IStatement Copy()
-        {
-            return new Compute(this);
-        }
-
-        /// <summary>
         /// To string
         /// </summary>
         /// <returns>string representation of the compute</returns>

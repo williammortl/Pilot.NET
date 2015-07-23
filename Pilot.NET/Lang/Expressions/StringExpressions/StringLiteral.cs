@@ -24,24 +24,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">the string to duplicate</param>
-        public StringLiteral(StringLiteral toDup)
-        {
-            this.StringText = toDup.StringText.TrimEnd();
-        }
-
-        /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>a copy of this PILOT string</returns>
-        public IExpression Copy()
-        {
-            return new StringLiteral(this);
-        }
-
-        /// <summary>
         /// Convert this string variable to a string
         /// </summary>
         /// <returns>the PILOT string</returns>

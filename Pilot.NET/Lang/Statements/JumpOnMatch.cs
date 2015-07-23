@@ -55,41 +55,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">to duplicate</param>
-        public JumpOnMatch(JumpOnMatch toDup)
-        {
-
-            // deep copy
-            this.Keyword = toDup.Keyword;
-            this.MatchType = toDup.MatchType;
-            this.IfCondition = (BooleanCondition)((toDup.IfCondition == null) ? null : toDup.IfCondition.Copy());
-            this.LabelsToJumpTo = new LinkedList<Label>();
-
-            // verify at least 1 label is present
-            if ((toDup.LabelsToJumpTo == null) || (toDup.LabelsToJumpTo.Count < 1))
-            {
-                throw new InvalidSyntax("Jump on match needs to have at least 1 label to jump to");
-            }
-
-            // deep copy each label to jump to
-            foreach(Label LabelToJumpTo in toDup.LabelsToJumpTo)
-            {
-                this.LabelsToJumpTo.AddLast(LabelToJumpTo.Copy());
-            }
-        }
-
-        /// <summary>
-        /// Returns a copy of the jump on match
-        /// </summary>
-        /// <returns>the copy</returns>
-        public IStatement Copy()
-        {
-            return new JumpOnMatch(this);
-        }
-
-        /// <summary>
         /// To string
         /// </summary>
         /// <returns>string representation of the jump on match</returns>

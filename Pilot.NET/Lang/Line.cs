@@ -26,25 +26,6 @@
         internal IStatement LineStatement { get; private set; }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">line to duplicate</param>
-        internal Line(Line toDup)
-        {
-
-            // deep copy
-            this.LineNumber = toDup.LineNumber;
-            this.LineLabel = (toDup.LineLabel == null) ? null : toDup.LineLabel.Copy();
-            this.LineStatement = (toDup.LineStatement == null) ? null : toDup.LineStatement.Copy();
-
-            // check to ensure that both the label and the statement are not empty
-            if ((this.LineLabel == null) && (this.LineStatement == null))
-            {
-                throw new ParserException("Line must contain either a label or statement (or both)");
-            }
-        }
-
-        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="lineNumber">what line number</param>
@@ -93,15 +74,6 @@
             }
 
             return retVal;
-        }
-
-        /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>the copy</returns>
-        public Line Copy()
-        {
-            return new Line(this);
         }
     }
 }

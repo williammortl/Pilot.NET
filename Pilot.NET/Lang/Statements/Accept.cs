@@ -46,27 +46,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">to duplicate</param>
-        public Accept(Accept toDup)
-        {
-            this.Keyword = toDup.Keyword;
-            this.MatchType = toDup.MatchType;
-            this.IfCondition = (BooleanCondition)((toDup.IfCondition == null) ? null : toDup.IfCondition.Copy());
-            this.VariableToSet = (IVariable)((toDup.VariableToSet == null) ? null : ((IExpression)toDup.VariableToSet).Copy());
-        }
-
-        /// <summary>
-        /// Returns a copy of the accept
-        /// </summary>
-        /// <returns>the copy</returns>
-        public IStatement Copy()
-        {
-            return new Accept(this);
-        }
-
-        /// <summary>
         /// To string
         /// </summary>
         /// <returns>string representation of the accept</returns>

@@ -60,27 +60,9 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">the variable to duplicate</param>
-        public NumericVariable(NumericVariable toDup)
-        {
-            this.VariableName = toDup.VariableName;
-        }
-
-        /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>a copy of this PILOT variable</returns>
-        public IExpression Copy()
-        {
-            return new NumericVariable(this);
-        }
-
-        /// <summary>
         /// Convert this variable to a string
         /// </summary>
-        /// <returns></returns>
+        /// <returns>the string representation</returns>
         public override string ToString()
         {
             return "#" + this.VariableName;

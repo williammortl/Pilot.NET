@@ -18,28 +18,9 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">the variable to duplicate</param>
-        public RandomNumber(RandomNumber toDup)
-        {
-
-            // do nothing! 
-        }
-
-        /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>a copy of this PILOT random</returns>
-        public IExpression Copy()
-        {
-            return new RandomNumber(this);
-        }
-
-        /// <summary>
         /// Convert this variable to a string
         /// </summary>
-        /// <returns></returns>
+        /// <returns>the string representation</returns>
         public override string ToString()
         {
             return "?";

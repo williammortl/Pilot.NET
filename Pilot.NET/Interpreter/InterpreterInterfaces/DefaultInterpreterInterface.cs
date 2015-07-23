@@ -76,12 +76,20 @@
         }
 
         /// <summary>
-        /// Writes text to the console
+        /// Called by the PILOT translator to write text to the screen
         /// </summary>
-        /// <param name="text"></param>
-        public void WriteTextLine(string text)
+        /// <param name="text">the text to write</param>
+        /// <param name="lineBreak">add a line break</param>
+        public void WriteText(String text, Boolean lineBreak)
         {
-            Console.WriteLine(text);
+            if (lineBreak == true)
+            {
+                Console.WriteLine(text);
+            }
+            else
+            {
+                Console.Write(text);
+            }
         }
 
         /// <summary>

@@ -54,24 +54,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">the label to duplicate</param>
-        internal Label(Label toDup)
-        {
-            this.LabelName = toDup.LabelName;
-        }
-
-        /// <summary>
-        /// Create a copy of this label
-        /// </summary>
-        /// <returns>the copy</returns>
-        internal Label Copy()
-        {
-            return new Label(this);
-        }
-
-        /// <summary>
         /// Override ToString
         /// </summary>
         /// <returns>the string representation of the label</returns>

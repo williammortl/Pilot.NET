@@ -147,7 +147,26 @@
             this.ClearMemoryState();
 
             // initialize a call stack
+            int executionPointer = 0;
             Stack<int> CallStack = new Stack<int>();
+            MatchTypes currentMatch = MatchTypes.None;
+            String acceptBuffer = String.Empty;
+
+            // execute until we cant
+            while (true)
+            {
+                
+                // execute statement
+                Line currentLine = prog[prog.LineNumbers[executionPointer]];
+                IStatement currentStatement = currentLine.LineStatement;
+
+                // check for match type
+                if ((currentMatch == MatchTypes.None) || (currentStatement.MatchType == currentMatch))
+                {
+
+                }
+            }
+
         }
 
         /// <summary>
@@ -165,10 +184,7 @@
         /// <param name="file">the file name of the program to execute</param>
         public void Run(FileInfo file)
         {
-            using (StreamReader sr = new StreamReader(file.FullName))
-            {
-                this.Run(sr.ReadToEnd());
-            }
+            this.Run(Parser.ParseProgram(file));
         }
 
         /// <summary>
@@ -186,7 +202,7 @@
             }
             catch (InvalidCastException)
             {
-                this.pilotInterface.WriteTextLine(String.Format("The following statement is not allowed to immediately execute: {0}", statement));
+                this.pilotInterface.WriteText(String.Format("The following statement is not allowed to immediately execute: {0}", statement), true);
             }
 
             // execute the statement
@@ -232,13 +248,23 @@
                     }
                 }
             }
-            catch (Exception e)
+            catch (PILOTException pe)
             {
-                textToOutput = e.ToString();
+                textToOutput = pe.ToString();
+            }
+            catch (Exception)
+            {
+                textToOutput = String.Format("An error occured executing the statement: {0}", statement.ToString());
+            }
+
+            // clear trailing backslash if it exists
+            if (textToOutput[textToOutput.Length - 1] == '\\')
+            {
+                textToOutput = textToOutput.Substring(0, textToOutput.Length - 1);
             }
 
             // output text
-            this.pilotInterface.WriteTextLine(textToOutput);
+            this.pilotInterface.WriteText(textToOutput, true);
         }
 
         /// <summary>

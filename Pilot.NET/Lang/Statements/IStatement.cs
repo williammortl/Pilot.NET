@@ -23,11 +23,5 @@
         /// This is a conditional execution expression
         /// </summary>
         BooleanCondition IfCondition { get; }
-
-        /// <summary>
-        /// Returns a copy of the statement
-        /// </summary>
-        /// <returns>the copy</returns>
-        IStatement Copy();
     }
 }

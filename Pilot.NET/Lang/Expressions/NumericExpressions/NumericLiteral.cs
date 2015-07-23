@@ -23,27 +23,9 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">the variable to duplicate</param>
-        public NumericLiteral(NumericLiteral toDup)
-        {
-            this.Number = toDup.Number;
-        }
-
-        /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>a copy of this PILOT literal</returns>
-        public IExpression Copy()
-        {
-            return new NumericLiteral(this);
-        }
-
-        /// <summary>
         /// Convert this variable to a string
         /// </summary>
-        /// <returns></returns>
+        /// <returns>the string representation</returns>
         public override string ToString()
         {
             return this.Number.ToString();

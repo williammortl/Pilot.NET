@@ -104,29 +104,9 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">the math expression to duplicate</param>
-        public NumericBinaryOperation(NumericBinaryOperation toDup)
-        {
-            this.Operator = toDup.Operator;
-            this.Left = (INumericExpression)((toDup.Left == null) ? null : toDup.Left.Copy());
-            this.Right = (INumericExpression)((toDup.Right == null) ? null : toDup.Right.Copy());
-        }
-
-        /// <summary>
-        /// Returns a copy
-        /// </summary>
-        /// <returns>a copy of this math op expression</returns>
-        public IExpression Copy()
-        {
-            return new NumericBinaryOperation(this);
-        }
-
-        /// <summary>
         /// Convert this variable to a string
         /// </summary>
-        /// <returns></returns>
+        /// <returns>the string representation</returns>
         public override string ToString()
         {
             return String.Format("({0} {1} {2})", this.Left.ToString(),

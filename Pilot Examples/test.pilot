@@ -1,4 +1,4 @@
-1 R: this is a test of PILOT by William Mortl
+1 R: this is a test of PILOT by William Mortl, \ - means no line break
 2 *mainmenu T: select a test:
 3 T: 1 - numeric
 4 T: 2 - string

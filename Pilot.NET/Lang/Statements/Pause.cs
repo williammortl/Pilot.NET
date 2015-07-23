@@ -76,27 +76,6 @@
         }
 
         /// <summary>
-        /// Copy constructor
-        /// </summary>
-        /// <param name="toDup">to duplicate</param>
-        public Pause(Pause toDup)
-        {
-            this.Keyword = toDup.Keyword;
-            this.MatchType = toDup.MatchType;
-            this.IfCondition = (BooleanCondition)((toDup.IfCondition == null) ? null : toDup.IfCondition.Copy());
-            this.TimeToPause = (INumericExpression)((toDup.IfCondition == null) ? null : toDup.IfCondition.Copy());
-        }
-
-        /// <summary>
-        /// Returns a copy of the accept
-        /// </summary>
-        /// <returns>the copy</returns>
-        public IStatement Copy()
-        {
-            return new Pause(this);
-        }
-
-        /// <summary>
         /// To string
         /// </summary>
         /// <returns>string representation of the pause time</returns>

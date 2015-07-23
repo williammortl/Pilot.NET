@@ -30,9 +30,20 @@
             PILOTProgram retVal = null;
 
             // parse file
-            using (StreamReader sr = new StreamReader(file.FullName))
+            try
             {
-                retVal = Parser.ParseProgram(sr.ReadToEnd());
+                using (StreamReader sr = new StreamReader(file.FullName))
+                {
+                    retVal = Parser.ParseProgram(sr.ReadToEnd());
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                throw new PILOTException(String.Format("Could not find the file: {0}", file.FullName));
+            }
+            catch (IOException)
+            {
+                throw new PILOTException(String.Format("Could not access the file: {0}", file.FullName));
             }
 
             return retVal;
@@ -54,7 +65,7 @@
             foreach (String line in lines)
             {
                 String trimmedLine = line.Trim();
-                if (trimmedLine != String.Empty)
+                if (String.IsNullOrWhiteSpace(trimmedLine) == false)
                 {
                     Line newLine = Parser.ParseLine(trimmedLine);
                     retVal[newLine.LineNumber] = newLine;
@@ -174,29 +185,21 @@
             BooleanCondition ifCondition = Parser.ParseBooleanCondition(ifConditionString);
 
             // split keyword and match condition
-            String keywordString = String.Empty;
             MatchTypes match = MatchTypes.None;
-            if ((keywordMatch[keywordMatch.Length - 1] == 'Y') || (keywordMatch[keywordMatch.Length - 1] == 'N'))
+            String keywordString = keywordMatch;
+            if ((keywordMatch.Length > 1) && (Enum.IsDefined(typeof(MatchTypes), keywordMatch[keywordMatch.Length - 1].ToString()) == true))
             {
                 keywordString = keywordMatch.Substring(0, keywordMatch.Length - 1);
                 match = (MatchTypes)Enum.Parse(typeof(MatchTypes), keywordMatch[keywordMatch.Length - 1].ToString());
             }
-            else
-            {
-                keywordString = keywordMatch;
-            }
 
-            // attempt to parse the keyword, check to make sure it is in fact a keyword!
-            Keywords keyword = Keywords.A;
-            try
-            {
-                keyword = (Keywords)Enum.Parse(typeof(Keywords), keywordString);
-            }
-            catch
+            // attempt to parse the keyword, check to make sure it is in fact a keyword, if it isn't throw an error
+            if (Enum.IsDefined(typeof(Keywords), keywordString) == false)
             {
                 throw new ParserException(String.Format("{0} is not a valid keyword in PILOT", keywordMatchIf));
             }
-
+            Keywords keyword = (Keywords)Enum.Parse(typeof(Keywords), keywordString);
+  
             // switch based upon the keyword and create new statement object
             IStatement statement = null; 
             switch (keyword)
@@ -486,7 +489,7 @@
             text = Parser.UnwrapParentheses(text);
 
             // get the operator position
-            int opertatorPosition = Parser.BooleanOperatorToEvaluate(text);
+            int opertatorPosition = Parser.NextBooleanOperatorToEvaluate(text);
             if (opertatorPosition <= 0)
             {
                 throw new ParserException("A boolean operator was not found");
@@ -681,7 +684,7 @@
         /// </summary>
         /// <param name="text">>the string expression to analyze, this string should already be cleansed (no whitespace, no wrapping parens)</param>
         /// <returns>the starting position of the operator, 0 if no binary operator was found or error</returns>
-        internal static int BooleanOperatorToEvaluate(String text)
+        internal static int NextBooleanOperatorToEvaluate(String text)
         {
 
             // var init

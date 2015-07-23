@@ -38,4 +38,4 @@ http://www.atarimania.com/documents/Atari_PILOT_Primer.pdf
 
 NOTES:
 
-Upon completion this version of PILOT will contain graphics as well as sound. Additionally, I will be extending PILOT to be able to instantiate .NET classes and call methods therein.
+Upon completion this version of PILOT will contain graphics as well as sound.

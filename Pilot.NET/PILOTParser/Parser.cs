@@ -59,7 +59,7 @@
 
             // init vars
             String[] lines = text.Split(new char[] { '\n' });
-            PILOTProgram retVal = null;
+            PILOTProgram retVal = new PILOTProgram();
 
             // loop through each line, create line object
             foreach (String line in lines)
@@ -117,7 +117,14 @@
             {
                 String[] splitStatementString = statementString.Split(new char[] { ' ' }, 2);
                 labelString = splitStatementString[0].Trim();
-                statementString = splitStatementString[1].Trim();
+                if (splitStatementString.Length > 1)
+                {
+                    statementString = splitStatementString[1].Trim();
+                }
+                else
+                {
+                    statementString = String.Empty;
+                }
             }
             Label lineLabel = Parser.ParseLabel(labelString);
             IStatement lineStatement = Parser.ParseStatement(statementString);
@@ -231,7 +238,7 @@
                     LinkedList<Label> labels = new LinkedList<Label>();
                     if (String.IsNullOrWhiteSpace(parametersForKeyword) == false)
                     {
-                        String[] labelsString = text.Split(new char[] { ',' });
+                        String[] labelsString = parametersForKeyword.Split(new char[] { ',' });
                         foreach (String labelString in labelsString)
                         {
                             Label newLabel = Parser.ParseLabel(labelString);
@@ -260,10 +267,10 @@
                     LinkedList<StringLiteral> conditions = new LinkedList<StringLiteral>();
                     if (String.IsNullOrWhiteSpace(parametersForKeyword) == false)
                     {
-                        String[] conditionsString = text.Split(new char[] { ',' });
+                        String[] conditionsString = parametersForKeyword.Split(new char[] { ',' });
                         foreach (String conditionString in conditionsString)
                         {
-                            if (String.IsNullOrWhiteSpace(conditionString) == true)
+                            if (String.IsNullOrWhiteSpace(conditionString) == false)
                             {
                                 conditions.AddLast(new StringLiteral(conditionString));
                             }

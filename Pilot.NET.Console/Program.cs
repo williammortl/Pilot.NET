@@ -7,6 +7,7 @@
     using System.Reflection;
     using System.ComponentModel;
     using System.IO;
+    using Pilot.NET.Exception;
 
     /// <summary>
     /// Entry point for the command line application
@@ -62,11 +63,11 @@
                 String text = Program.Prompt();
                 String[] split = text.ToUpper().Split(new char[1] { ' ' });
 
-                // try to convert to command
+                // try to convert to console command
                 if (Enum.IsDefined(typeof(ConsoleCommands), split[0].Trim()) == true)
                 {
 
-                    // convert
+                    // convert to console command
                     ConsoleCommands cmd = (ConsoleCommands)Enum.Parse(typeof(ConsoleCommands), split[0].Trim());
 
                     // execute the command
@@ -119,31 +120,58 @@
                         }
                         case ConsoleCommands.LOAD:
                         {
-                            Console.WriteLine();
-                            Console.WriteLine(prog.ToString());
-                            break;
-                        }
-                        case ConsoleCommands.SAVE:
-                        {
-                            Console.WriteLine();
                             if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
                             {
-
-                                // create directory if it doesn't exist
-                                String path = Path.GetDirectoryName(split[1]);
-                                if (Directory.Exists(path) == false)
+                                try
                                 {
-                                    Directory.CreateDirectory(path);
+                                    prog = Parser.ParseProgram(new FileInfo(split[1]));
                                 }
-
-                                // write the program to a file
-                                using (StreamWriter sw = new StreamWriter(split[1]))
+                                catch (PILOTException pe)
                                 {
-                                    sw.Write(prog.ToString());
+                                    prog = new PILOTProgram();
+                                    Console.WriteLine(pe.Message);
                                 }
                             }
                             else
                             {
+                                Console.WriteLine("INVALID LOAD COMMAND");
+                            }
+                            break;
+                        }
+                        case ConsoleCommands.SAVE:
+                        {
+                            String progAsString = prog.ToString();
+                            if (String.IsNullOrWhiteSpace(progAsString) == true)
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("NOTHING TO SAVE");
+                            }
+                            else if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
+                            {
+                                try
+                                {
+                                    // create directory if it doesn't exist
+                                    String path = Path.GetDirectoryName(split[1]);
+                                    if (Directory.Exists(path) == false)
+                                    {
+                                        Directory.CreateDirectory(path);
+                                    }
+
+                                    // write the program to a file
+                                    using (StreamWriter sw = new StreamWriter(split[1]))
+                                    {
+                                        sw.Write(progAsString);
+                                    }
+                                }
+                                catch
+                                {
+                                    Console.WriteLine();
+                                    Console.WriteLine("ERROR OCCURRED WHILE SAVING");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine();
                                 Console.WriteLine("INVALID SAVE COMMAND");
                             }
                             break;

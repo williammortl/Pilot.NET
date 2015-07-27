@@ -51,7 +51,7 @@
         /// <returns>string representation of the accept</returns>
         public override String ToString()
         {
-            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, this.VariableToSet.ToString());
+            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, (this.VariableToSet != null) ? this.VariableToSet.ToString() : String.Empty);
         }
     }
 }

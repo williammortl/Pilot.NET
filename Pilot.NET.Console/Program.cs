@@ -59,129 +59,141 @@
             while (true)
             {
 
-                // prompt and get input
-                String text = Program.Prompt();
-                String[] split = text.ToUpper().Split(new char[1] { ' ' });
-
-                // try to convert to console command
-                if (Enum.IsDefined(typeof(ConsoleCommands), split[0].Trim()) == true)
+                // prompt and parse command line
+                String text = Program.Prompt().Trim();
+                if (String.IsNullOrWhiteSpace(text) == false)
                 {
 
-                    // convert to console command
-                    ConsoleCommands cmd = (ConsoleCommands)Enum.Parse(typeof(ConsoleCommands), split[0].Trim());
-
-                    // execute the command
-                    switch (cmd)
+                    // figure out what command text is
+                    String[] split = text.ToUpper().Split(new char[1] { ' ' }, 2);
+                    if (Enum.IsDefined(typeof(ConsoleCommands), split[0].Trim()) == true)
                     {
-                        case ConsoleCommands.ABOUT:
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine(Program.PILOT_MASTHEAD);
-                            Console.WriteLine(Program.PILOT_ABOUT);
-                            break;
-                        }
-                        case ConsoleCommands.CLEAR:
-                        {
-                            Console.Clear();
-                            break;
-                        }
-                        case ConsoleCommands.QUIT:
-                        {
-                            return;
-                        }
-                        case ConsoleCommands.HELP:
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine("Console Commands:");
-                            Console.WriteLine("-----------------");
-                            ConsoleCommands[] commands = (ConsoleCommands[])Enum.GetValues(typeof(ConsoleCommands));
-                            foreach(ConsoleCommands command in commands)
-                            {
-                                FieldInfo fi = command.GetType().GetField(command.ToString());
-                                DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                                Console.WriteLine(String.Format("{0}\t- {1}", command.ToString(), attributes[0].Description));
-                            }
-                            break;
-                        }
-                        case ConsoleCommands.NEW:
-                        {
-                            prog = new PILOTProgram();
-                            break;
-                        }
-                        case ConsoleCommands.LIST:
-                        {
-                            String progText = prog.ToString().Trim();
-                            if (String.IsNullOrWhiteSpace(progText) == false)
-                            {
-                                Console.WriteLine();
-                                Console.WriteLine(progText);
-                            }
-                            break;
-                        }
-                        case ConsoleCommands.LOAD:
-                        {
-                            if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
-                            {
-                                try
-                                {
-                                    prog = Parser.ParseProgram(new FileInfo(split[1]));
-                                }
-                                catch (PILOTException pe)
-                                {
-                                    prog = new PILOTProgram();
-                                    Console.WriteLine(pe.Message);
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("INVALID LOAD COMMAND");
-                            }
-                            break;
-                        }
-                        case ConsoleCommands.SAVE:
-                        {
-                            String progAsString = prog.ToString();
-                            if (String.IsNullOrWhiteSpace(progAsString) == true)
-                            {
-                                Console.WriteLine();
-                                Console.WriteLine("NOTHING TO SAVE");
-                            }
-                            else if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
-                            {
-                                try
-                                {
-                                    // create directory if it doesn't exist
-                                    String path = Path.GetDirectoryName(split[1]);
-                                    if (Directory.Exists(path) == false)
-                                    {
-                                        Directory.CreateDirectory(path);
-                                    }
 
-                                    // write the program to a file
-                                    using (StreamWriter sw = new StreamWriter(split[1]))
-                                    {
-                                        sw.Write(progAsString);
-                                    }
+                        // console command
+                        switch ((ConsoleCommands)Enum.Parse(typeof(ConsoleCommands), split[0].Trim()))
+                        {
+                            case ConsoleCommands.ABOUT:
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine(Program.PILOT_MASTHEAD);
+                                Console.WriteLine(Program.PILOT_ABOUT);
+                                break;
+                            }
+                            case ConsoleCommands.CLEAR:
+                            {
+                                Console.Clear();
+                                break;
+                            }
+                            case ConsoleCommands.QUIT:
+                            {
+                                return;
+                            }
+                            case ConsoleCommands.HELP:
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("Console Commands:");
+                                Console.WriteLine("-----------------");
+                                ConsoleCommands[] commands = (ConsoleCommands[])Enum.GetValues(typeof(ConsoleCommands));
+                                foreach (ConsoleCommands command in commands)
+                                {
+                                    FieldInfo fi = command.GetType().GetField(command.ToString());
+                                    DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                                    Console.WriteLine(String.Format("{0}\t- {1}", command.ToString(), attributes[0].Description));
                                 }
-                                catch
+                                break;
+                            }
+                            case ConsoleCommands.NEW:
+                            {
+                                prog = new PILOTProgram();
+                                break;
+                            }
+                            case ConsoleCommands.LIST:
+                            {
+                                String progText = prog.ToString().Trim();
+                                if (String.IsNullOrWhiteSpace(progText) == false)
                                 {
                                     Console.WriteLine();
-                                    Console.WriteLine("ERROR OCCURRED WHILE SAVING");
+                                    Console.WriteLine(progText);
                                 }
+                                break;
                             }
-                            else
+                            case ConsoleCommands.LOAD:
                             {
-                                Console.WriteLine();
-                                Console.WriteLine("INVALID SAVE COMMAND");
+                                if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
+                                {
+                                    try
+                                    {
+                                        prog = Parser.ParseProgram(new FileInfo(split[1].Trim()));
+                                    }
+                                    catch (PILOTException pe)
+                                    {
+                                        prog = new PILOTProgram();
+                                        Console.WriteLine(pe.Message);
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("INVALID LOAD COMMAND");
+                                }
+                                break;
                             }
-                            break;
+                            case ConsoleCommands.SAVE:
+                            {
+                                String progAsString = prog.ToString();
+                                if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
+                                {
+                                    try
+                                    {
+                                        // create directory if it doesn't exist
+                                        String path = Path.GetDirectoryName(split[1]);
+                                        if (Directory.Exists(path) == false)
+                                        {
+                                            Directory.CreateDirectory(path);
+                                        }
+
+                                        // write the program to a file
+                                        using (StreamWriter sw = new StreamWriter(split[1]))
+                                        {
+                                            sw.Write(progAsString);
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        Console.WriteLine();
+                                        Console.WriteLine("ERROR OCCURRED WHILE SAVING");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine();
+                                    Console.WriteLine("INVALID SAVE COMMAND, NEED FILENAME TO SAVE TO");
+                                }
+                                break;
+                            }
                         }
                     }
-                }
-                else
-                {
+                    else if (Program.IsInt(split[0].Trim()) == true)
+                    {
 
-                    
+                        // add / replace a program line
+                        Line l = null;
+                        try
+                        {
+                            l = Parser.ParseLine(text);
+                            prog[l.LineNumber] = l;
+                        }
+                        catch (PILOTException pe)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine(pe.Message);
+                        }
+                    }
+                    else
+                    {
+
+                        // evaluate immediate statement
+                        pi.EvaluateImmediateStatement(text);
+                    }
                 }
             }
         }
@@ -194,6 +206,17 @@
         {
             Console.WriteLine(Program.PILOT_PROMPT);
             return Console.ReadLine().Trim();
+        }
+
+        /// <summary>
+        /// Is the string an int?
+        /// </summary>
+        /// <param name="str">the string to check</param>
+        /// <returns>true if it is an int</returns>
+        private static Boolean IsInt(String str)
+        {
+            int lineNumber = 0;
+            return Int32.TryParse(str.Trim(), out lineNumber);
         }
     }
 }

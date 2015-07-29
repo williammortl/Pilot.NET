@@ -194,19 +194,29 @@
         public void EvaluateImmediateStatement(String statement)
         {
 
+            // short circuit
+            if (String.IsNullOrWhiteSpace(statement) == true)
+            {
+                return;
+            }
+
             // try to parse the statement and cast as an immediate statement
             IImmediateStatement iis = null;
             try
             {
+
+                // execute the statement
                 iis = (IImmediateStatement)Parser.ParseStatement(statement);
+                this.EvaluateImmediateStatement(iis);
+            }
+            catch (PILOTException pe)
+            {
+                this.pilotInterface.WriteText(pe.Message, true);
             }
             catch (InvalidCastException)
             {
                 this.pilotInterface.WriteText(String.Format("The following statement is not allowed to immediately execute: {0}", statement), true);
             }
-
-            // execute the statement
-            this.EvaluateImmediateStatement(iis);
         }
 
         /// <summary>
@@ -250,7 +260,7 @@
             }
             catch (PILOTException pe)
             {
-                textToOutput = pe.ToString();
+                textToOutput = pe.Message;
             }
             catch (Exception)
             {
@@ -258,13 +268,15 @@
             }
 
             // clear trailing backslash if it exists
+            Boolean newLine = true;
             if (textToOutput[textToOutput.Length - 1] == '\\')
             {
+                newLine = false;
                 textToOutput = textToOutput.Substring(0, textToOutput.Length - 1);
             }
 
             // output text
-            this.pilotInterface.WriteText(textToOutput, true);
+            this.pilotInterface.WriteText(textToOutput, newLine);
         }
 
         /// <summary>
@@ -467,15 +479,15 @@
         /// <summary>
         /// Evaluates a boolean condition, can throw RunTimeException
         /// </summary>
-        /// <param name="bc"></param>
-        /// <returns></returns>
+        /// <param name="bc">the boolean condition to evaluate, ok to be null</param>
+        /// <returns>the evaluation of the boolean condition, true if null</returns>
         internal Boolean EvaluateBooleanCondition(BooleanCondition bc)
         {
 
             // short circuit on null
             if (bc == null)
             {
-                throw new RunTimeException("Cannot evaluate a null boolean condition");
+                return true;
             }
 
             // var init

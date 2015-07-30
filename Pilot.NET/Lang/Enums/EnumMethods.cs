@@ -1,6 +1,6 @@
 ﻿namespace Pilot.NET.Lang.Enums
 {
-    using Pilot.NET.Exception;
+    using Pilot.NET.PILOTExceptions;
     using System;
 
     /// <summary>

@@ -1,11 +1,10 @@
 ﻿namespace Pilot.NET.Test
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Pilot.NET.Interpreter.InterpreterInterfaces;
+    using Pilot.NET;
     using Pilot.NET.Lang;
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Statements;
-    using Pilot.NET.PILOTParser;
     using System;
     using System.Drawing;
     using System.Threading;
@@ -26,12 +25,12 @@
 
             // setup program
             PILOTProgram prog = new PILOTProgram();
-            prog[3] = Parser.ParseLine("3 J:*testlabel");
+            prog[3] = PILOTParser.ParseLine("3 J:*testlabel");
             prog.DeleteLine(0);
-            prog[2] = Parser.ParseLine("2 T:GOODBYE");
-            prog[1] = Parser.ParseLine("1 *testlabel T:HELLO");
-            prog[2] = Parser.ParseLine("2 T:WORLD");
-            prog[4] = Parser.ParseLine("4 E:");
+            prog[2] = PILOTParser.ParseLine("2 T:GOODBYE");
+            prog[1] = PILOTParser.ParseLine("1 *testlabel T:HELLO");
+            prog[2] = PILOTParser.ParseLine("2 T:WORLD");
+            prog[4] = PILOTParser.ParseLine("4 E:");
             prog.DeleteLine(3);
             int[] programLineNumbers = prog.LineNumbers.ToArray();
 

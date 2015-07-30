@@ -1,6 +1,6 @@
 ﻿namespace Pilot.NET.Lang.Expressions.NumericExpressions
 {
-    using Pilot.NET.Exception;
+    using Pilot.NET.PILOTExceptions;
     using Pilot.NET.Lang.Expressions;
     using System;
 

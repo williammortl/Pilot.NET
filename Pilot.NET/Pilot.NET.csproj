@@ -42,11 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interpreter\InterpreterInterfaces\DefaultInterpreterInterface.cs" />
-    <Compile Include="Interpreter\InterpreterInterfaces\DefaultInterpreterInterfaceGraphicsForm.cs">
+    <Compile Include="DefaultInterpreterInterface.cs" />
+    <Compile Include="DefaultInterpreterInterfaceGraphicsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interpreter\InterpreterInterfaces\DefaultInterpreterInterfaceGraphicsForm.Designer.cs">
+    <Compile Include="DefaultInterpreterInterfaceGraphicsForm.Designer.cs">
       <DependentUpon>DefaultInterpreterInterfaceGraphicsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Lang\Enums\BooleanConditionOperators.cs" />
@@ -54,12 +54,12 @@
     <Compile Include="Lang\Enums\Keywords.cs" />
     <Compile Include="Lang\Enums\MatchTypes.cs" />
     <Compile Include="Lang\Enums\NumericBinaryOperators.cs" />
-    <Compile Include="Exception\CannotAssignException.cs" />
-    <Compile Include="Exception\InvalidSyntax.cs" />
-    <Compile Include="Exception\NullStatementException.cs" />
-    <Compile Include="Exception\ParserException.cs" />
-    <Compile Include="Exception\PILOTException.cs" />
-    <Compile Include="Exception\RunTimeException.cs" />
+    <Compile Include="PILOTExceptions\CannotAssignException.cs" />
+    <Compile Include="PILOTExceptions\InvalidSyntax.cs" />
+    <Compile Include="PILOTExceptions\NullStatementException.cs" />
+    <Compile Include="PILOTExceptions\ParserException.cs" />
+    <Compile Include="PILOTExceptions\PILOTException.cs" />
+    <Compile Include="PILOTExceptions\RunTimeException.cs" />
     <Compile Include="Lang\Expressions\Boolean\BooleanCondition.cs" />
     <Compile Include="Lang\Expressions\IExpression.cs" />
     <Compile Include="Lang\Expressions\IVariable.cs" />
@@ -88,13 +88,13 @@
     <Compile Include="Lang\Statements\Text.cs" />
     <Compile Include="Lang\Statements\Use.cs" />
     <Compile Include="Lang\PILOTProgram.cs" />
-    <Compile Include="PILOTParser\Parser.cs" />
+    <Compile Include="PILOTParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Interpreter\InterpreterInterfaces\IPILOTInterpreterInterface.cs" />
-    <Compile Include="Interpreter\PILOTInterpreter.cs" />
+    <Compile Include="IPILOTInterpreterInterface.cs" />
+    <Compile Include="PILOTInterpreter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Interpreter\InterpreterInterfaces\DefaultInterpreterInterfaceGraphicsForm.resx">
+    <EmbeddedResource Include="DefaultInterpreterInterfaceGraphicsForm.resx">
       <DependentUpon>DefaultInterpreterInterfaceGraphicsForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

@@ -1,13 +1,13 @@
-﻿namespace Pilot.NET.Exception
+﻿namespace Pilot.NET.PILOTExceptions
 {
     using System;
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// This is the exception thrown if invalid syntax is detected
+    /// This is the master exception that all PILOT exceptions derive from
     /// </summary>
     [Serializable]
-    public sealed class InvalidSyntax : ParserException
+    public class PILOTException : Exception
     {
 
         /// <summary>
@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="si">SerializationInfo</param>
         /// <param name="sc">StreamingContext</param>
-        private InvalidSyntax(SerializationInfo si, StreamingContext sc)
+        protected PILOTException(SerializationInfo si, StreamingContext sc)
             : base(si, sc)
         {
 
@@ -25,7 +25,7 @@
         /// <summary>
         /// Default constructor
         /// </summary>
-        public InvalidSyntax()
+        public PILOTException()
             : base()
         {
 
@@ -36,7 +36,7 @@
         /// Basic constructor
         /// </summary>
         /// <param name="theException">exception text</param>
-        public InvalidSyntax(String theException)
+        public PILOTException(String theException)
             : base(theException)
         {
 
@@ -48,7 +48,7 @@
         /// </summary>
         /// <param name="theException">the exception text</param>
         /// <param name="innerException">inner exception</param>
-        public InvalidSyntax(String theException, Exception innerException)
+        public PILOTException(String theException, Exception innerException)
             : base(theException, innerException)
         {
 

@@ -1,11 +1,8 @@
 ﻿namespace Pilot.NET.Test
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Pilot.NET;
     using Pilot.NET.Lang;
-    using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Expressions.NumericExpressions;
-    using Pilot.NET.Lang.Statements;
-    using Pilot.NET.PILOTParser;
     using System;
     
     /// <summary>
@@ -21,16 +18,16 @@
         [TestMethod]
         public void TestUnwrapParentheses()
         {
-            Assert.AreEqual(Parser.UnwrapParentheses("((((((3 -+ 4) * #var1) + (7))))"), "((((((3 -+ 4) * #var1) + (7))))");
-            Assert.AreEqual(Parser.UnwrapParentheses(String.Empty), String.Empty);
-            Assert.AreEqual(Parser.UnwrapParentheses("        \r   \n           "), String.Empty);
-            Assert.AreEqual(Parser.UnwrapParentheses("(        \r   \n           )"), String.Empty);
-            Assert.AreEqual(Parser.UnwrapParentheses("((3 -+ 4) * #var1) + (7)"), "((3 -+ 4) * #var1) + (7)");
-            Assert.AreEqual(Parser.UnwrapParentheses("(((3 -+ 4) * #var1) + (7))"), "((3 -+ 4) * #var1) + (7)");
-            Assert.AreEqual(Parser.UnwrapParentheses("(((((3 -+ 4) * #var1) + (7))))"), "((3 -+ 4) * #var1) + (7)");
-            Assert.AreEqual(Parser.UnwrapParentheses("((((((3 -+ 4) * #var1) + (7)))          ))"), "((3 -+ 4) * #var1) + (7)");
-            Assert.AreEqual(Parser.UnwrapParentheses("+(7) \\  ((3 -+ 4) * #var1)"), "+(7) \\  ((3 -+ 4) * #var1)");
-            Assert.AreEqual(Parser.UnwrapParentheses("(+(7) \\  ((3 -+ 4) * #var1))"), "+(7) \\  ((3 -+ 4) * #var1)");
+            Assert.AreEqual(PILOTParser.UnwrapParentheses("((((((3 -+ 4) * #var1) + (7))))"), "((((((3 -+ 4) * #var1) + (7))))");
+            Assert.AreEqual(PILOTParser.UnwrapParentheses(String.Empty), String.Empty);
+            Assert.AreEqual(PILOTParser.UnwrapParentheses("        \r   \n           "), String.Empty);
+            Assert.AreEqual(PILOTParser.UnwrapParentheses("(        \r   \n           )"), String.Empty);
+            Assert.AreEqual(PILOTParser.UnwrapParentheses("((3 -+ 4) * #var1) + (7)"), "((3 -+ 4) * #var1) + (7)");
+            Assert.AreEqual(PILOTParser.UnwrapParentheses("(((3 -+ 4) * #var1) + (7))"), "((3 -+ 4) * #var1) + (7)");
+            Assert.AreEqual(PILOTParser.UnwrapParentheses("(((((3 -+ 4) * #var1) + (7))))"), "((3 -+ 4) * #var1) + (7)");
+            Assert.AreEqual(PILOTParser.UnwrapParentheses("((((((3 -+ 4) * #var1) + (7)))          ))"), "((3 -+ 4) * #var1) + (7)");
+            Assert.AreEqual(PILOTParser.UnwrapParentheses("+(7) \\  ((3 -+ 4) * #var1)"), "+(7) \\  ((3 -+ 4) * #var1)");
+            Assert.AreEqual(PILOTParser.UnwrapParentheses("(+(7) \\  ((3 -+ 4) * #var1))"), "+(7) \\  ((3 -+ 4) * #var1)");
         }
 
         /// <summary>
@@ -41,18 +38,18 @@
         {
 
             // strange tests
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate("this shouldn't have any operators"), 0);
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate(String.Empty), 0);
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate("        \r   \n           "), 0);
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate("((7+4)\\(7))"), 0);
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate("777.7"), 0);
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate("7"), 0);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate("this shouldn't have any operators"), 0);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate(String.Empty), 0);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate("        \r   \n           "), 0);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate("((7+4)\\(7))"), 0);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate("777.7"), 0);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate("7"), 0);
 
             // should find an operator
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate("1\\2/3*4+5+6-7"), 11);
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate("(#var1-7-9\\7+6)*-7"), 15);
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate("1\\2/3*4+5+-6-7"), 12);
-            Assert.AreEqual(Parser.NextBinaryOperatorToEvaluate("1\\2/3*4*+5/-6-7"), 13);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate("1\\2/3*4+5+6-7"), 11);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate("(#var1-7-9\\7+6)*-7"), 15);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate("1\\2/3*4+5+-6-7"), 12);
+            Assert.AreEqual(PILOTParser.NextBinaryOperatorToEvaluate("1\\2/3*4*+5/-6-7"), 13);
         }
 
         /// <summary>
@@ -64,30 +61,30 @@
 
             // test weird scenario
             String PILOT = "20 *newlabel CY: 4 \\ (#var2 + ?)";
-            Line l = Parser.ParseLine(PILOT);
+            Line l = PILOTParser.ParseLine(PILOT);
             String newPILOT = l.ToString();
-            l = Parser.ParseLine(newPILOT);
+            l = PILOTParser.ParseLine(newPILOT);
             Assert.AreEqual(newPILOT, l.ToString());
 
             // basic line, text, with a label and match type
             PILOT = "10 *thisismylabel TN: this is test text";
-            l = Parser.ParseLine(PILOT);
+            l = PILOTParser.ParseLine(PILOT);
             newPILOT = l.ToString();
-            l = Parser.ParseLine(newPILOT);
+            l = PILOTParser.ParseLine(newPILOT);
             Assert.AreEqual(newPILOT, l.ToString());
  
             // compute, with a label and match type
             PILOT = "20 *newlabel CY:((((7 * #var1) + 7 - 4 \\ (#var2 + ?))))";
-            l = Parser.ParseLine(PILOT);
+            l = PILOTParser.ParseLine(PILOT);
             newPILOT = l.ToString();
-            l = Parser.ParseLine(newPILOT);
+            l = PILOTParser.ParseLine(newPILOT);
             Assert.AreEqual(newPILOT, l.ToString());
 
             // compute, with a label and match type
             PILOT = "20 *newlabel CY(((#var1 \\ 4) >= ((4 - #var5)))):((((7 * #var1) + 7 - 4 \\ (#var2 + ?))))";
-            l = Parser.ParseLine(PILOT);
+            l = PILOTParser.ParseLine(PILOT);
             newPILOT = l.ToString();
-            l = Parser.ParseLine(newPILOT);
+            l = PILOTParser.ParseLine(newPILOT);
             Assert.AreEqual(newPILOT, l.ToString());
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace Pilot.NET.Interpreter.InterpreterInterfaces
+﻿namespace Pilot.NET
 {
     partial class DefaultInterpreterInterfaceGraphicsForm
     {

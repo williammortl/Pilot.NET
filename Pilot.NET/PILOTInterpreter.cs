@@ -1,14 +1,12 @@
-﻿namespace Pilot.NET.Interpreter
+﻿namespace Pilot.NET
 {
-    using Pilot.NET.Exception;
-    using Pilot.NET.Interpreter.InterpreterInterfaces;
     using Pilot.NET.Lang;
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
     using Pilot.NET.Lang.Expressions.StringExpressions;
     using Pilot.NET.Lang.Statements;
-    using Pilot.NET.PILOTParser;
+    using Pilot.NET.PILOTExceptions;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -175,7 +173,7 @@
         /// <param name="text">the program in a string, each line is sperated by \r\n</param>
         public void Run(String text)
         {
-            this.Run(Parser.ParseProgram(text));
+            this.Run(PILOTParser.ParseProgram(text));
         }
 
         /// <summary>
@@ -184,7 +182,7 @@
         /// <param name="file">the file name of the program to execute</param>
         public void Run(FileInfo file)
         {
-            this.Run(Parser.ParseProgram(file));
+            this.Run(PILOTParser.ParseProgram(file));
         }
 
         /// <summary>
@@ -197,7 +195,7 @@
             // short circuit
             if (String.IsNullOrWhiteSpace(statement) == true)
             {
-                return;
+                //;
             }
 
             // try to parse the statement and cast as an immediate statement
@@ -206,7 +204,7 @@
             {
 
                 // execute the statement
-                iis = (IImmediateStatement)Parser.ParseStatement(statement);
+                iis = (IImmediateStatement)PILOTParser.ParseStatement(statement);
                 this.EvaluateImmediateStatement(iis);
             }
             catch (PILOTException pe)

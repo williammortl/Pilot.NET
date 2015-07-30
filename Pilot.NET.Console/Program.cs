@@ -1,13 +1,12 @@
 ﻿namespace Pilot.NET.Console
 {
     using System;
-    using Pilot.NET.Interpreter;
-    using Pilot.NET.PILOTParser;
+    using Pilot.NET;
     using Pilot.NET.Lang;
     using System.Reflection;
     using System.ComponentModel;
     using System.IO;
-    using Pilot.NET.Exception;
+    using Pilot.NET.PILOTExceptions;
 
     /// <summary>
     /// Entry point for the command line application
@@ -123,7 +122,7 @@
                                 {
                                     try
                                     {
-                                        prog = Parser.ParseProgram(new FileInfo(split[1].Trim()));
+                                        prog = PILOTParser.ParseProgram(new FileInfo(split[1].Trim()));
                                     }
                                     catch (PILOTException pe)
                                     {
@@ -179,7 +178,7 @@
                         Line l = null;
                         try
                         {
-                            l = Parser.ParseLine(text);
+                            l = PILOTParser.ParseLine(text);
                             prog[l.LineNumber] = l;
                         }
                         catch (PILOTException pe)

@@ -1,6 +1,6 @@
 ﻿namespace Pilot.NET.Lang
 {
-    using Pilot.NET.Exception;
+    using Pilot.NET.PILOTExceptions;
     using System;
     using System.Collections.Generic;
 

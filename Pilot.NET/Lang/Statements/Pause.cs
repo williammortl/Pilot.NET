@@ -1,6 +1,6 @@
 ﻿namespace Pilot.NET.Lang.Statements
 {
-    using Pilot.NET.Exception;
+    using Pilot.NET.PILOTExceptions;
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.NumericExpressions;

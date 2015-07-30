@@ -1,4 +1,4 @@
-﻿namespace Pilot.NET.Interpreter.InterpreterInterfaces
+﻿namespace Pilot.NET
 {
     using System;
     using System.Drawing;

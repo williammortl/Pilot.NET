@@ -1,4 +1,4 @@
-﻿namespace Pilot.NET.Exception
+﻿namespace Pilot.NET.PILOTExceptions
 {
     using System;
     using System.Runtime.Serialization;

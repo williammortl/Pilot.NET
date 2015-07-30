@@ -1,6 +1,6 @@
-﻿namespace Pilot.NET.PILOTParser
+﻿namespace Pilot.NET
 {
-    using Pilot.NET.Exception;
+    using Pilot.NET.PILOTExceptions;
     using Pilot.NET.Lang;
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Expressions;
@@ -15,7 +15,7 @@
     /// <summary>
     /// Parses strings into a PILOT AST
     /// </summary>
-    public static class Parser
+    public static class PILOTParser
     {
 
         /// <summary>
@@ -34,7 +34,7 @@
             {
                 using (StreamReader sr = new StreamReader(file.FullName))
                 {
-                    retVal = Parser.ParseProgram(sr.ReadToEnd());
+                    retVal = PILOTParser.ParseProgram(sr.ReadToEnd());
                 }
             }
             catch (FileNotFoundException)
@@ -67,7 +67,7 @@
                 String trimmedLine = line.Trim();
                 if (String.IsNullOrWhiteSpace(trimmedLine) == false)
                 {
-                    Line newLine = Parser.ParseLine(trimmedLine);
+                    Line newLine = PILOTParser.ParseLine(trimmedLine);
                     retVal[newLine.LineNumber] = newLine;
                 }
             }
@@ -126,8 +126,8 @@
                     statementString = String.Empty;
                 }
             }
-            Label lineLabel = Parser.ParseLabel(labelString);
-            IStatement lineStatement = Parser.ParseStatement(statementString);
+            Label lineLabel = PILOTParser.ParseLabel(labelString);
+            IStatement lineStatement = PILOTParser.ParseStatement(statementString);
 
             return new Line(lineNumber, lineLabel, lineStatement);
         }
@@ -189,7 +189,7 @@
                 keywordMatch = keywordMatchIf;
             }
             keywordMatch = keywordMatch.ToUpper();
-            BooleanCondition ifCondition = Parser.ParseBooleanCondition(ifConditionString);
+            BooleanCondition ifCondition = PILOTParser.ParseBooleanCondition(ifConditionString);
 
             // split keyword and match condition
             MatchTypes match = MatchTypes.None;
@@ -213,12 +213,12 @@
             {
                 case Keywords.A:
                 {
-                    statement = new Accept(Parser.ParseVariable(parametersForKeyword), match, ifCondition);
+                    statement = new Accept(PILOTParser.ParseVariable(parametersForKeyword), match, ifCondition);
                     break;
                 }
                 case Keywords.C:
                 {
-                    statement = new Compute(Parser.ParseAssignmentExpression(parametersForKeyword), match, ifCondition);
+                    statement = new Compute(PILOTParser.ParseAssignmentExpression(parametersForKeyword), match, ifCondition);
                     break;
                 }
                 case Keywords.E:
@@ -228,7 +228,7 @@
                 }
                 case Keywords.J:
                 {
-                    statement = new Jump(Parser.ParseLabel(parametersForKeyword), match, ifCondition);
+                    statement = new Jump(PILOTParser.ParseLabel(parametersForKeyword), match, ifCondition);
                     break;
                 }
                 case Keywords.JM:
@@ -241,7 +241,7 @@
                         String[] labelsString = parametersForKeyword.Split(new char[] { ',' });
                         foreach (String labelString in labelsString)
                         {
-                            Label newLabel = Parser.ParseLabel(labelString);
+                            Label newLabel = PILOTParser.ParseLabel(labelString);
                             if (newLabel != null)
                             {
                                 labels.AddLast(newLabel);
@@ -290,7 +290,7 @@
                 }
                 case Keywords.PA:
                 {
-                    statement = new Pause(Parser.ParseNumericExpression(parametersForKeyword), match, ifCondition);
+                    statement = new Pause(PILOTParser.ParseNumericExpression(parametersForKeyword), match, ifCondition);
                     break;
                 }
                 case Keywords.R:
@@ -305,7 +305,7 @@
                 }
                 case Keywords.U:
                 {
-                    statement = new Use(Parser.ParseLabel(parametersForKeyword), match, ifCondition);
+                    statement = new Use(PILOTParser.ParseLabel(parametersForKeyword), match, ifCondition);
                     break;
                 }
             }
@@ -328,30 +328,30 @@
             }
 
             // throw exception on more than one assignment in the expression
-            if (Parser.CountOf("=", text) > 1)
+            if (PILOTParser.CountOf("=", text) > 1)
             {
                 throw new ParserException("Cannot have more than one assignment in a valid numeric expression");
             }
 
             // short circuit on malformed parentheses
             text = text.Trim();
-            int leftParens = Parser.CountOf("(", text);
-            int rightParens = Parser.CountOf(")", text);
+            int leftParens = PILOTParser.CountOf("(", text);
+            int rightParens = PILOTParser.CountOf(")", text);
             if (leftParens != rightParens)
             {
                 throw new ParserException("Numeric expression parentheses are malformed");
             }
 
             // cleanup the string
-            text = Parser.CleanupNumericExpression(text);
+            text = PILOTParser.CleanupNumericExpression(text);
 
             // unwrap unneccessary parentheses
-            text = Parser.UnwrapParentheses(text);
+            text = PILOTParser.UnwrapParentheses(text);
 
             // var init
             double literalNum = 0;
             INumericExpression retVal = null;
-            int binaryOperatorPosition = Parser.NextBinaryOperatorToEvaluate(text);
+            int binaryOperatorPosition = PILOTParser.NextBinaryOperatorToEvaluate(text);
 
             // parse the text
             try
@@ -365,8 +365,8 @@
                     String leftExpression = text.Substring(0, binaryOperatorPosition).Trim();
                     String rightExpression = text.Substring(binaryOperatorPosition + opStringLen).Trim();
                     retVal = new NumericBinaryOperation(binaryOperatorToUse,
-                                                        Parser.ParseNumericExpression(leftExpression),
-                                                        Parser.ParseNumericExpression(rightExpression));
+                                                        PILOTParser.ParseNumericExpression(leftExpression),
+                                                        PILOTParser.ParseNumericExpression(rightExpression));
                 }
                 else if (double.TryParse(text, out literalNum) == true)
                 {
@@ -423,7 +423,7 @@
             {
                 if (text.StartsWith("$") == true)
                 {
-                    if (Parser.CountOf("=", text) == 1)
+                    if (PILOTParser.CountOf("=", text) == 1)
                     {
                         
                         // build assignment expression
@@ -431,9 +431,9 @@
                         String leftExpression = text.Substring(0, operatorPosition).Trim();
                         String rightExpression = text.Substring(operatorPosition + 1).Trim();
                         retVal = new StringAssignExpression(new StringVariable(leftExpression),
-                                                            Parser.ParseStringExpression(rightExpression));
+                                                            PILOTParser.ParseStringExpression(rightExpression));
                     }
-                    else if ((Parser.CountOf("=", text) == 0) && (Parser.CountOf(" ", text) == 0))
+                    else if ((PILOTParser.CountOf("=", text) == 0) && (PILOTParser.CountOf(" ", text) == 0))
                     {
                         retVal = new StringVariable(text);
                     }
@@ -470,17 +470,17 @@
             }
 
             // cannot have more than one operator
-            if ((Parser.CountOf("=", text) > 1) ||
-                (Parser.CountOf("<", text) > 1) ||
-                (Parser.CountOf(">", text) > 1))
+            if ((PILOTParser.CountOf("=", text) > 1) ||
+                (PILOTParser.CountOf("<", text) > 1) ||
+                (PILOTParser.CountOf(">", text) > 1))
             {
                 throw new ParserException("Cannot have more than one operator in a valid boolean condition");
             }
 
             // short circuit on malformed parentheses
             text = text.Trim();
-            int leftParens = Parser.CountOf("(", text);
-            int rightParens = Parser.CountOf(")", text);
+            int leftParens = PILOTParser.CountOf("(", text);
+            int rightParens = PILOTParser.CountOf(")", text);
             if (leftParens != rightParens)
             {
                 throw new ParserException("Boolean condition parentheses are malformed");
@@ -490,13 +490,13 @@
             BooleanCondition retVal = null;
 
             // cleanup the string
-            text = Parser.CleanupNumericExpression(text);
+            text = PILOTParser.CleanupNumericExpression(text);
 
             // unwrap unneccessary parentheses
-            text = Parser.UnwrapParentheses(text);
+            text = PILOTParser.UnwrapParentheses(text);
 
             // get the operator position
-            int opertatorPosition = Parser.NextBooleanOperatorToEvaluate(text);
+            int opertatorPosition = PILOTParser.NextBooleanOperatorToEvaluate(text);
             if (opertatorPosition <= 0)
             {
                 throw new ParserException("A boolean operator was not found");
@@ -510,8 +510,8 @@
                 String leftExpression = text.Substring(0, opertatorPosition).Trim();
                 String rightExpression = text.Substring(opertatorPosition + opStringLen).Trim();
                 retVal = new BooleanCondition(op,
-                                              Parser.ParseNumericExpression(leftExpression),
-                                              Parser.ParseNumericExpression(rightExpression));
+                                              PILOTParser.ParseNumericExpression(leftExpression),
+                                              PILOTParser.ParseNumericExpression(rightExpression));
             }
             catch (PILOTException e)
             {
@@ -544,13 +544,13 @@
             // parse assignment expression
             try
             { 
-                if ((text.StartsWith("$") == true) && (Parser.CountOf("=", text) == 1))
+                if ((text.StartsWith("$") == true) && (PILOTParser.CountOf("=", text) == 1))
                 {
-                    retVal = Parser.ParseStringExpression(text);
+                    retVal = PILOTParser.ParseStringExpression(text);
                 }
                 else
                 {
-                    retVal = Parser.ParseNumericExpression(text);
+                    retVal = PILOTParser.ParseNumericExpression(text);
                 }
             }
             catch (PILOTException e)
@@ -754,7 +754,7 @@
                 // if depth == 0 then recurse on the unwrapped text, otherwise skip and use the original text
                 if (parenthesesDepth == 0)
                 {
-                    retVal = Parser.UnwrapParentheses(unwrappedText);
+                    retVal = PILOTParser.UnwrapParentheses(unwrappedText);
                 }
             }
 

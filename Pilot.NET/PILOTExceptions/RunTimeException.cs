@@ -1,13 +1,13 @@
-﻿namespace Pilot.NET.Exception
+﻿namespace Pilot.NET.PILOTExceptions
 {
     using System;
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// This is the master exception that all PILOT exceptions derive from
+    /// This is the exception thrown if an error occurs at run time
     /// </summary>
     [Serializable]
-    public class PILOTException : Exception
+    public class RunTimeException : PILOTException
     {
 
         /// <summary>
@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="si">SerializationInfo</param>
         /// <param name="sc">StreamingContext</param>
-        protected PILOTException(SerializationInfo si, StreamingContext sc)
+        protected RunTimeException(SerializationInfo si, StreamingContext sc)
             : base(si, sc)
         {
 
@@ -25,7 +25,7 @@
         /// <summary>
         /// Default constructor
         /// </summary>
-        public PILOTException()
+        public RunTimeException()
             : base()
         {
 
@@ -36,7 +36,7 @@
         /// Basic constructor
         /// </summary>
         /// <param name="theException">exception text</param>
-        public PILOTException(String theException)
+        public RunTimeException(String theException)
             : base(theException)
         {
 
@@ -48,7 +48,7 @@
         /// </summary>
         /// <param name="theException">the exception text</param>
         /// <param name="innerException">inner exception</param>
-        public PILOTException(String theException, Exception innerException)
+        public RunTimeException(String theException, Exception innerException)
             : base(theException, innerException)
         {
 

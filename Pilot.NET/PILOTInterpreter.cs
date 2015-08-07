@@ -94,7 +94,7 @@
             varName = (varName.StartsWith("#") == true) ? varName.Substring(1) : varName;
 
             // look for variable
-            if (this.stringVariables.Keys.Contains(varName) == true)
+            if (this.numericVariables.Keys.Contains(varName) == true)
             {
                 retVal = this.numericVariables[varName];
             }

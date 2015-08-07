@@ -172,7 +172,7 @@
             // split keyword/match/if condition and the parameters
             String[] splitStatementString = text.Split(new char[] { ':' }, 2);
             String keywordMatchIf = splitStatementString[0].Trim();
-            String parametersForKeyword = splitStatementString[1].Trim();
+            String parametersForKeyword = (splitStatementString.Length <= 1) ? String.Empty : splitStatementString[1].Trim();
 
             // extract the if condition, create BooleanCondition
             String keywordMatch = String.Empty;
@@ -203,7 +203,7 @@
             // attempt to parse the keyword, check to make sure it is in fact a keyword, if it isn't throw an error
             if (Enum.IsDefined(typeof(Keywords), keywordString) == false)
             {
-                throw new ParserException(String.Format("{0} is not a valid keyword in PILOT", keywordMatchIf));
+                throw new ParserException(String.Format("{0} is not a valid keyword in PILOT", keywordString));
             }
             Keywords keyword = (Keywords)Enum.Parse(typeof(Keywords), keywordString);
   

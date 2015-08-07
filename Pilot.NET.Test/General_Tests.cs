@@ -53,12 +53,12 @@
         public void TestDefaultInterpreterInterfaceGraphicsForm()
         {
             Image i = new Bitmap(300, 300);
-            DefaultInterpreterInterfaceGraphicsForm f = DefaultInterpreterInterfaceGraphicsForm.ShowForm(i, "Graphics Test");
+            DefaultInterpreterInterfaceGraphicsForm f = DefaultInterpreterInterfaceGraphicsForm.ShowForm(i);
             Graphics g = Graphics.FromImage(i);
             g.DrawLine(new Pen(Color.Blue, 10), new Point(0, 0), new Point(200, 200));
             g.DrawLine(new Pen(Color.Red, 10), new Point(0, 200), new Point(200, 0));
             f.Invoke(new Action(f.Invalidate));
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
             f.Invoke(new Action(f.Close));
             i.Dispose();
         }

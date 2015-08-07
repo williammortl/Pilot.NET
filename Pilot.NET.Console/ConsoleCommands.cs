@@ -54,6 +54,12 @@
         /// Clear the screen
         /// </summary>
         [Description("CLEAR THE SCREEN")]
-        CLEAR
+        CLEAR,
+
+        /// <summary>
+        /// Runs the program in memory
+        /// </summary>
+        [Description("RUNS THE PROGRAM CURRENTLY IN MEMORY")]
+        RUN    
     }
 }

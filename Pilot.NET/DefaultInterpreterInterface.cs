@@ -10,11 +10,6 @@
     {
 
         /// <summary>
-        /// The title for the graphics window
-        /// </summary>
-        private const String TITLE = "Pilot.NET - Graphics";
-
-        /// <summary>
         /// the default width for the graphics window
         /// </summary>
         private const int DEFAULT_WIDTH = 1024;
@@ -61,15 +56,11 @@
         {
 
             // create the form if it hasn't been created
-            if ((this.graphicsForm == null) || (this.graphicsForm.IsDisposed == true))
-            {
-                this.graphicsForm = DefaultInterpreterInterfaceGraphicsForm.ShowForm(this.GraphicsOutput, TITLE);
-            }
-            else if (this.graphicsForm.Visible == false)
+            if (this.graphicsForm.Visible == false)
             {
                 this.graphicsForm.Invoke(new Action(this.graphicsForm.Close));
-                this.graphicsForm = DefaultInterpreterInterfaceGraphicsForm.ShowForm(this.GraphicsOutput, TITLE);
             }
+            this.graphicsForm = DefaultInterpreterInterfaceGraphicsForm.ShowForm(this.GraphicsOutput);
 
             // refresh the graphics
             this.graphicsForm.Invoke(new Action(this.graphicsForm.Invalidate));

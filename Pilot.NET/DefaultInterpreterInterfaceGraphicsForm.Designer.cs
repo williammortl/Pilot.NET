@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.graphicsBox = new System.Windows.Forms.PictureBox();
+            this.saveButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.graphicsBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -42,11 +43,26 @@
             this.graphicsBox.TabStop = false;
             this.graphicsBox.Paint += new System.Windows.Forms.PaintEventHandler(this.graphicsBox_Paint);
             // 
+            // saveButton
+            // 
+            this.saveButton.BackColor = System.Drawing.Color.Blue;
+            this.saveButton.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.saveButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.saveButton.ForeColor = System.Drawing.Color.White;
+            this.saveButton.Location = new System.Drawing.Point(0, 535);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(1168, 72);
+            this.saveButton.TabIndex = 1;
+            this.saveButton.Text = "Save Image >>";
+            this.saveButton.UseVisualStyleBackColor = false;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
             // DefaultInterpreterInterfaceGraphicsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1168, 607);
+            this.Controls.Add(this.saveButton);
             this.Controls.Add(this.graphicsBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -63,5 +79,6 @@
         #endregion
 
         private System.Windows.Forms.PictureBox graphicsBox;
+        private System.Windows.Forms.Button saveButton;
     }
 }

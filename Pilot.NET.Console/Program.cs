@@ -1,12 +1,12 @@
 ﻿namespace Pilot.NET.Console
 {
-    using System;
     using Pilot.NET;
     using Pilot.NET.Lang;
-    using System.Reflection;
+    using Pilot.NET.PILOTExceptions;
+    using System;
     using System.ComponentModel;
     using System.IO;
-    using Pilot.NET.PILOTExceptions;
+    using System.Reflection;
 
     /// <summary>
     /// Entry point for the command line application
@@ -108,12 +108,42 @@
                             }
                             case ConsoleCommands.LIST:
                             {
-                                String progText = prog.ToString().Trim();
-                                if (String.IsNullOrWhiteSpace(progText) == false)
+                                if ((split.Length < 2) || (String.IsNullOrWhiteSpace(split[1]) == true))
                                 {
                                     Console.WriteLine();
-                                    Console.WriteLine(progText);
+                                    Console.WriteLine(prog.ToString().Trim());
                                 }
+                                else
+                                {
+                                    String[] lineStartStop = split[1].Trim().Split(new char[1] { '-' });
+                                    int lineStart = 0;
+                                    int lineStop = 0;
+                                    if ((lineStartStop.Length >= 2) && (Int32.TryParse(lineStartStop[0], out lineStart) == true) && (Int32.TryParse(lineStartStop[1], out lineStop) == true))
+                                    {
+                                        Console.WriteLine();
+                                        Console.WriteLine(prog.ToString(lineStart, lineStop).Trim());
+                                    }
+                                    else if (Int32.TryParse(lineStartStop[0], out lineStart) == true)
+                                    {
+                                        Line lineToPrint = prog[lineStart];
+                                        if (lineToPrint != null)
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine(lineToPrint.ToString().Trim());
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine("INVALID LINE NUMBER TO LIST");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine();
+                                        Console.WriteLine("INVALID LINE NUMBER(S) TO LIST");
+                                    }
+                                }
+
                                 break;
                             }
                             case ConsoleCommands.LOAD:
@@ -167,6 +197,11 @@
                                     Console.WriteLine();
                                     Console.WriteLine("INVALID SAVE COMMAND, NEED FILENAME TO SAVE TO");
                                 }
+                                break;
+                            }
+                            case ConsoleCommands.RUN:
+                            {
+
                                 break;
                             }
                         }

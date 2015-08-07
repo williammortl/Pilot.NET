@@ -2,6 +2,8 @@
 {
     using System;
     using System.Drawing;
+    using System.Drawing.Imaging;
+    using System.IO;
     using System.Threading;
     using System.Windows.Forms;
     
@@ -12,6 +14,11 @@
     {
 
         /// <summary>
+        /// The title for the graphics window
+        /// </summary>
+        private const String TITLE = "Pilot.NET - Graphics";
+
+        /// <summary>
         /// the image containing the graphics, not responsible for the disposal of this
         /// </summary>
         private Image graphicsImage;
@@ -20,11 +27,10 @@
         /// Private constructor, use ShowForm method instead
         /// </summary>
         /// <param name="graphicsImage">the image to draw</param>
-        /// <param name="title">the title for the window</param>
-        private DefaultInterpreterInterfaceGraphicsForm(Image graphicsImage, String title)
+        private DefaultInterpreterInterfaceGraphicsForm(Image graphicsImage)
         {
             this.graphicsImage = graphicsImage;
-            this.Text = title;
+            this.Text = DefaultInterpreterInterfaceGraphicsForm.TITLE;
             InitializeComponent();
         }
 
@@ -37,7 +43,7 @@
         {
 
             // form init
-            this.Height = this.graphicsImage.Height;
+            this.Height = this.graphicsImage.Height + this.saveButton.Height;
             this.Width = this.graphicsImage.Width;
             this.graphicsBox.Height = this.graphicsImage.Height;
             this.graphicsBox.Width = this.graphicsImage.Width;
@@ -67,12 +73,12 @@
         /// Creates and shows a DefaultInterpreterInterfaceGraphicsForm form
         /// </summary>
         /// <param name="graphicsImage">the image to be drawn</param>
-        /// <param name="title">the title of the window</param>
         /// <returns>a DefaultInterpreterInterfaceGraphicsForm variable</returns>
-        public static DefaultInterpreterInterfaceGraphicsForm ShowForm(Image graphicsImage, String title)
+        public static DefaultInterpreterInterfaceGraphicsForm ShowForm(Image graphicsImage)
         {
-            DefaultInterpreterInterfaceGraphicsForm frm = new DefaultInterpreterInterfaceGraphicsForm(graphicsImage, title);
+            DefaultInterpreterInterfaceGraphicsForm frm = new DefaultInterpreterInterfaceGraphicsForm(graphicsImage);
             Thread t = new Thread(new ParameterizedThreadStart(DefaultInterpreterInterfaceGraphicsForm.MessagePump));
+            t.SetApartmentState(ApartmentState.STA);
             t.Start(frm);
             while (frm.IsHandleCreated == false)
             {
@@ -90,6 +96,28 @@
             DefaultInterpreterInterfaceGraphicsForm frm = (DefaultInterpreterInterfaceGraphicsForm)obj;
             Application.Run(frm);
             frm.Dispose();
+        }
+
+        /// <summary>
+        /// Saves the current image to a file
+        /// </summary>
+        /// <param name="sender">who triggered the event</param>
+        /// <param name="e">event args</param>
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "Bitmap Files (.bmp)|*.bmp|PNG Files (*.png)|*.png";
+                sfd.FilterIndex = 0;
+                sfd.InitialDirectory = Environment.CurrentDirectory;
+                sfd.FileName = "PilotImage.bmp";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    String fileName = sfd.FileName;
+                    ImageFormat format = (Path.GetExtension(fileName).Trim().Substring(1).ToLower().Contains("bmp") == true) ? ImageFormat.Bmp : ImageFormat.Png;
+                    this.graphicsImage.Save(fileName, format);
+                }
+            }
         }
     }
 }

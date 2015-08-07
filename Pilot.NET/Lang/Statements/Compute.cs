@@ -55,7 +55,7 @@
                 // check to make sure that the expression isnt null, and is an assignment expression
                 if (((value is StringAssignExpression) == false) && ((value is NumericBinaryOperation) == false))
                 {
-                    throw new InvalidSyntax("Compute must have a expression to compute");
+                    throw new InvalidSyntax("Compute must have an assignment expression to evaluate");
                 }
 
                 // assign

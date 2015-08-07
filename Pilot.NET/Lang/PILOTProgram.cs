@@ -178,5 +178,31 @@
 
             return retVal;
         }
+
+        /// <summary>
+        /// To string
+        /// </summary>
+        /// <param name="lineStart">what line number to start at</param>
+        /// <param name="lineStop">what line number to stop at</param>
+        /// <returns>the string representation</returns>
+        public string ToString(int lineStart, int lineStop)
+        {
+
+            // var init
+            String retVal = String.Empty;
+
+            // convert all lines to a string
+            foreach (int lineNumber in this.LineNumbers)
+            {
+                if ((lineNumber >= lineStart) && (lineNumber <= lineStop))
+                {
+                    Line line = this[lineNumber];
+                    String lineString = (line == null) ? String.Empty : line.ToString();
+                    retVal += lineString + "\r\n";
+                }
+            }
+
+            return retVal;
+        }
     }
 }

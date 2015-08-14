@@ -162,6 +162,57 @@
                 if ((currentMatch == MatchTypes.None) || (currentStatement.MatchType == currentMatch))
                 {
 
+                    // evaluate boolean condition
+                    if ((currentLine.LineStatement.IfCondition == null) || (this.EvaluateBooleanCondition(currentLine.LineStatement.IfCondition) == true))
+                    {
+
+                        // evaluate keyword
+                        switch (currentLine.LineStatement.Keyword)
+                        {
+                            case Keywords.A:
+                            {
+                                break;
+                            }
+                            case Keywords.C:
+                            {
+                                break;
+                            }
+                            case Keywords.E:
+                            {
+                                break;
+                            }
+                            case Keywords.J:
+                            {
+                                break;
+                            }
+                            case Keywords.JM:
+                            {
+                                break;
+                            }
+                            case Keywords.M:
+                            {
+                                break;
+                            }
+                            case Keywords.PA:
+                            {
+                                break;
+                            }
+                            case Keywords.R:
+                            {
+
+                                // do nothing
+                                break;
+                            }
+                            case Keywords.T:
+                            {
+                                break;
+                            }
+                            case Keywords.U:
+                            {
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 

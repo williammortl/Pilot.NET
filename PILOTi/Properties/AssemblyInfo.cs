@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Pilot.NET.Console")]
+[assembly: AssemblyTitle("PILOTi")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Pilot.NET.Console")]
+[assembly: AssemblyProduct("PILOTi")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("148de7e4-235f-44c2-b3ae-4adc8fc67391")]
+[assembly: Guid("c7378f7d-56f4-491d-891f-69129ffea14b")]
 
 // Version information for an assembly consists of the following four values:
 //

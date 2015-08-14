@@ -1,4 +1,4 @@
-﻿namespace Pilot.NET.Console
+﻿namespace PILOTi
 {
     using Pilot.NET;
     using Pilot.NET.Lang;
@@ -9,10 +9,15 @@
     using System.Reflection;
 
     /// <summary>
-    /// Entry point for the command line application
+    /// Entry point for PILOTi
     /// </summary>
     class Program
     {
+
+        /// <summary>
+        /// Usage for PILOTi
+        /// </summary>
+        private const String PILOT_USAGE = "Usage:\r\n\tPILOTi /? | {name of Pilot file to execute} | {nothing}";
 
         /// <summary>
         /// The title for the Pilot.NET console window
@@ -32,7 +37,7 @@
         /// <summary>
         /// Pilot.NET prompt
         /// </summary>
-        private const String PILOT_PROMPT = "\r\nREADY";
+        private const String PILOT_PROMPT = "READY";
 
         /// <summary>
         /// Main entry point of the application
@@ -41,7 +46,30 @@
         static void Main(string[] args)
         {
 
-            // init the console colors, display the masthead
+            // parse command line arguments
+            if (args.Length <= 0)
+            {
+                Program.PilotShell();
+            }
+            else if (args[0].Trim() == "/?")
+            {
+                Console.WriteLine(Program.PILOT_MASTHEAD);
+                Console.WriteLine(Program.PILOT_ABOUT);
+                Console.WriteLine(Program.PILOT_USAGE);
+            }
+            else
+            {
+                Program.ExecutePilotProgram(args[0].Trim());
+            }
+        }
+
+        /// <summary>
+        /// The Pilot.NET shell
+        /// </summary>
+        private static void PilotShell()
+        {
+
+            // init the shell colors, display the masthead
             Console.Title = Program.PILOT_TITLE;
             Console.WindowLeft = 0;
             Console.WindowTop = 0;
@@ -49,10 +77,10 @@
             Console.ForegroundColor = ConsoleColor.White;
             Console.Clear();
             Console.WriteLine(Program.PILOT_MASTHEAD);
-
+            
             // var init
-            PILOTInterpreter pi = new PILOTInterpreter();
-            PILOTProgram prog = new PILOTProgram();
+            PILOTInterpreter interpreter = new PILOTInterpreter();
+            PILOTProgram program = new PILOTProgram();
 
             // main console command loop
             while (true)
@@ -73,7 +101,7 @@
                         {
                             case ConsoleCommands.ABOUT:
                             {
-                                Console.WriteLine();
+                                Console.WriteLine(); 
                                 Console.WriteLine(Program.PILOT_MASTHEAD);
                                 Console.WriteLine(Program.PILOT_ABOUT);
                                 break;
@@ -103,15 +131,15 @@
                             }
                             case ConsoleCommands.NEW:
                             {
-                                prog = new PILOTProgram();
+                                program = new PILOTProgram();
                                 break;
                             }
                             case ConsoleCommands.LIST:
                             {
+                                Console.WriteLine();
                                 if ((split.Length < 2) || (String.IsNullOrWhiteSpace(split[1]) == true))
                                 {
-                                    Console.WriteLine();
-                                    Console.WriteLine(prog.ToString().Trim());
+                                    Console.WriteLine(program.ToString().Trim());
                                 }
                                 else
                                 {
@@ -120,26 +148,22 @@
                                     int lineStop = 0;
                                     if ((lineStartStop.Length >= 2) && (Int32.TryParse(lineStartStop[0], out lineStart) == true) && (Int32.TryParse(lineStartStop[1], out lineStop) == true))
                                     {
-                                        Console.WriteLine();
-                                        Console.WriteLine(prog.ToString(lineStart, lineStop).Trim());
+                                        Console.WriteLine(program.ToString(lineStart, lineStop).Trim());
                                     }
                                     else if (Int32.TryParse(lineStartStop[0], out lineStart) == true)
                                     {
-                                        Line lineToPrint = prog[lineStart];
+                                        Line lineToPrint = program[lineStart];
                                         if (lineToPrint != null)
                                         {
-                                            Console.WriteLine();
                                             Console.WriteLine(lineToPrint.ToString().Trim());
                                         }
                                         else
                                         {
-                                            Console.WriteLine();
                                             Console.WriteLine("INVALID LINE NUMBER TO LIST");
                                         }
                                     }
                                     else
                                     {
-                                        Console.WriteLine();
                                         Console.WriteLine("INVALID LINE NUMBER(S) TO LIST");
                                     }
                                 }
@@ -152,23 +176,24 @@
                                 {
                                     try
                                     {
-                                        prog = PILOTParser.ParseProgram(new FileInfo(split[1].Trim()));
+                                        program = PILOTParser.ParseProgram(new FileInfo(split[1].Trim()));
                                     }
                                     catch (PILOTException pe)
                                     {
-                                        prog = new PILOTProgram();
+                                        program = new PILOTProgram();
                                         Console.WriteLine(pe.Message);
                                     }
                                 }
                                 else
                                 {
+                                    Console.WriteLine();
                                     Console.WriteLine("INVALID LOAD COMMAND");
                                 }
                                 break;
                             }
                             case ConsoleCommands.SAVE:
                             {
-                                String progAsString = prog.ToString();
+                                String progAsString = program.ToString();
                                 if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
                                 {
                                     try
@@ -201,7 +226,8 @@
                             }
                             case ConsoleCommands.RUN:
                             {
-
+                                Console.WriteLine();
+                                interpreter.Run(program);
                                 break;
                             }
                         }
@@ -210,15 +236,14 @@
                     {
 
                         // add / replace a program line
-                        Line l = null;
+                        Line line = null;
                         try
                         {
-                            l = PILOTParser.ParseLine(text);
-                            prog[l.LineNumber] = l;
+                            line = PILOTParser.ParseLine(text);
+                            program[line.LineNumber] = line;
                         }
                         catch (PILOTException pe)
                         {
-                            Console.WriteLine();
                             Console.WriteLine(pe.Message);
                         }
                     }
@@ -226,9 +251,31 @@
                     {
 
                         // evaluate immediate statement
-                        pi.EvaluateImmediateStatement(text);
+                        interpreter.EvaluateImmediateStatement(text);
                     }
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// Loads and executes a Pilot program from a file
+        /// </summary>
+        /// <param name="pilotFile">the Pilot program to execute</param>
+        private static void ExecutePilotProgram(String pilotFile)
+        {
+            if (File.Exists(pilotFile) == true)
+            {
+                PILOTInterpreter interpreter = new PILOTInterpreter();
+                interpreter.Run(new FileInfo(pilotFile));
+            }
+            else
+            {
+                Console.WriteLine("File not found!");
+                Console.WriteLine();
+                Console.WriteLine(Program.PILOT_MASTHEAD);
+                Console.WriteLine(Program.PILOT_ABOUT);
+                Console.WriteLine(Program.PILOT_USAGE);
             }
         }
 
@@ -238,6 +285,7 @@
         /// <returns>the input</returns>
         private static String Prompt()
         {
+            Console.WriteLine();
             Console.WriteLine(Program.PILOT_PROMPT);
             return Console.ReadLine().Trim();
         }

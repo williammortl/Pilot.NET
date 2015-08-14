@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{52E6521E-FD07-4C84-B075-BFC8157CFA8B}"
-	ProjectSection(SolutionItems) = preProject
-		Misc\pilot.bnf.txt = Misc\pilot.bnf.txt
-		README.txt = README.txt
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilot.NET", "Pilot.NET\Pilot.NET.csproj", "{1617770A-B3ED-44BB-A63E-D94986EE90E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PILOTi", "PILOTi\PILOTi.csproj", "{887B0711-8CC6-41E9-8D10-1202633F4E29}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilot.NET.Test", "Pilot.NET.Test\Pilot.NET.Test.csproj", "{143ADB73-641A-4D5F-912A-F0EEFB650CF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilot.NET.Console", "Pilot.NET.Console\Pilot.NET.Console.csproj", "{FF08A4CF-B019-4AF3-ACDF-6DEEE26C51F2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PILOT Examples", "PILOT Examples", "{FF5C69E5-6FD8-4AF0-9AF3-A3EECB596A44}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pilot Examples", "Pilot Examples", "{F985134D-013F-4409-8A12-9D15F2383079}"
 	ProjectSection(SolutionItems) = preProject
 		Pilot Examples\test.pilot = Pilot Examples\test.pilot
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{46A12CD3-1DCB-4CDD-882C-C2834CC31156}"
+	ProjectSection(SolutionItems) = preProject
+		Misc\pilot.bnf.txt = Misc\pilot.bnf.txt
+		README.txt = README.txt
 	EndProjectSection
 EndProject
 Global
@@ -30,14 +30,14 @@ Global
 		{1617770A-B3ED-44BB-A63E-D94986EE90E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1617770A-B3ED-44BB-A63E-D94986EE90E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1617770A-B3ED-44BB-A63E-D94986EE90E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Release|Any CPU.Build.0 = Release|Any CPU
 		{143ADB73-641A-4D5F-912A-F0EEFB650CF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{143ADB73-641A-4D5F-912A-F0EEFB650CF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{143ADB73-641A-4D5F-912A-F0EEFB650CF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{143ADB73-641A-4D5F-912A-F0EEFB650CF7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF08A4CF-B019-4AF3-ACDF-6DEEE26C51F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF08A4CF-B019-4AF3-ACDF-6DEEE26C51F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF08A4CF-B019-4AF3-ACDF-6DEEE26C51F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF08A4CF-B019-4AF3-ACDF-6DEEE26C51F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

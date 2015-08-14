@@ -1,17 +1,17 @@
-﻿namespace Pilot.NET.Console
+﻿namespace PILOTi
 {
     using System.ComponentModel;
 
     /// <summary>
-    /// The commands for the Pilot.NET console
+    /// The commands for Pilot.NET
     /// </summary>
     internal enum ConsoleCommands
     {
 
         /// <summary>
-        /// Quit the Pilot.NET console
+        /// Quits Pilot.NET
         /// </summary>
-        [Description("QUITS THE PILOT.NET CONSOLE")]
+        [Description("QUITS PILOT.NET")]
         QUIT,
 
         /// <summary>
@@ -23,7 +23,7 @@
         /// <summary>
         /// Create a new program, dump any program in memory
         /// </summary>
-        [Description("STARTS A NEW PILOT PROGRAM")]
+        [Description("CREATES A NEW PILOT PROGRAM")]
         NEW,
 
         /// <summary>
@@ -39,7 +39,7 @@
         SAVE,
 
         /// <summary>
-        /// List the commands
+        /// List PILOT.NET commands
         /// </summary>
         [Description("LISTS PILOT.NET COMMANDS")]
         HELP,

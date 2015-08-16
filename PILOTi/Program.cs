@@ -49,7 +49,29 @@
             // parse command line arguments
             if (args.Length <= 0)
             {
+
+                // get the current console colors
+                ConsoleColor background = Console.BackgroundColor;
+                ConsoleColor foreground = Console.ForegroundColor;
+
+                // init the console including console colors 
+                Console.Title = Program.PILOT_TITLE;
+                Console.WindowLeft = 0;
+                Console.WindowTop = 0;
+                Console.BackgroundColor = ConsoleColor.Blue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Clear();
+
+                // display the masthead
+                Console.WriteLine(Program.PILOT_MASTHEAD);
+
+                // run the shell
                 Program.PilotShell();
+
+                // set the colors back to what they were
+                Console.BackgroundColor = background;
+                Console.ForegroundColor = foreground;
+                Console.Clear();
             }
             else if (args[0].Trim() == "/?")
             {
@@ -68,15 +90,6 @@
         /// </summary>
         private static void PilotShell()
         {
-
-            // init the shell colors, display the masthead
-            Console.Title = Program.PILOT_TITLE;
-            Console.WindowLeft = 0;
-            Console.WindowTop = 0;
-            Console.BackgroundColor = ConsoleColor.Blue;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Clear();
-            Console.WriteLine(Program.PILOT_MASTHEAD);
             
             // var init
             PILOTInterpreter interpreter = new PILOTInterpreter();
@@ -136,10 +149,10 @@
                             }
                             case ConsoleCommands.LIST:
                             {
-                                Console.WriteLine();
+                                String toPrint = String.Empty; 
                                 if ((split.Length < 2) || (String.IsNullOrWhiteSpace(split[1]) == true))
                                 {
-                                    Console.WriteLine(program.ToString().Trim());
+                                    toPrint = program.ToString().Trim();
                                 }
                                 else
                                 {
@@ -148,26 +161,29 @@
                                     int lineStop = 0;
                                     if ((lineStartStop.Length >= 2) && (Int32.TryParse(lineStartStop[0], out lineStart) == true) && (Int32.TryParse(lineStartStop[1], out lineStop) == true))
                                     {
-                                        Console.WriteLine(program.ToString(lineStart, lineStop).Trim());
+                                        toPrint = program.ToString(lineStart, lineStop).Trim();
+
                                     }
                                     else if (Int32.TryParse(lineStartStop[0], out lineStart) == true)
                                     {
                                         Line lineToPrint = program[lineStart];
                                         if (lineToPrint != null)
                                         {
-                                            Console.WriteLine(lineToPrint.ToString().Trim());
+                                            toPrint = lineToPrint.ToString().Trim();
                                         }
                                         else
                                         {
-                                            Console.WriteLine("INVALID LINE NUMBER TO LIST");
+                                            toPrint = "INVALID LINE NUMBER TO LIST";
                                         }
                                     }
                                     else
                                     {
-                                        Console.WriteLine("INVALID LINE NUMBER(S) TO LIST");
+                                        toPrint = "INVALID LINE NUMBER(S) TO LIST";
                                     }
                                 }
-
+                                toPrint = (String.IsNullOrWhiteSpace(toPrint) == true) ? "(NO LINES TO LIST)" : toPrint;
+                                Console.WriteLine();
+                                Console.WriteLine(toPrint);
                                 break;
                             }
                             case ConsoleCommands.LOAD:
@@ -256,7 +272,6 @@
                 }
             }
         }
-
 
         /// <summary>
         /// Loads and executes a Pilot program from a file

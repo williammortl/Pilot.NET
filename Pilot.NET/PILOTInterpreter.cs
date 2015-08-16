@@ -2,6 +2,7 @@
 {
     using Pilot.NET.Lang;
     using Pilot.NET.Lang.Enums;
+    using Pilot.NET.Lang.Expressions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
     using Pilot.NET.Lang.Expressions.StringExpressions;
@@ -151,7 +152,7 @@
             String acceptBuffer = String.Empty;
 
             // execute until we cant
-            while (true)
+            while (executionPointer < prog.LineNumbers.Count)
             {
                 
                 // execute statement
@@ -169,12 +170,39 @@
                         // evaluate keyword
                         switch (currentLine.LineStatement.Keyword)
                         {
-                            case Keywords.A:
+                            case Keywords.C:
+                            case Keywords.T:
                             {
+
+                                // execute the immediate statement
+                                this.EvaluateImmediateStatement((IImmediateStatement)currentStatement);
+                                executionPointer++;
                                 break;
                             }
-                            case Keywords.C:
+                            case Keywords.A:
                             {
+                                acceptBuffer = this.pilotInterface.ReadTextLine();
+                                Accept a = (Accept)currentStatement;
+                                if (a.VariableToSet != null)
+                                {
+                                    if (a.VariableToSet.VariableName.StartsWith("#") == true)
+                                    {
+                                        try
+                                        {
+                                            this.SetNumericVar(a.VariableToSet.VariableName, Convert.ToDouble(acceptBuffer));
+                                        }
+                                        catch
+                                        {
+                                            this.pilotInterface.WriteText("Expected numeric input", true);
+                                            return;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        this.SetStringVar(a.VariableToSet.VariableName, acceptBuffer);
+                                    }
+                                }
+                                executionPointer++;
                                 break;
                             }
                             case Keywords.E:
@@ -201,10 +229,6 @@
                             {
 
                                 // do nothing
-                                break;
-                            }
-                            case Keywords.T:
-                            {
                                 break;
                             }
                             case Keywords.U:
@@ -246,11 +270,13 @@
             // short circuit
             if (String.IsNullOrWhiteSpace(statement) == true)
             {
-                //;
+                this.pilotInterface.WriteText("Cannot evaluate an empty string", true);
             }
 
-            // try to parse the statement and cast as an immediate statement
+            // var init
             IImmediateStatement iis = null;
+
+            // try to parse the statement and cast as an immediate statement
             try
             {
 
@@ -274,11 +300,6 @@
         /// <param name="statement">the statement to evaluate</param>
         internal void EvaluateImmediateStatement(IImmediateStatement statement)
         {
-
-            // var init
-            String textToOutput = String.Empty;
-
-            // execute statement
             try
             {
                 if (statement is Compute)
@@ -289,12 +310,12 @@
                         if (cs.ExpressionToCompute is INumericExpression)
                         {
                             INumericExpression ne = (INumericExpression)cs.ExpressionToCompute;
-                            textToOutput = this.EvaluateNumericExpression(ne).ToString();
+                            this.EvaluateNumericExpression(ne).ToString();
                         }
                         else if (cs.ExpressionToCompute is IStringExpression)
                         {
                             IStringExpression se = (IStringExpression)cs.ExpressionToCompute;
-                            textToOutput = this.EvaluateStringExpression(se);
+                            this.EvaluateStringExpression(se);
                         }
                     }
                 }
@@ -303,29 +324,205 @@
                     Text ts = (Text)statement;
                     if (this.EvaluateBooleanCondition(ts.IfCondition) == true)
                     {
-                        textToOutput = this.EvaluateStringExpression(ts.TextToDisplay);
+                        this.WriteOutput(this.EvaluateStringExpression(ts.TextToDisplay));
                     }
                 }
             }
             catch (PILOTException pe)
             {
-                textToOutput = pe.Message;
+                this.pilotInterface.WriteText(pe.Message, true);
             }
             catch (Exception)
             {
-                textToOutput = String.Format("An error occured executing the statement: {0}", statement.ToString());
+                this.pilotInterface.WriteText(String.Format("An error occured executing the statement: {0}", statement.ToString()), true);
             }
+        }
 
-            // clear trailing backslash if it exists
-            Boolean newLine = true;
-            if (textToOutput[textToOutput.Length - 1] == '\\')
+        /// <summary>
+        /// Evaluate a numeric expression, can throw RunTimeException
+        /// </summary>
+        /// <param name="numericalExpression">the numeric expression to evaluate</param>
+        /// <returns>the value of evaluating the expression(s)</returns>
+        public double EvaluateNumericExpression(String numericalExpression)
+        {
+
+            // short circuit
+            if (String.IsNullOrWhiteSpace(numericalExpression) == true)
             {
-                newLine = false;
-                textToOutput = textToOutput.Substring(0, textToOutput.Length - 1);
+                throw new RunTimeException("Cannot evaluate an empty string");
             }
 
-            // output text
-            this.pilotInterface.WriteText(textToOutput, newLine);
+            // var init
+            double retVal = 0;
+            INumericExpression ne = null;
+
+            // evaluate the numerical expression
+            ne = PILOTParser.ParseNumericExpression(numericalExpression);
+            retVal = this.EvaluateNumericExpression(ne);
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Evaluate a numeric expression, can throw RunTimeException
+        /// </summary>
+        /// <param name="numericalExpression">the numeric expression to evaluate</param>
+        /// <returns>the value of evaluating the expression(s)</returns>
+        internal double EvaluateNumericExpression(INumericExpression numericalExpression)
+        {
+
+            // short circuit on null
+            if (numericalExpression == null)
+            {
+                throw new RunTimeException("Cannot evaluate a null numeric expression");
+            }
+
+            // var init
+            double retVal = 0;
+
+            // evaluate based upon what type of numeric expression
+            try
+            {
+                if (numericalExpression is NumericLiteral)
+                {
+                    retVal = ((NumericLiteral)numericalExpression).Number;
+                }
+                else if (numericalExpression is RandomNumber)
+                {
+
+                    double sign = ((PILOTInterpreter.randomGenerator.NextDouble() * 2.0) > 1) ? -1 : 1;
+                    double value = Math.Ceiling(PILOTInterpreter.randomGenerator.NextDouble() * ((sign > 0) ? 32767 : 32768));
+                    retVal = sign * value;
+                }
+                else if (numericalExpression is NumericVariable)
+                {
+                    NumericVariable numVar = (NumericVariable)numericalExpression;
+                    retVal = this.GetNumericVar(numVar.ToString());
+                }
+                else if (numericalExpression is NumericBinaryOperation)
+                {
+                    NumericBinaryOperation opExpression = (NumericBinaryOperation)numericalExpression;
+                    double rightResult = this.EvaluateNumericExpression(opExpression.Right);
+                    if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Eq)
+                    {
+                        this.SetNumericVar(opExpression.Left.ToString(), rightResult);
+                        retVal = rightResult;
+                    }
+                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Add)
+                    {
+                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
+                        retVal = leftResult + rightResult;
+                    }
+                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Div)
+                    {
+                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
+                        retVal = leftResult / rightResult;
+                    }
+                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Mod)
+                    {
+                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
+                        retVal = leftResult % rightResult;
+                    }
+                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Mult)
+                    {
+                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
+                        retVal = leftResult * rightResult;
+                    }
+                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Sub)
+                    {
+                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
+                        retVal = leftResult - rightResult;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new RunTimeException(String.Format("Could not evaluate the expression: {0}", numericalExpression.ToString()), e);
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Evaluates a string expression, can throw RunTimeException
+        /// </summary>
+        /// <param name="stringExpression">the string expression to evaluate</param>
+        /// <returns>a String value of the evaluation</returns>
+        public String EvaluateStringExpression(String stringExpression)
+        {
+
+            // var init
+            String retVal = String.Empty;
+            IStringExpression se = null;
+
+            // evaluate the numerical expression
+            se = PILOTParser.ParseStringExpression(stringExpression);
+            retVal = this.EvaluateStringExpression(se);
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Evaluates a string expression, can throw RunTimeException
+        /// </summary>
+        /// <param name="stringExpression">the string expression to evaluate</param>
+        /// <returns>a String value of the evaluation</returns>
+        internal String EvaluateStringExpression(IStringExpression stringExpression)
+        {
+
+            // short circuit on null
+            if (stringExpression == null)
+            {
+                throw new RunTimeException("Cannot evaluate a null string expression");
+            }
+
+            // var init
+            String retVal = String.Empty;
+
+            // evaluate based upon what type of string expression
+            try
+            {
+                if (stringExpression is StringVariable)
+                {
+                    retVal = this.GetStringVar(((StringVariable)stringExpression).VariableName);
+                }
+                else if (stringExpression is StringAssignExpression)
+                {
+                    StringAssignExpression sae = (StringAssignExpression)stringExpression;
+                    retVal = this.EvaluateStringExpression(sae.Right);
+                    this.SetStringVar(sae.Left.VariableName, retVal);
+                }
+                else if (stringExpression is StringLiteral)
+                {
+                    String[] splitText = ((StringLiteral)stringExpression).StringText.Split(new char[] { ' ' });
+                    foreach (String s in splitText)
+                    {
+                        String word = s.Trim();
+                        if ((word.Length > 1) && ((word[0] == '#') || (word[0] == '$')))
+                        {
+                            int puncLoc = PILOTInterpreter.FirstPunctuation(word.Substring(1)) + 1;
+                            if (puncLoc > 1)
+                            {
+                                String afterPunc = word.Substring(puncLoc);
+                                word = word.Substring(0, puncLoc);
+                                word = (word[0] == '#') ? this.GetNumericVar(word).ToString() : this.GetStringVar(word);
+                                word += afterPunc;
+                            }
+                            else
+                            {
+                                word = (word[0] == '#') ? this.GetNumericVar(word).ToString() : this.GetStringVar(word);
+                            }
+                        }
+                        retVal += word + " ";
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new RunTimeException(String.Format("Could not evaluate the expression: {0}", stringExpression.ToString()), e);
+            }
+
+            return retVal;
         }
 
         /// <summary>
@@ -383,149 +580,6 @@
         }
 
         /// <summary>
-        /// Evaluate a numeric expression, can throw RunTimeException
-        /// </summary>
-        /// <param name="ne">the numeric expression to evaluate</param>
-        /// <returns>the value of evaluating the expression(s)</returns>
-        internal double EvaluateNumericExpression(INumericExpression ne)
-        {
-
-            // short circuit on null
-            if (ne == null)
-            {
-                throw new RunTimeException("Cannot evaluate a null numeric expression");
-            }
-
-            // var init
-            double retVal = 0;
-
-            // evaluate based upon what type of numeric expression
-            try
-            {
-                if (ne is NumericLiteral)
-                {
-                    retVal = ((NumericLiteral)ne).Number;
-                }
-                else if (ne is RandomNumber)
-                {
-                    
-                    double sign = ((PILOTInterpreter.randomGenerator.NextDouble() * 2.0) > 1) ? -1 : 1;
-                    double value = Math.Ceiling(PILOTInterpreter.randomGenerator.NextDouble() * ((sign > 0) ? 32767 : 32768));
-                    retVal = sign * value;
-                }
-                else if (ne is NumericVariable)
-                {
-                    NumericVariable numVar = (NumericVariable)ne;
-                    retVal = this.GetNumericVar(numVar.ToString());
-                }
-                else if (ne is NumericBinaryOperation)
-                {
-                    NumericBinaryOperation opExpression = (NumericBinaryOperation)ne;
-                    double rightResult = this.EvaluateNumericExpression(opExpression.Right);
-                    if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Eq)
-                    {
-                        this.SetNumericVar(opExpression.Left.ToString(), rightResult);
-                        retVal = rightResult;
-                    }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Add)
-                    {
-                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult + rightResult;
-                    }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Div)
-                    {
-                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult / rightResult;
-                    }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Mod)
-                    {
-                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult % rightResult;
-                    }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Mult)
-                    {
-                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult * rightResult;
-                    }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Sub)
-                    {
-                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult - rightResult;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new RunTimeException(String.Format("Could not evaluate the expression: {0}", ne.ToString()), e);
-            }
-
-            return retVal;
-        }
-
-        /// <summary>
-        /// Evaluates a string expression, can throw RunTimeException
-        /// </summary>
-        /// <param name="se">the string expression to evaluate</param>
-        /// <returns>a String value of the evaluation</returns>
-        internal String EvaluateStringExpression(IStringExpression se)
-        {
-
-            // short circuit on null
-            if (se == null)
-            {
-                throw new RunTimeException("Cannot evaluate a null string expression");
-            }
-
-            // var init
-            String retVal = String.Empty;
-
-            // evaluate based upon what type of string expression
-            try
-            {
-                if (se is StringVariable)
-                {
-                    retVal = this.GetStringVar(((StringVariable)se).VariableName);
-                }
-                else if (se is StringAssignExpression)
-                {
-                    StringAssignExpression sae = (StringAssignExpression)se;
-                    retVal = this.EvaluateStringExpression(sae.Right);
-                    this.SetStringVar(sae.Left.VariableName, retVal);
-                }
-                else if (se is StringLiteral)
-                {
-                    String[] splitText = ((StringLiteral)se).StringText.Split(new char[] { ' ' });
-                    foreach (String s in splitText)
-                    {
-                        String word = s.Trim();
-                        if ((word.Length > 1) && ((word[0] == '#') || (word[0] == '$')))
-                        {
-                            int puncLoc = PILOTInterpreter.FirstPunctuation(word.Substring(1)) + 1;
-                            if (puncLoc > 1)
-                            {
-                                String afterPunc = word.Substring(puncLoc);
-                                word = word.Substring(0, puncLoc);
-                                word = (word[0] == '#') ? this.GetNumericVar(word).ToString() : this.GetStringVar(word);
-                                word += afterPunc;
-                            }
-                            else
-                            {
-                                word = (word[0] == '#') ? this.GetNumericVar(word).ToString() : this.GetStringVar(word);
-                            }
-                        }
-                        retVal += word + " ";
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new RunTimeException(String.Format("Could not evaluate the expression: {0}", se.ToString()), e);
-            }
-
-            return retVal;
-        }
-
-        /// <summary>
         /// Evaluates a boolean condition, can throw RunTimeException
         /// </summary>
         /// <param name="bc">the boolean condition to evaluate, ok to be null</param>
@@ -578,6 +632,24 @@
             }
 
             return retVal;
+        }
+
+        /// <summary>
+        /// Writes output to the interface, handles trailing slashes and new lines
+        /// </summary>
+        /// <param name="pilotOutput">the pilot output to write</param>
+        private void WriteOutput(String pilotOutput)
+        {
+            if (String.IsNullOrWhiteSpace(pilotOutput) == false)
+            {
+                Boolean newLine = true;
+                if (pilotOutput[pilotOutput.Length - 1] == '\\')
+                {
+                    newLine = false;
+                    pilotOutput = pilotOutput.Substring(0, pilotOutput.Length - 1);
+                }
+                this.pilotInterface.WriteText(pilotOutput, newLine);
+            }
         }
 
         /// <summary>

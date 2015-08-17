@@ -12,11 +12,6 @@
     {
 
         /// <summary>
-        /// The type of command
-        /// </summary>
-        public Keywords Keyword { get; private set; }
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -39,7 +34,6 @@
         /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
         public Accept(IVariable variableToSet, MatchTypes matchType, BooleanCondition ifCondition)
         {
-            this.Keyword = Keywords.A;
             this.MatchType = matchType;
             this.IfCondition = ifCondition;
             this.VariableToSet = variableToSet;
@@ -51,7 +45,7 @@
         /// <returns>string representation of the accept</returns>
         public override String ToString()
         {
-            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, (this.VariableToSet != null) ? this.VariableToSet.ToString() : String.Empty);
+            return StatementMethods.StatementToString(Keywords.A, this.MatchType, this.IfCondition, (this.VariableToSet != null) ? this.VariableToSet.ToString() : String.Empty);
         }
     }
 }

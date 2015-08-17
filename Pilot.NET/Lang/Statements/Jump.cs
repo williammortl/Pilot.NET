@@ -17,11 +17,6 @@
         private Label labelToJumpTo;
 
         /// <summary>
-        /// The type of command
-        /// </summary>
-        public Keywords Keyword { get; private set; }
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -62,7 +57,6 @@
         /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
         public Jump(Label labelToJumpTo, MatchTypes matchType, BooleanCondition ifCondition)
         {
-            this.Keyword = Keywords.J;
             this.MatchType = matchType;
             this.IfCondition = ifCondition; 
             this.LabelToJumpTo = labelToJumpTo;
@@ -74,7 +68,7 @@
         /// <returns>string representation of the jump</returns>
         public override String ToString()
         {
-            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, this.LabelToJumpTo.ToString());
+            return StatementMethods.StatementToString(Keywords.J, this.MatchType, this.IfCondition, this.LabelToJumpTo.ToString());
         }
     }
 }

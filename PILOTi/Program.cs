@@ -2,6 +2,7 @@
 {
     using Pilot.NET;
     using Pilot.NET.Lang;
+    using Pilot.NET.Lang.Enums;
     using Pilot.NET.PILOTExceptions;
     using System;
     using System.ComponentModel;
@@ -132,14 +133,14 @@
                             case ConsoleCommands.HELP:
                             {
                                 Console.WriteLine();
-                                Console.WriteLine("Shell Commands:");
+                                Console.WriteLine("SHELL COMMANDS:");
                                 Console.WriteLine("---------------");
                                 ConsoleCommands[] commands = (ConsoleCommands[])Enum.GetValues(typeof(ConsoleCommands));
                                 foreach (ConsoleCommands command in commands)
                                 {
                                     FieldInfo fi = command.GetType().GetField(command.ToString());
                                     DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                                    Console.WriteLine(String.Format("{0}\t- {1}", command.ToString(), attributes[0].Description));
+                                    Console.WriteLine(String.Format("{0, -10} - {1}", command.ToString(), attributes[0].Description));
                                 }
                                 break;
                             }
@@ -182,7 +183,7 @@
                                         toPrint = "INVALID LINE NUMBER(S) TO LIST";
                                     }
                                 }
-                                toPrint = (String.IsNullOrWhiteSpace(toPrint) == true) ? "(NO LINES TO LIST)" : toPrint;
+                                toPrint = (String.IsNullOrWhiteSpace(toPrint) == true) ? "NO LINES TO LIST" : toPrint;
                                 Console.WriteLine();
                                 Console.WriteLine(toPrint);
                                 break;
@@ -250,7 +251,7 @@
                             case ConsoleCommands.DIR:
                             {
                                 Console.WriteLine();
-                                String message = String.Format("LISTING OF FILES IN: {0}", Environment.CurrentDirectory);
+                                String message = String.Format("CONTENTS OF: {0}", Environment.CurrentDirectory).ToUpper();
                                 Console.WriteLine(message);
                                 Console.WriteLine(new String('-', message.Length));
                                 foreach (String dir in Directory.GetDirectories(Environment.CurrentDirectory))
@@ -274,6 +275,60 @@
                                 catch
                                 {
                                     Console.WriteLine("INVALID DIRECTORY");
+                                }
+                                break;
+                            }
+                            case ConsoleCommands.DEL:
+                            {
+                                Console.WriteLine();
+                                try
+                                {
+                                    String fileToDelete = split[1].Trim();
+                                    if (File.Exists(fileToDelete) == true)
+                                    {
+                                        File.Delete(fileToDelete);
+                                        Console.WriteLine(String.Format("{0} WAS SUCCESSFULLY DELETED", fileToDelete));
+                                    }
+                                    else
+                                    {
+                                        throw new FileNotFoundException();
+                                    }
+                                }
+                                catch
+                                {
+                                    Console.WriteLine("COULD NOT DELETE FILE");
+                                }
+                                break;
+                            }
+                            case ConsoleCommands.TYPE:
+                            {
+                                Console.WriteLine();
+                                try
+                                {
+                                    String fileToDisplay = split[1].Trim();
+                                    String[] fileContents = File.ReadAllLines(fileToDisplay); 
+                                    foreach (String line in fileContents)
+                                    {
+                                        Console.WriteLine(line);
+                                    }
+                                }
+                                catch
+                                {
+                                    Console.WriteLine("COULD NOT DISPLAY FILE");
+                                }
+                                break;
+                            }
+                            case ConsoleCommands.KEYWORDS:
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("PILOT.NET KEYWORDS:");
+                                Console.WriteLine("-------------------");
+                                Keywords[] keywords = (Keywords[])Enum.GetValues(typeof(Keywords));
+                                foreach (Keywords keyword in keywords)
+                                {
+                                    FieldInfo fi = keyword.GetType().GetField(keyword.ToString());
+                                    DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                                    Console.WriteLine(String.Format("{0, -10} - {1}", keyword.ToString(), attributes[0].Description));
                                 }
                                 break;
                             }

@@ -18,11 +18,6 @@
         private INumericExpression timeToPause;
 
         /// <summary>
-        /// The type of command
-        /// </summary>
-        public Keywords Keyword { get; private set; }
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -69,7 +64,6 @@
         /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
         public Pause(INumericExpression timeToPause, MatchTypes matchType, BooleanCondition ifCondition)
         {
-            this.Keyword = Keywords.PA;
             this.MatchType = matchType;
             this.IfCondition = ifCondition;
             this.TimeToPause = timeToPause;
@@ -81,7 +75,7 @@
         /// <returns>string representation of the pause time</returns>
         public override String ToString()
         {
-            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, this.TimeToPause.ToString());
+            return StatementMethods.StatementToString(Keywords.PA, this.MatchType, this.IfCondition, this.TimeToPause.ToString());
         }
     }
 }

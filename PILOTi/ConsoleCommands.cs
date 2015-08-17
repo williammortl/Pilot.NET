@@ -29,14 +29,26 @@
         /// <summary>
         /// Lists files in the directory
         /// </summary>
+        [Description("DELETES A FILE")]
+        DEL,
+
+        /// <summary>
+        /// Lists files in the directory
+        /// </summary>
         [Description("LISTS FILES IN THE DIRECTORY")]
         DIR,
 
         /// <summary>
         /// List PILOT.NET commands
         /// </summary>
-        [Description("LISTS PILOT.NET COMMANDS")]
+        [Description("LISTS SHELL COMMANDS")]
         HELP,
+
+        /// <summary>
+        /// List PILOT.NET keywords
+        /// </summary>
+        [Description("LISTS KEYWORDS")]
+        KEYWORDS,
 
         /// <summary>
         /// List the current program in memory
@@ -72,6 +84,12 @@
         /// Save a program to a file
         /// </summary>
         [Description("SAVES THE CURRENT PROGRAM TO FILE")]
-        SAVE
+        SAVE,
+        
+        /// <summary>
+        /// Save a program to a file
+        /// </summary>
+        [Description("DISPLAYS A FILE'S CONTENTS")]
+        TYPE
     }
 }

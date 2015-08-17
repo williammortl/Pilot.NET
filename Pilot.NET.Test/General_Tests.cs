@@ -38,7 +38,7 @@
             Assert.AreEqual(prog["*testlabel"].LineNumber, 1);
             Assert.AreEqual("2 T:WORLD", prog[2].ToString());
             Assert.AreEqual(prog[1].LineLabel.ToString(), "*testlabel");
-            Assert.AreEqual(prog[2].LineStatement.Keyword, Keywords.T);
+            Assert.IsTrue(prog[2].LineStatement is Text);
             Assert.AreEqual(((Text)prog[2].LineStatement).TextToDisplay.ToString(), "WORLD");
             Assert.AreEqual(programLineNumbers.Length, 3);
             Assert.AreEqual(programLineNumbers[0], 1);

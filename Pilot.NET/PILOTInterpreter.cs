@@ -12,6 +12,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
 
     /// <summary>
     /// Executes a PILOTProgram
@@ -159,82 +160,51 @@
                 Line currentLine = prog[prog.LineNumbers[executionPointer]];
                 IStatement currentStatement = currentLine.LineStatement;
 
-                // check for match type
+                // check for match type to determine whether or not to execute
                 if ((currentMatch == MatchTypes.None) || (currentStatement.MatchType == currentMatch))
                 {
 
-                    // evaluate boolean condition
+                    // evaluate boolean condition to determine whether or not to execute
                     if ((currentLine.LineStatement.IfCondition == null) || (this.EvaluateBooleanCondition(currentLine.LineStatement.IfCondition) == true))
                     {
 
                         // evaluate keyword
-                        switch (currentLine.LineStatement.Keyword)
+                        if (currentStatement is IImmediateStatement)
                         {
-                            case Keywords.C:
-                            case Keywords.T:
+                            this.EvaluateImmediateStatement((IImmediateStatement)currentStatement);
+                            executionPointer++;
+                        }
+                        else if (currentStatement is Accept)
+                        {
+                            acceptBuffer = this.pilotInterface.ReadTextLine();
+                            Accept a = (Accept)currentStatement;
+                            if (a.VariableToSet != null)
                             {
-
-                                // execute the immediate statement
-                                this.EvaluateImmediateStatement((IImmediateStatement)currentStatement);
-                                executionPointer++;
-                                break;
-                            }
-                            case Keywords.A:
-                            {
-                                acceptBuffer = this.pilotInterface.ReadTextLine();
-                                Accept a = (Accept)currentStatement;
-                                if (a.VariableToSet != null)
+                                if (a.VariableToSet.VariableName.StartsWith("#") == true)
                                 {
-                                    if (a.VariableToSet.VariableName.StartsWith("#") == true)
+                                    try
                                     {
-                                        try
-                                        {
-                                            this.SetNumericVar(a.VariableToSet.VariableName, Convert.ToDouble(acceptBuffer));
-                                        }
-                                        catch
-                                        {
-                                            this.pilotInterface.WriteText("Expected numeric input", true);
-                                            return;
-                                        }
+                                        this.SetNumericVar(a.VariableToSet.VariableName, Convert.ToDouble(acceptBuffer));
                                     }
-                                    else
+                                    catch
                                     {
-                                        this.SetStringVar(a.VariableToSet.VariableName, acceptBuffer);
+                                        this.pilotInterface.WriteText("Expected numeric input", true);
+                                        return;
                                     }
                                 }
-                                executionPointer++;
-                                break;
+                                else
+                                {
+                                    this.SetStringVar(a.VariableToSet.VariableName, acceptBuffer);
+                                }
                             }
-                            case Keywords.E:
-                            {
-                                break;
-                            }
-                            case Keywords.J:
-                            {
-                                break;
-                            }
-                            case Keywords.JM:
-                            {
-                                break;
-                            }
-                            case Keywords.M:
-                            {
-                                break;
-                            }
-                            case Keywords.PA:
-                            {
-                                break;
-                            }
-                            case Keywords.R:
-                            {
-
-                                // do nothing
-                                break;
-                            }
-                            case Keywords.U:
-                            {
-                                break;
-                            }
+                            executionPointer++;
+                        }
+                        else if (currentStatement is Pause)
+                        {
+                            Pause pa = (Pause)currentStatement;
+                            double timeToPause = this.EvaluateNumericExpression(pa.TimeToPause);
+                            Thread.Sleep(Convert.ToInt32(timeToPause * 1000 / 60));
+                            executionPointer++;
                         }
                     }
                 }

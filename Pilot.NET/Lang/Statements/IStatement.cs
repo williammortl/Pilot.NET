@@ -8,11 +8,6 @@
     /// </summary>
     internal interface IStatement
     {
-
-        /// <summary>
-        /// The type of command
-        /// </summary>
-        Keywords Keyword { get; }
         
         /// <summary>
         /// Is this a command for a match (M) command?

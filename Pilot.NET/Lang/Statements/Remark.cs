@@ -11,11 +11,6 @@
     {
 
         /// <summary>
-        /// The type of command
-        /// </summary>
-        public Keywords Keyword { get; private set; }
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -36,7 +31,6 @@
         /// <param name="comment">the parameters of the remark statement, which is the comment text</param>
         public Remark(String comment)
         {
-            this.Keyword = Keywords.R;
             this.MatchType = MatchTypes.None;
             this.IfCondition = null;
             this.Comment = comment;
@@ -48,7 +42,7 @@
         /// <returns>string representation of the remark</returns>
         public override String ToString()
         {
-            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, this.Comment);
+            return StatementMethods.StatementToString(Keywords.R, this.MatchType, this.IfCondition, this.Comment);
         }
     }
 }

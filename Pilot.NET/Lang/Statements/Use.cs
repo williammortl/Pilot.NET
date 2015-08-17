@@ -17,11 +17,6 @@
         private Label labelToUse;
 
         /// <summary>
-        /// The type of command
-        /// </summary>
-        public Keywords Keyword { get; private set; }
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -61,7 +56,6 @@
         /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
         public Use(Label labelToUse, MatchTypes matchType, BooleanCondition ifCondition)
         {
-            this.Keyword = Keywords.U;
             this.MatchType = matchType;
             this.IfCondition = ifCondition;
             this.LabelToUse = labelToUse;
@@ -73,7 +67,7 @@
         /// <returns>string representation of the use</returns>
         public override String ToString()
         {
-            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, this.LabelToUse.ToString());
+            return StatementMethods.StatementToString(Keywords.U, this.MatchType, this.IfCondition, this.LabelToUse.ToString());
         }
     }
 }

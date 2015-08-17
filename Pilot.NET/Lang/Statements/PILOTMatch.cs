@@ -14,11 +14,6 @@
     {
 
         /// <summary>
-        /// The type of command
-        /// </summary>
-        public Keywords Keyword { get; private set; }
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -43,7 +38,6 @@
         {
 
             // var init
-            this.Keyword = Keywords.M;
             this.MatchType = matchType;
             this.IfCondition = ifCondition;
             this.Conditions = conditions;
@@ -70,7 +64,7 @@
             }
             conditionsString = conditionsString.Substring(0, conditionsString.Length - 1);
 
-            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, conditionsString);
+            return StatementMethods.StatementToString(Keywords.M, this.MatchType, this.IfCondition, conditionsString);
         }
     }
 }

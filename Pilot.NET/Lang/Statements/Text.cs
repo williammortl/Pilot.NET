@@ -18,11 +18,6 @@
         private StringLiteral textToDisplay;
 
         /// <summary>
-        /// The type of command
-        /// </summary>
-        public Keywords Keyword { get; private set; }
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -81,7 +76,6 @@
         {
 
             // attribute init
-            this.Keyword = Keywords.T;
             this.MatchType = matchType;
             this.IfCondition = ifCondition;
             this.TextToDisplay = text;
@@ -97,7 +91,7 @@
             // var init
             String textToString = this.TextToDisplay.ToString() + ((this.CarriageReturn == true) ? " \\" : String.Empty);
 
-            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, textToString);
+            return StatementMethods.StatementToString(Keywords.T, this.MatchType, this.IfCondition, textToString);
         }
     }
 }

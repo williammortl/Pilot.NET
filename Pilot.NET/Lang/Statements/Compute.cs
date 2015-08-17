@@ -20,11 +20,6 @@
         private IExpression expressionToCompute;
 
         /// <summary>
-        /// The type of command
-        /// </summary>
-        public Keywords Keyword { get; private set; }
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -71,7 +66,6 @@
         /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
         public Compute(IExpression expressionToCompute, MatchTypes matchType, BooleanCondition ifCondition)
         {
-            this.Keyword = Keywords.C;
             this.MatchType = matchType;
             this.IfCondition = ifCondition;
             this.ExpressionToCompute = expressionToCompute;
@@ -83,7 +77,7 @@
         /// <returns>string representation of the compute</returns>
         public override String ToString()
         {
-            return StatementMethods.StatementToString(this.Keyword, this.MatchType, this.IfCondition, this.ExpressionToCompute.ToString());
+            return StatementMethods.StatementToString(Keywords.C, this.MatchType, this.IfCondition, this.ExpressionToCompute.ToString());
         }
     }
 }

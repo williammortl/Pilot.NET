@@ -6,6 +6,7 @@
     using System;
     using System.ComponentModel;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
 
     /// <summary>
@@ -244,6 +245,36 @@
                             {
                                 Console.WriteLine();
                                 interpreter.Run(program);
+                                break;
+                            }
+                            case ConsoleCommands.DIR:
+                            {
+                                Console.WriteLine();
+                                String message = String.Format("LISTING OF FILES IN: {0}", Environment.CurrentDirectory);
+                                Console.WriteLine(message);
+                                Console.WriteLine(new String('-', message.Length));
+                                foreach (String dir in Directory.GetDirectories(Environment.CurrentDirectory))
+                                {
+                                    Console.WriteLine(String.Format("[{0}]", Path.GetFileName(dir)));
+                                }
+                                foreach (String file in Directory.GetFiles(Environment.CurrentDirectory))
+                                {
+                                    Console.WriteLine(String.Format("{0}", Path.GetFileName(file)));
+                                }
+                                break;
+                            }
+                            case ConsoleCommands.CD:
+                            {
+                                Console.WriteLine();
+                                try
+                                {
+                                    Environment.CurrentDirectory = split[1].Trim();
+                                    Console.WriteLine(String.Format("DIRECTORY CHANGED TO: {0}", Environment.CurrentDirectory));
+                                }
+                                catch
+                                {
+                                    Console.WriteLine("INVALID DIRECTORY");
+                                }
                                 break;
                             }
                         }

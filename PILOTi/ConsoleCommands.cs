@@ -23,7 +23,7 @@
         /// <summary>
         /// Clear the screen
         /// </summary>
-        [Description("CLEAR THE SCREEN")]
+        [Description("CLEARS THE SCREEN")]
         CLEAR,
 
         /// <summary>

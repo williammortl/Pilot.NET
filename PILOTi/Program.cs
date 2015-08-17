@@ -132,8 +132,8 @@
                             case ConsoleCommands.HELP:
                             {
                                 Console.WriteLine();
-                                Console.WriteLine("Console Commands:");
-                                Console.WriteLine("-----------------");
+                                Console.WriteLine("Shell Commands:");
+                                Console.WriteLine("---------------");
                                 ConsoleCommands[] commands = (ConsoleCommands[])Enum.GetValues(typeof(ConsoleCommands));
                                 foreach (ConsoleCommands command in commands)
                                 {
@@ -217,7 +217,7 @@
                                     {
                                         // create directory if it doesn't exist
                                         String path = Path.GetDirectoryName(split[1]);
-                                        if (Directory.Exists(path) == false)
+                                        if ((String.IsNullOrWhiteSpace(path) == false) && (Directory.Exists(path) == false))
                                         {
                                             Directory.CreateDirectory(path);
                                         }

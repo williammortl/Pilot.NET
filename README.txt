@@ -38,4 +38,4 @@ http://www.atarimania.com/documents/Atari_PILOT_Primer.pdf
 
 NOTES:
 
-Upon completion this version of PILOT will contain graphics as well as sound.
+Upon completion, this version of PILOT will contain Atari-style Turtle Graphics as well as the ability to create sound.

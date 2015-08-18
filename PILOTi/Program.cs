@@ -107,7 +107,8 @@
                 {
 
                     // figure out what command text is
-                    String[] split = text.ToUpper().Split(new char[1] { ' ' }, 2);
+                    String[] split = text.Split(new char[1] { ' ' }, 2);
+                    split[0] = split[0].ToUpper();
                     if (Enum.IsDefined(typeof(ConsoleCommands), split[0].Trim()) == true)
                     {
 

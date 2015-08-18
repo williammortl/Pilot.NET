@@ -11,6 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilot.NET.Test", "Pilot.NET
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pilot Examples", "Pilot Examples", "{F985134D-013F-4409-8A12-9D15F2383079}"
 	ProjectSection(SolutionItems) = preProject
+		Pilot Examples\first.pilot = Pilot Examples\first.pilot
 		Pilot Examples\test.pilot = Pilot Examples\test.pilot
 	EndProjectSection
 EndProject

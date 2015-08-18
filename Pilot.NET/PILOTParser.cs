@@ -343,10 +343,10 @@
             }
 
             // cleanup the string
-            text = PILOTParser.CleanupNumericExpression(text);
+            text = PILOTParser.CleanupNumericExpression(text).ToUpper();
 
             // unwrap unneccessary parentheses
-            text = PILOTParser.UnwrapParentheses(text);
+            text = PILOTParser.UnwrapParentheses(text).Trim();
 
             // var init
             double literalNum = 0;
@@ -368,12 +368,6 @@
                                                         PILOTParser.ParseNumericExpression(leftExpression),
                                                         PILOTParser.ParseNumericExpression(rightExpression));
                 }
-                else if (double.TryParse(text, out literalNum) == true)
-                {
-
-                    // numeric literal
-                    retVal = new NumericLiteral(literalNum);
-                }
                 else if (text == "?")
                 {
 
@@ -388,7 +382,23 @@
                 }
                 else
                 {
-                    throw new ParserException(String.Format("Could not determine what type of numeric expression exists in text: {0}", text));
+
+                    // at this point, since it's not a variable, it should be ok to do a replace
+                    //  for mathematical constants
+                    text = text.Replace("E", Math.E.ToString());
+                    text = text.Replace("PI", Math.PI.ToString());
+
+                    // attempt to parse into a numeric literal
+                    if (double.TryParse(text, out literalNum) == true)
+                    {
+
+                        // numeric literal
+                        retVal = new NumericLiteral(literalNum);
+                    }
+                    else
+                    {
+                        throw new ParserException(String.Format("Could not determine what type of numeric expression exists in text: {0}", text));
+                    }
                 }
             }
             catch (PILOTException e)
@@ -677,6 +687,16 @@
                         else if ((c == '*') && (prevOperatorFound > (int)NumericBinaryOperators.Mult))
                         {
                             prevOperatorFound = (int)NumericBinaryOperators.Mult;
+                            retVal = i;
+                        }
+                        else if ((c == ',') && (prevOperatorFound > (int)NumericBinaryOperators.Log))
+                        {
+                            prevOperatorFound = (int)NumericBinaryOperators.Log;
+                            retVal = i;
+                        }
+                        else if ((c == '^') && (prevOperatorFound > (int)NumericBinaryOperators.Exp))
+                        {
+                            prevOperatorFound = (int)NumericBinaryOperators.Exp;
                             retVal = i;
                         }
                     }

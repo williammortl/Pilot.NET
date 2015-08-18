@@ -332,21 +332,51 @@
                                 }
                                 break;
                             }
+                            case ConsoleCommands.VARS:
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("CURRENT VARS:");
+                                Console.WriteLine("-------------");
+                                if ((interpreter.StringVariables.Count > 0) || (interpreter.NumericVariables.Count > 0))
+                                {
+                                    foreach (String varName in interpreter.StringVariables)
+                                    {
+                                        Console.WriteLine(String.Format("{0, -10} = {1}", varName, interpreter.GetStringVar(varName)));
+                                    }
+                                    foreach (String varName in interpreter.NumericVariables)
+                                    {
+                                        Console.WriteLine(String.Format("{0, -10} = {1}", varName, interpreter.GetNumericVar(varName)));
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("NO VARIABLES TO DISPLAY");
+                                }
+                                break;
+                            }
                         }
                     }
                     else if (Program.IsInt(split[0].Trim()) == true)
                     {
 
-                        // add / replace a program line
-                        Line line = null;
-                        try
+                        // delete or add / replace a program line
+                        if ((split.Length < 2) || (String.IsNullOrWhiteSpace(split[1]) == true))
                         {
-                            line = PILOTParser.ParseLine(text);
-                            program[line.LineNumber] = line;
+                            program[Convert.ToInt32(split[0])] = null;
                         }
-                        catch (PILOTException pe)
+                        else
                         {
-                            Console.WriteLine(pe.Message);
+                            try
+                            {
+
+                                // parse the line and add
+                                Line line = PILOTParser.ParseLine(text);
+                                program[line.LineNumber] = line;
+                            }
+                            catch (PILOTException pe)
+                            {
+                                Console.WriteLine(pe.Message);
+                            }
                         }
                     }
                     else

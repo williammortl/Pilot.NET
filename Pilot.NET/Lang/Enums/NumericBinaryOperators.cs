@@ -35,6 +35,16 @@
         /// <summary>
         /// Multiply two expressions
         /// </summary>
-        Mult
+        Mult,
+
+        /// <summary>
+        /// Logarithm: a,b is log a to base b
+        /// </summary>
+        Log,
+
+        /// <summary>
+        /// Exponent: a^b is a to the power of b 
+        /// </summary>
+        Exp
     }
 }

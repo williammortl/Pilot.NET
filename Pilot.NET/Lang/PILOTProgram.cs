@@ -39,14 +39,23 @@
             set
             {
 
-                // does this line exist?
-                if (this.programLines.ContainsKey(lineNumber) == false)
+                // delete or add / replace line
+                if (value == null)
                 {
-                    this.programLines.Add(lineNumber, null);
+                    this.programLines.Remove(lineNumber);
                 }
+                else
+                {
 
-                // set the value
-                this.programLines[lineNumber] = value;
+                    // does this line exist? if not, create
+                    if (this.programLines.ContainsKey(lineNumber) == false)
+                    {
+                        this.programLines.Add(lineNumber, null);
+                    }
+
+                    // set the value
+                    this.programLines[lineNumber] = value;
+                }
             }
         }
 

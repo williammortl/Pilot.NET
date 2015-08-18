@@ -41,6 +41,28 @@
         private Dictionary<String, double> numericVariables;
 
         /// <summary>
+        /// List of the name of string variables
+        /// </summary>
+        public List<String> StringVariables
+        {
+            get
+            {
+                return this.stringVariables.Keys.ToList<String>();
+            }
+        }
+
+        /// <summary>
+        /// List of the name of numeric variables
+        /// </summary>
+        public List<String> NumericVariables
+        {
+            get
+            {
+                return this.numericVariables.Keys.ToList<String>();
+            }
+        }
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         public PILOTInterpreter()
@@ -92,8 +114,8 @@
             double retVal = 0;
 
             // adjust name if neccessary
-            varName = varName.Trim().ToLower();
-            varName = (varName.StartsWith("#") == true) ? varName.Substring(1) : varName;
+            varName = varName.Trim().ToUpper();
+            varName = (varName.StartsWith("#") == true) ? varName : "#" + varName;
 
             // look for variable
             if (this.numericVariables.Keys.Contains(varName) == true)
@@ -102,7 +124,7 @@
             }
             else
             {
-                throw new RunTimeException(String.Format("Could not find numeric variable: #{0}", varName));
+                throw new RunTimeException(String.Format("Could not find numeric variable: {0}", varName));
             }
 
             return retVal;
@@ -120,8 +142,8 @@
             String retVal = String.Empty;
 
             // adjust name if neccessary
-            varName = varName.Trim().ToLower();
-            varName = (varName.StartsWith("$") == true) ? varName.Substring(1) : varName;
+            varName = varName.Trim().ToUpper();
+            varName = (varName.StartsWith("$") == true) ? varName : "$" + varName;
 
             // look for variable
             if (this.stringVariables.Keys.Contains(varName) == true)
@@ -130,86 +152,10 @@
             }
             else
             {
-                throw new RunTimeException(String.Format("Could not find string variable: ${0}", varName));
+                throw new RunTimeException(String.Format("Could not find string variable: {0}", varName));
             }
 
             return retVal;
-        }
-        
-        /// <summary>
-        /// Runs a PILOT program
-        /// </summary>
-        /// <param name="prog">the program to execute</param>
-        public void Run(PILOTProgram prog)
-        {
-
-            // clear current memory first
-            this.ClearMemoryState();
-
-            // initialize a call stack
-            int executionPointer = 0;
-            Stack<int> CallStack = new Stack<int>();
-            MatchTypes currentMatch = MatchTypes.None;
-            String acceptBuffer = String.Empty;
-
-            // execute until we cant
-            while (executionPointer < prog.LineNumbers.Count)
-            {
-                
-                // execute statement
-                Line currentLine = prog[prog.LineNumbers[executionPointer]];
-                IStatement currentStatement = currentLine.LineStatement;
-
-                // check for match type to determine whether or not to execute
-                if ((currentMatch == MatchTypes.None) || (currentStatement.MatchType == currentMatch))
-                {
-
-                    // evaluate boolean condition to determine whether or not to execute
-                    if ((currentLine.LineStatement.IfCondition == null) || (this.EvaluateBooleanCondition(currentLine.LineStatement.IfCondition) == true))
-                    {
-
-                        // evaluate keyword
-                        if (currentStatement is IImmediateStatement)
-                        {
-                            this.EvaluateImmediateStatement((IImmediateStatement)currentStatement);
-                            executionPointer++;
-                        }
-                        else if (currentStatement is Accept)
-                        {
-                            acceptBuffer = this.pilotInterface.ReadTextLine();
-                            Accept a = (Accept)currentStatement;
-                            if (a.VariableToSet != null)
-                            {
-                                if (a.VariableToSet.VariableName.StartsWith("#") == true)
-                                {
-                                    try
-                                    {
-                                        this.SetNumericVar(a.VariableToSet.VariableName, Convert.ToDouble(acceptBuffer));
-                                    }
-                                    catch
-                                    {
-                                        this.pilotInterface.WriteText("Expected numeric input", true);
-                                        return;
-                                    }
-                                }
-                                else
-                                {
-                                    this.SetStringVar(a.VariableToSet.VariableName, acceptBuffer);
-                                }
-                            }
-                            executionPointer++;
-                        }
-                        else if (currentStatement is Pause)
-                        {
-                            Pause pa = (Pause)currentStatement;
-                            double timeToPause = this.EvaluateNumericExpression(pa.TimeToPause);
-                            Thread.Sleep(Convert.ToInt32(timeToPause * 1000 / 60));
-                            executionPointer++;
-                        }
-                    }
-                }
-            }
-
         }
 
         /// <summary>
@@ -228,6 +174,86 @@
         public void Run(FileInfo file)
         {
             this.Run(PILOTParser.ParseProgram(file));
+        }
+
+        /// <summary>
+        /// Runs a PILOT program
+        /// </summary>
+        /// <param name="prog">the program to execute</param>
+        public void Run(PILOTProgram prog)
+        {
+
+            // clear current memory first
+            this.ClearMemoryState();
+
+            // initialize a call stack
+            int executionPointer = 0;
+            Stack<int> callStack = new Stack<int>();
+            MatchTypes matchState = MatchTypes.None;
+            String acceptBuffer = String.Empty;
+
+            // execute until we cant
+            while (executionPointer < prog.LineNumbers.Count)
+            {
+                
+                // execute statement
+                Line line = prog[prog.LineNumbers[executionPointer]];
+                IStatement statement = line.LineStatement;
+
+                // check for match type to determine whether or not to execute
+                if ((matchState == MatchTypes.None) || (statement.MatchType == matchState))
+                {
+
+                    // evaluate boolean condition to determine whether or not to execute
+                    if ((line.LineStatement.IfCondition == null) || (this.EvaluateBooleanCondition(line.LineStatement.IfCondition) == true))
+                    {
+
+                        // evaluate keyword
+                        if (statement is IImmediateStatement)
+                        {
+                            this.EvaluateImmediateStatement((IImmediateStatement)statement);
+                            executionPointer++;
+                        }
+                        else if (statement is Accept)
+                        {
+                            acceptBuffer = this.pilotInterface.ReadTextLine();
+                            Accept a = (Accept)statement;
+                            if (a.VariableToSet != null)
+                            {
+                                if (a.VariableToSet.VariableName.StartsWith("#") == true)
+                                {
+                                    try
+                                    {
+                                        this.SetNumericVar(a.VariableToSet.VariableName, Convert.ToDouble(acceptBuffer));
+                                    }
+                                    catch
+                                    {
+                                        this.pilotInterface.WriteText("Expected numeric input", true);
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    this.SetStringVar(a.VariableToSet.VariableName, acceptBuffer);
+                                }
+                            }
+                            executionPointer++;
+                        }
+                        else if (statement is End)
+                        {
+                            if (callStack.Count == 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                executionPointer = callStack.Pop();
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         /// <summary>
@@ -294,8 +320,19 @@
                     Text ts = (Text)statement;
                     if (this.EvaluateBooleanCondition(ts.IfCondition) == true)
                     {
-                        this.WriteOutput(this.EvaluateStringExpression(ts.TextToDisplay));
+                        this.pilotInterface.WriteText(this.EvaluateStringExpression(ts.TextToDisplay), ts.CarriageReturn);
                     }
+                }
+                else if (statement is Remark)
+                {
+
+                    // do nothing!
+                }
+                else if (statement is Pause)
+                {
+                    Pause pa = (Pause)statement;
+                    double timeToPause = this.EvaluateNumericExpression(pa.TimeToPause);
+                    Thread.Sleep(Convert.ToInt32(timeToPause * 1000 / 60));
                 }
             }
             catch (PILOTException pe)
@@ -373,35 +410,42 @@
                 {
                     NumericBinaryOperation opExpression = (NumericBinaryOperation)numericalExpression;
                     double rightResult = this.EvaluateNumericExpression(opExpression.Right);
-                    if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Eq)
+                    if (opExpression.Operator == NumericBinaryOperators.Eq)
                     {
                         this.SetNumericVar(opExpression.Left.ToString(), rightResult);
                         retVal = rightResult;
                     }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Add)
+                    else
                     {
                         double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult + rightResult;
-                    }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Div)
-                    {
-                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult / rightResult;
-                    }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Mod)
-                    {
-                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult % rightResult;
-                    }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Mult)
-                    {
-                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult * rightResult;
-                    }
-                    else if (opExpression.Operator == Lang.Enums.NumericBinaryOperators.Sub)
-                    {
-                        double leftResult = this.EvaluateNumericExpression(opExpression.Left);
-                        retVal = leftResult - rightResult;
+                        if (opExpression.Operator == NumericBinaryOperators.Add)
+                        {
+                            retVal = leftResult + rightResult;
+                        }
+                        else if (opExpression.Operator == NumericBinaryOperators.Div)
+                        {
+                            retVal = leftResult / rightResult;
+                        }
+                        else if (opExpression.Operator == NumericBinaryOperators.Mod)
+                        {
+                            retVal = leftResult % rightResult;
+                        }
+                        else if (opExpression.Operator == NumericBinaryOperators.Mult)
+                        {
+                            retVal = leftResult * rightResult;
+                        }
+                        else if (opExpression.Operator == NumericBinaryOperators.Sub)
+                        {
+                            retVal = leftResult - rightResult;
+                        }
+                        else if (opExpression.Operator == NumericBinaryOperators.Log)
+                        {
+                            retVal = Math.Log(leftResult, rightResult);
+                        }
+                        else if (opExpression.Operator == NumericBinaryOperators.Exp)
+                        {
+                            retVal = Math.Pow(leftResult, rightResult);
+                        }
                     }
                 }
             }
@@ -514,8 +558,8 @@
         {
 
             // adjust name if neccessary
-            varName = varName.Trim().ToLower();
-            varName = (varName.StartsWith("#") == true) ? varName.Substring(1) : varName;
+            varName = varName.Trim().ToUpper();
+            varName = (varName.StartsWith("#") == true) ? varName : "#" + varName;
 
             // add the variable if neccessary
             if (this.numericVariables.Keys.Contains(varName) == false)
@@ -536,8 +580,8 @@
         {
 
             // adjust name if neccessary
-            varName = varName.Trim().ToLower();
-            varName = (varName.StartsWith("$") == true) ? varName.Substring(1) : varName;
+            varName = varName.Trim().ToUpper();
+            varName = (varName.StartsWith("$") == true) ? varName : "$" + varName;
 
             // add the variable if neccessary
             if (this.stringVariables.Keys.Contains(varName) == false)
@@ -610,16 +654,13 @@
         /// <param name="pilotOutput">the pilot output to write</param>
         private void WriteOutput(String pilotOutput)
         {
-            if (String.IsNullOrWhiteSpace(pilotOutput) == false)
+            Boolean newLine = true;
+            if (pilotOutput[pilotOutput.Length - 1] == '\\')
             {
-                Boolean newLine = true;
-                if (pilotOutput[pilotOutput.Length - 1] == '\\')
-                {
-                    newLine = false;
-                    pilotOutput = pilotOutput.Substring(0, pilotOutput.Length - 1);
-                }
-                this.pilotInterface.WriteText(pilotOutput, newLine);
+                newLine = false;
+                pilotOutput = pilotOutput.Substring(0, pilotOutput.Length - 1);
             }
+            this.pilotInterface.WriteText(pilotOutput, newLine);
         }
 
         /// <summary>

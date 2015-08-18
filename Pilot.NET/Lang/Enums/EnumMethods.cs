@@ -43,6 +43,16 @@
                     retVal = "-";
                     break;
                 }
+                case NumericBinaryOperators.Log:
+                {
+                    retVal = ",";
+                    break;
+                }
+                case NumericBinaryOperators.Exp:
+                {
+                    retVal = "^";
+                    break;
+                }
             }
 
             return retVal;
@@ -84,6 +94,14 @@
             else if (op.StartsWith("-") == true)
             {
                 retVal = NumericBinaryOperators.Sub;
+            }
+            else if (op.StartsWith(",") == true)
+            {
+                retVal = NumericBinaryOperators.Log;
+            }
+            else if (op.StartsWith("^") == true)
+            {
+                retVal = NumericBinaryOperators.Exp;
             }
             else
             {

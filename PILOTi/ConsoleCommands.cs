@@ -90,6 +90,12 @@
         /// Save a program to a file
         /// </summary>
         [Description("DISPLAYS A FILE'S CONTENTS")]
-        TYPE
+        TYPE,
+
+        /// <summary>
+        /// Print all variables
+        /// </summary>
+        [Description("PRINTS ALL VARS TO MEMORY")]
+        VARS
     }
 }

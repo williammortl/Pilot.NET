@@ -9,7 +9,7 @@
     /// <summary>
     /// A pause statement, PA
     /// </summary>
-    internal sealed class Pause : IStatement
+    internal sealed class Pause : IImmediateStatement
     {
 
         /// <summary>

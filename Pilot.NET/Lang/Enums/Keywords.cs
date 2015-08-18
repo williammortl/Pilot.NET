@@ -17,7 +17,7 @@
         /// <summary>
         /// compute -> C: $var1=$var2$var3 | C: #var1=#var1+1
         /// </summary>
-        [Description("COMPUTE")]
+        [Description("COMPUTE*")]
         C,
 
         /// <summary>
@@ -47,19 +47,19 @@
         /// <summary>
         /// pause, unit of time is 1/60 th of a second, this pauses for 1 second -> PA: 60
         /// </summary>
-        [Description("PAUSE TIME, IN UNITS OF 1/60TH OF A SECOND")]
+        [Description("PAUSE TIME, IN UNITS OF 1/60TH OF A SECOND*")]
         PA,
 
         /// <summary>
         /// remark -> R: This is a comment
         /// </summary>
-        [Description("REMARK")]
+        [Description("REMARK*")]
         R,
 
         /// <summary>
         /// type something -> T: HELLO
         /// </summary>
-        [Description("PRINT TEXT")]
+        [Description("PRINT TEXT*")]
         T,
 
         /// <summary>

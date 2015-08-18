@@ -53,15 +53,13 @@
                 // check for carriage return
                 if (value.StringText.EndsWith("\\") == true)
                 {
-                    String newText = value.StringText;
-                    newText = newText.Substring(0, newText.Length - 1);
-                    this.textToDisplay = new StringLiteral(newText);
-                    this.CarriageReturn = true;
+                    this.textToDisplay = new StringLiteral(value.StringText.Substring(0, value.StringText.Length - 1));
+                    this.CarriageReturn = false;
                 }
                 else
                 {
                     this.textToDisplay = value;
-                    this.CarriageReturn = false;
+                    this.CarriageReturn = true;
                 }
             }
         }
@@ -89,7 +87,7 @@
         {
 
             // var init
-            String textToString = this.TextToDisplay.ToString() + ((this.CarriageReturn == true) ? " \\" : String.Empty);
+            String textToString = this.TextToDisplay.ToString() + ((this.CarriageReturn == false) ? " \\" : String.Empty);
 
             return StatementMethods.StatementToString(Keywords.T, this.MatchType, this.IfCondition, textToString);
         }

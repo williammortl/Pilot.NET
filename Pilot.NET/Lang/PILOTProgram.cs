@@ -42,7 +42,7 @@
                 // delete or add / replace line
                 if (value == null)
                 {
-                    this.programLines.Remove(lineNumber);
+                    this.DeleteLine(lineNumber);
                 }
                 else
                 {
@@ -112,6 +112,31 @@
         }
 
         /// <summary>
+        /// Gets the ordinal of a line number in LineNumbers
+        /// </summary>
+        /// <param name="lineNumberToFind">the line number to look for</param>
+        /// <returns>-1 if not found, otherwise the ordinal of the line number in LineNumbers</returns>
+        public int OrdinalOfLineNumber(int lineNumberToFind)
+        {
+
+            // var init
+            int retVal = -1;
+            List<int> listOfLineNumbers = this.LineNumbers;
+
+            // look for the line number
+            for (int i = 0; i < listOfLineNumbers.Count; i++)
+            {
+                if (listOfLineNumbers[i] == lineNumberToFind)
+                {
+                    retVal = i;
+                    break;
+                }
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
         /// Delete a line by index, if that index doesn't exist, does nothing
         /// </summary>
         /// <param name="lineNumber">the line number to delete</param>
@@ -156,7 +181,7 @@
             {
                 foreach (int lineNumber in this.LineNumbers)
                 {
-                    if (this.programLines[lineNumber].LineLabel.ToString().ToLower() == label)
+                    if ((this.programLines[lineNumber].LineLabel != null) && (this.programLines[lineNumber].LineLabel.ToString().ToLower() == label))
                     {
                         retVal = lineNumber;
                         break;

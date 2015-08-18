@@ -1,0 +1,8 @@
+1 T:Welcome to the test program!
+2 U:*testsub
+3 T:Goodbye.
+4 E:
+5 *testsub T:Please enter your name: \
+6 A:$name
+7 T:Hello $name, I hope you have a great day!
+8 E:

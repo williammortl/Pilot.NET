@@ -250,6 +250,33 @@
                                 executionPointer = callStack.Pop();
                             }
                         }
+                        else if (statement is Jump)
+                        {
+                            Jump j = (Jump)statement;
+                            Line lineOfLabel = prog[j.LabelToJumpTo.ToString()];
+                            if (lineOfLabel == null)
+                            {
+                                throw new RunTimeException(String.Format("Could not find label: {0}", j.LabelToJumpTo.ToString()));
+                            }
+                            else
+                            {
+                                executionPointer = prog.OrdinalOfLineNumber(lineOfLabel.LineNumber);
+                            }
+                        }
+                        else if (statement is Use)
+                        {
+                            Use u = (Use)statement;
+                            Line lineOfLabel = prog[u.LabelToUse.ToString()];
+                            if (lineOfLabel == null)
+                            {
+                                throw new RunTimeException(String.Format("Could not find label: {0}", u.LabelToUse.ToString()));
+                            }
+                            else
+                            {
+                                callStack.Push(executionPointer + 1);
+                                executionPointer = prog.OrdinalOfLineNumber(lineOfLabel.LineNumber);
+                            }
+                        }
                     }
                 }
             }

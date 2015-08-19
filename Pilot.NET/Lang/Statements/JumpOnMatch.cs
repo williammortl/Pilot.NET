@@ -25,7 +25,7 @@
         /// <summary>
         /// The labels to conditionally jump to
         /// </summary>
-        public LinkedList<Label> LabelsToJumpTo { get; private set; }
+        public List<Label> LabelsToJumpTo { get; private set; }
 
         /// <summary>
         /// Constructor
@@ -33,7 +33,7 @@
         /// <param name="labelsToJumpTo">the labels to jump to</param>
         /// <param name="matchType">the match type</param>
         /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
-        public JumpOnMatch(LinkedList<Label> labelsToJumpTo, MatchTypes matchType, BooleanCondition ifCondition)
+        public JumpOnMatch(List<Label> labelsToJumpTo, MatchTypes matchType, BooleanCondition ifCondition)
         {
 
             // init attributes

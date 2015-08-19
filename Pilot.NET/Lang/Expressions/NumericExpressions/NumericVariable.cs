@@ -35,15 +35,9 @@
                 }
 
                 // check for valid variable name
-                if ((value.Contains(" ") == true) || (value.Contains("=") == true))
+                if ((value.Contains(" ") == true) || (value.Contains("=") == true) || (variableName.StartsWith("#") == false))
                 {
                     throw new InvalidSyntax("Not a valid numeric variable name");
-                }
-
-                // trim the # from the beginning
-                if (variableName.StartsWith("#") == true)
-                {
-                    variableName = variableName.Substring(1);
                 }
 
                 this.variableName = variableName;
@@ -65,7 +59,7 @@
         /// <returns>the string representation</returns>
         public override string ToString()
         {
-            return "#" + this.VariableName;
+            return this.VariableName;
         }
     }
 }

@@ -149,13 +149,13 @@
             List<int> listOfLineNumbers = this.LineNumbers;
 
             // look for the line number
-            label = label.Trim().ToLower();
+            label = label.Trim().ToUpper();
             for (int i = 0; i < listOfLineNumbers.Count; i++)
             {
                 int lineNumber = listOfLineNumbers[i];
                 if ((this[lineNumber] != null) &&
                     (this[lineNumber].LineLabel != null) &&
-                    (this[lineNumber].LineLabel.ToString().ToLower() == label))
+                    (this[lineNumber].LineLabel.LabelName.ToUpper() == label))
                 {
                     retVal = i;
                     break;
@@ -205,12 +205,13 @@
             int retVal = -1;
 
             // get the index of the label
-            label = label.Trim().ToLower();
+            label = label.Trim().ToUpper();
             if (this.LineNumbers.Count > 0)
             {
                 foreach (int lineNumber in this.LineNumbers)
                 {
-                    if ((this.programLines[lineNumber].LineLabel != null) && (this.programLines[lineNumber].LineLabel.ToString().ToLower() == label))
+                    if ((this.programLines[lineNumber].LineLabel != null) && 
+                        (this.programLines[lineNumber].LineLabel.LabelName.ToUpper() == label))
                     {
                         retVal = lineNumber;
                         break;

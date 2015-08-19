@@ -235,7 +235,14 @@
                             case ConsoleCommands.RUN:
                             {
                                 Console.WriteLine();
-                                interpreter.Run(program);
+                                try
+                                {
+                                    interpreter.Run(program);
+                                }
+                                catch (PILOTException pe)
+                                {
+                                    Console.WriteLine(pe.Message);
+                                }
                                 break;
                             }
                             case ConsoleCommands.DIR:
@@ -400,6 +407,7 @@
                             }
                             catch (PILOTException pe)
                             {
+                                Console.WriteLine();
                                 Console.WriteLine(pe.Message);
                             }
                         }
@@ -408,7 +416,15 @@
                     {
 
                         // evaluate immediate statement
-                        interpreter.EvaluateImmediateStatement(text);
+                        try
+                        {
+                            interpreter.EvaluateImmediateStatement(text);
+                        }
+                        catch (PILOTException pe)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine(pe.Message);
+                        }
                     }
                 }
             }

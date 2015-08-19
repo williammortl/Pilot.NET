@@ -134,7 +134,7 @@
         }
 
         /// <summary>
-        /// Parses text into a label
+        /// Parses text into a label, can throw ParserException
         /// </summary>
         /// <param name="text">the text</param>
         /// <returns>a new Label or null if the string is empty</returns>
@@ -236,7 +236,7 @@
                 {
 
                     // create linked list of labels
-                    LinkedList<Label> labels = new LinkedList<Label>();
+                    List<Label> labels = new List<Label>();
                     if (String.IsNullOrWhiteSpace(parametersForKeyword) == false)
                     {
                         String[] labelsString = parametersForKeyword.Split(new char[] { ',' });
@@ -245,7 +245,7 @@
                             Label newLabel = PILOTParser.ParseLabel(labelString);
                             if (newLabel != null)
                             {
-                                labels.AddLast(newLabel);
+                                labels.Add(newLabel);
                             }
                             else
                             {
@@ -265,7 +265,7 @@
                 {
 
                     // create linked list of StringLiteral conditions
-                    LinkedList<StringLiteral> conditions = new LinkedList<StringLiteral>();
+                    List<StringLiteral> conditions = new List<StringLiteral>();
                     if (String.IsNullOrWhiteSpace(parametersForKeyword) == false)
                     {
                         String[] conditionsString = parametersForKeyword.Split(new char[] { ',' });
@@ -273,7 +273,7 @@
                         {
                             if (String.IsNullOrWhiteSpace(conditionString) == false)
                             {
-                                conditions.AddLast(new StringLiteral(conditionString));
+                                conditions.Add(new StringLiteral(conditionString));
                             }
                             else
                             {
@@ -315,7 +315,7 @@
         }
 
         /// <summary>
-        /// Parse the string into an numeric expression, throws ParserException if there is a problem
+        /// Parse the string into an numeric expression, can throw ParserException
         /// </summary>
         /// <param name="text">the text to parse</param>
         /// <returns>the numeric expression object, null if empty string or a problem</returns>
@@ -467,7 +467,7 @@
         }
 
         /// <summary>
-        /// Parses a string to a Boolean condition
+        /// Parses a string to a Boolean condition, can throw ParserException
         /// </summary>
         /// <param name="text">the text to parse</param>
         /// <returns>the boolean condition, null if empty string</returns>

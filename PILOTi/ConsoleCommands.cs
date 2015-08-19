@@ -71,7 +71,7 @@
         /// <summary>
         /// Quits Pilot.NET
         /// </summary>
-        [Description("QUITS PILOT.NET")]
+        [Description("QUITS THE PILOT.NET SHELL")]
         QUIT,
 
         /// <summary>
@@ -101,7 +101,7 @@
         /// <summary>
         /// Print all variables
         /// </summary>
-        [Description("PRINTS ALL VARS TO MEMORY")]
+        [Description("PRINTS ALL VARIABLES IN MEMORY")]
         VARS
     }
 }

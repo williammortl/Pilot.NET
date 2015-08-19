@@ -29,15 +29,9 @@
 
                 // throw an error if string is empty
                 this.labelName = value.Trim();
-                if (String.IsNullOrWhiteSpace(this.labelName) == true)
+                if ((String.IsNullOrWhiteSpace(this.labelName) == true) || (this.labelName.StartsWith("*") == false))
                 {
                     throw new InvalidSyntax("Cannot define a Label with an empty string");
-                }
-
-                // check for leading *
-                if (this.labelName.StartsWith("*") == true)
-                {
-                    this.labelName = this.labelName.Substring(1);
                 }
             }
         }
@@ -59,7 +53,7 @@
         /// <returns>the string representation of the label</returns>
         public override string ToString()
         {
-            return "*" + this.LabelName;
+            return this.LabelName;
         }
     }
 }

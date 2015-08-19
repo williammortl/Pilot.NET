@@ -113,11 +113,8 @@
             // var init
             double retVal = 0;
 
-            // adjust name if neccessary
-            varName = varName.Trim().ToUpper();
-            varName = (varName.StartsWith("#") == true) ? varName : "#" + varName;
-
             // look for variable
+            varName = varName.Trim().ToUpper();
             if (this.numericVariables.Keys.Contains(varName) == true)
             {
                 retVal = this.numericVariables[varName];
@@ -141,11 +138,8 @@
             // var init
             String retVal = String.Empty;
 
-            // adjust name if neccessary
-            varName = varName.Trim().ToUpper();
-            varName = (varName.StartsWith("$") == true) ? varName : "$" + varName;
-
             // look for variable
+            varName = varName.Trim().ToUpper();
             if (this.stringVariables.Keys.Contains(varName) == true)
             {
                 retVal = this.stringVariables[varName];
@@ -159,7 +153,7 @@
         }
 
         /// <summary>
-        /// Runs a PILOT program
+        /// Runs a PILOT program, can throw PILOTException
         /// </summary>
         /// <param name="text">the program in a string, each line is sperated by \r\n</param>
         public void Run(String text)
@@ -168,7 +162,7 @@
         }
 
         /// <summary>
-        /// Runs a PILOT program
+        /// Runs a PILOT program, can throw PILOTException
         /// </summary>
         /// <param name="file">the file name of the program to execute</param>
         public void Run(FileInfo file)
@@ -177,7 +171,7 @@
         }
 
         /// <summary>
-        /// Runs a PILOT program
+        /// Runs a PILOT program, can throw RunTimeException
         /// </summary>
         /// <param name="program">the program to execute</param>
         public void Run(PILOTProgram program)
@@ -190,6 +184,7 @@
             int executionPointer = 0;
             Stack<int> callStack = new Stack<int>();
             MatchTypes matchState = MatchTypes.None;
+            int matchStateOrdinal = 0;
             String acceptBuffer = String.Empty;
 
             // execute until we cant
@@ -201,87 +196,136 @@
                 IStatement statement = line.LineStatement;
 
                 // check for match type to determine whether or not to execute
-                if ((matchState == MatchTypes.None) || (statement.MatchType == matchState))
+                if (statement != null)
                 {
-
-                    // evaluate boolean condition to determine whether or not to execute
-                    if ((line.LineStatement.IfCondition == null) || (this.EvaluateBooleanCondition(line.LineStatement.IfCondition) == true))
+                    if ((matchState == MatchTypes.None) || (statement.MatchType == matchState) || (statement.MatchType == MatchTypes.None))
                     {
 
-                        // evaluate keyword
-                        if (statement is IImmediateStatement)
+                        // evaluate boolean condition to determine whether or not to execute
+                        if ((line.LineStatement.IfCondition == null) || (this.EvaluateBooleanCondition(line.LineStatement.IfCondition) == true))
                         {
-                            this.EvaluateImmediateStatement((IImmediateStatement)statement);
-                            executionPointer++;
-                        }
-                        else if (statement is Accept)
-                        {
-                            acceptBuffer = this.pilotInterface.ReadTextLine();
-                            Accept a = (Accept)statement;
-                            if (a.VariableToSet != null)
+
+                            // evaluate keyword
+                            if (statement is IImmediateStatement)
                             {
-                                if (a.VariableToSet.VariableName.StartsWith("#") == true)
+                                this.EvaluateImmediateStatement((IImmediateStatement)statement);
+                                executionPointer++;
+                            }
+                            else if (statement is Accept)
+                            {
+                                acceptBuffer = this.pilotInterface.ReadTextLine().Trim();
+                                Accept a = (Accept)statement;
+                                if (a.VariableToSet != null)
                                 {
-                                    try
+                                    if (a.VariableToSet.VariableName.StartsWith("#") == true)
                                     {
-                                        this.SetNumericVar(a.VariableToSet.VariableName, Convert.ToDouble(acceptBuffer));
+                                        try
+                                        {
+                                            this.SetNumericVar(a.VariableToSet.VariableName, Convert.ToDouble(acceptBuffer));
+                                        }
+                                        catch (Exception)
+                                        {
+                                            throw new RunTimeException(String.Format("Variable {0} requires numeric input", a.VariableToSet.VariableName));
+                                        }
                                     }
-                                    catch
+                                    else
                                     {
-                                        this.pilotInterface.WriteText("Expected numeric input", true);
-                                        break;
+                                        this.SetStringVar(a.VariableToSet.VariableName, acceptBuffer);
                                     }
+                                }
+                                executionPointer++;
+                            }
+                            else if (statement is Jump)
+                            {
+                                Jump j = (Jump)statement;
+                                executionPointer = program.OrdinalOfLabel(j.LabelToJumpTo.LabelName);
+                                if (executionPointer < 0)
+                                {
+                                    throw new RunTimeException(String.Format("Could not find label: {0}", j.LabelToJumpTo.LabelName));
+                                }
+                            }
+                            else if (statement is Use)
+                            {
+                                Use u = (Use)statement;
+                                callStack.Push(executionPointer + 1);
+                                executionPointer = program.OrdinalOfLabel(u.LabelToUse.LabelName);
+                                if (executionPointer < 0)
+                                {
+                                    throw new RunTimeException(String.Format("Could not find label: {0}", u.LabelToUse.LabelName));
+                                }
+                            }
+                            else if (statement is End)
+                            {
+                                if (callStack.Count == 0)
+                                {
+                                    break;
                                 }
                                 else
                                 {
-                                    this.SetStringVar(a.VariableToSet.VariableName, acceptBuffer);
+                                    executionPointer = callStack.Pop();
                                 }
                             }
-                            executionPointer++;
-                        }
-                        else if (statement is Jump)
-                        {
-                            Jump j = (Jump)statement;
-                            executionPointer = program.OrdinalOfLabel(j.LabelToJumpTo.ToString());
-                            if (executionPointer < 0)
+                            else if (statement is PILOTMatch)
                             {
-                                throw new RunTimeException(String.Format("Could not find label: {0}", j.LabelToJumpTo.ToString()));
+                                PILOTMatch m = (PILOTMatch)statement;
+                                matchState = MatchTypes.N;
+                                matchStateOrdinal = -1;
+                                for (int i = 0; i < m.Conditions.Count; i++)
+                                {
+                                    String evalCondition = this.EvaluateStringExpression(m.Conditions[i]).Trim().ToUpper();
+                                    if (acceptBuffer.ToUpper() == evalCondition)
+                                    {
+                                        matchState = MatchTypes.Y;
+                                        matchStateOrdinal = i;
+                                        break;
+                                    }
+                                }
+                                executionPointer++;
+                            }
+                            else if (statement is JumpOnMatch)
+                            {
+                                JumpOnMatch jom = (JumpOnMatch)statement;
+                                if (matchState != MatchTypes.Y)
+                                {
+                                    executionPointer++;
+                                }
+                                else
+                                {
+                                    if (matchStateOrdinal > jom.LabelsToJumpTo.Count)
+                                    {
+                                        throw new RunTimeException("Jump on Match statement does not have enough labels");
+                                    }
+                                    else
+                                    {
+                                        executionPointer = program.OrdinalOfLabel(jom.LabelsToJumpTo[matchStateOrdinal].LabelName);
+                                        if (executionPointer < 0)
+                                        {
+                                            throw new RunTimeException(String.Format("Could not find label: {0}", jom.LabelsToJumpTo[matchStateOrdinal].LabelName));
+                                        }
+                                    }
+                                }
                             }
                         }
-                        else if (statement is Use)
+                        else
                         {
-                            Use u = (Use)statement;
-                            callStack.Push(executionPointer + 1);
-                            executionPointer = program.OrdinalOfLabel(u.LabelToUse.ToString());
-                            if (executionPointer < 0)
-                            {
-                                throw new RunTimeException(String.Format("Could not find label: {0}", u.LabelToUse.ToString()));
-                            } 
-                        }
-                        else if (statement is End)
-                        {
-                            if (callStack.Count == 0)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                executionPointer = callStack.Pop();
-                            }
-                        }
-                        else if (statement is PILOTMatch)
-                        {
-                            PILOTMatch m = (PILOTMatch)statement;
                             executionPointer++;
                         }
                     }
+                    else
+                    {
+                        executionPointer++;
+                    }
+                }
+                else
+                {
+                    executionPointer++;
                 }
             }
 
         }
 
         /// <summary>
-        /// Evaluates an immediate statement
+        /// Evaluates an immediate statement, can throw PILOTException
         /// </summary>
         /// <param name="statement">the statement to evaluate</param>
         public void EvaluateImmediateStatement(String statement)
@@ -290,7 +334,7 @@
             // short circuit
             if (String.IsNullOrWhiteSpace(statement) == true)
             {
-                this.pilotInterface.WriteText("Cannot evaluate an empty string", true);
+                throw new RunTimeException("Statement must contain instructions to execute");
             }
 
             // var init
@@ -304,73 +348,58 @@
                 iis = (IImmediateStatement)PILOTParser.ParseStatement(statement);
                 this.EvaluateImmediateStatement(iis);
             }
-            catch (PILOTException pe)
-            {
-                this.pilotInterface.WriteText(pe.Message, true);
-            }
             catch (InvalidCastException)
             {
-                this.pilotInterface.WriteText(String.Format("The following statement is not allowed to immediately execute: {0}", statement), true);
+                throw new RunTimeException(String.Format("The following statement is not allowed to immediately execute: {0}", statement));
             }
         }
 
         /// <summary>
-        /// Evaluates an immediate statement
+        /// Evaluates an immediate statement, can throw RunTimeException
         /// </summary>
         /// <param name="statement">the statement to evaluate</param>
         internal void EvaluateImmediateStatement(IImmediateStatement statement)
         {
-            try
+            if (statement is Compute)
             {
-                if (statement is Compute)
+                Compute cs = (Compute)statement;
+                if (this.EvaluateBooleanCondition(cs.IfCondition) == true)
                 {
-                    Compute cs = (Compute)statement;
-                    if (this.EvaluateBooleanCondition(cs.IfCondition) == true)
+                    if (cs.ExpressionToCompute is INumericExpression)
                     {
-                        if (cs.ExpressionToCompute is INumericExpression)
-                        {
-                            INumericExpression ne = (INumericExpression)cs.ExpressionToCompute;
-                            this.EvaluateNumericExpression(ne).ToString();
-                        }
-                        else if (cs.ExpressionToCompute is IStringExpression)
-                        {
-                            IStringExpression se = (IStringExpression)cs.ExpressionToCompute;
-                            this.EvaluateStringExpression(se);
-                        }
+                        INumericExpression ne = (INumericExpression)cs.ExpressionToCompute;
+                        this.EvaluateNumericExpression(ne).ToString();
+                    }
+                    else if (cs.ExpressionToCompute is IStringExpression)
+                    {
+                        IStringExpression se = (IStringExpression)cs.ExpressionToCompute;
+                        this.EvaluateStringExpression(se);
                     }
                 }
-                else if (statement is Text)
+            }
+            else if (statement is Text)
+            {
+                Text ts = (Text)statement;
+                if (this.EvaluateBooleanCondition(ts.IfCondition) == true)
                 {
-                    Text ts = (Text)statement;
-                    if (this.EvaluateBooleanCondition(ts.IfCondition) == true)
-                    {
-                        this.pilotInterface.WriteText(this.EvaluateStringExpression(ts.TextToDisplay), ts.CarriageReturn);
-                    }
+                    this.pilotInterface.WriteText(this.EvaluateStringExpression(ts.TextToDisplay), ts.CarriageReturn);
                 }
-                else if (statement is Remark)
-                {
+            }
+            else if (statement is Remark)
+            {
 
-                    // do nothing!
-                }
-                else if (statement is Pause)
-                {
-                    Pause pa = (Pause)statement;
-                    double timeToPause = this.EvaluateNumericExpression(pa.TimeToPause);
-                    Thread.Sleep(Convert.ToInt32(timeToPause * 1000 / 60));
-                }
+                // do nothing!
             }
-            catch (PILOTException pe)
+            else if (statement is Pause)
             {
-                this.pilotInterface.WriteText(pe.Message, true);
-            }
-            catch (Exception)
-            {
-                this.pilotInterface.WriteText(String.Format("An error occured executing the statement: {0}", statement.ToString()), true);
+                Pause pa = (Pause)statement;
+                double timeToPause = this.EvaluateNumericExpression(pa.TimeToPause);
+                Thread.Sleep(Convert.ToInt32(timeToPause * 1000 / 60));
             }
         }
 
         /// <summary>
-        /// Evaluate a numeric expression, can throw RunTimeException
+        /// Evaluate a numeric expression, can throw PILOTException
         /// </summary>
         /// <param name="numericalExpression">the numeric expression to evaluate</param>
         /// <returns>the value of evaluating the expression(s)</returns>
@@ -482,7 +511,7 @@
         }
 
         /// <summary>
-        /// Evaluates a string expression, can throw RunTimeException
+        /// Evaluates a string expression, can throw PILOTException
         /// </summary>
         /// <param name="stringExpression">the string expression to evaluate</param>
         /// <returns>a String value of the evaluation</returns>
@@ -532,26 +561,34 @@
                 }
                 else if (stringExpression is StringLiteral)
                 {
-                    String[] splitText = ((StringLiteral)stringExpression).StringText.Split(new char[] { ' ' });
-                    foreach (String s in splitText)
+                    String[] split = ((StringLiteral)stringExpression).StringText.Split(new char[] { ' ' });
+                    foreach (String s in split)
                     {
-                        String word = s.Trim();
-                        if ((word.Length > 1) && ((word[0] == '#') || (word[0] == '$')))
+                        String splitPart = s.Trim();
+                        if ((splitPart.Length > 1) && ((splitPart[0] == '#') || (splitPart[0] == '$')))
                         {
-                            int puncLoc = PILOTInterpreter.FirstPunctuation(word.Substring(1)) + 1;
+
+                            // extract the variable name
+                            int puncLoc = PILOTInterpreter.FirstPunctuation(splitPart.Substring(1)) + 1;
+                            String afterPunc = String.Empty;
                             if (puncLoc > 1)
                             {
-                                String afterPunc = word.Substring(puncLoc);
-                                word = word.Substring(0, puncLoc);
-                                word = (word[0] == '#') ? this.GetNumericVar(word).ToString() : this.GetStringVar(word);
-                                word += afterPunc;
+                                afterPunc = splitPart.Substring(puncLoc);
+                                splitPart = splitPart.Substring(0, puncLoc);
                             }
-                            else
+
+                            // attempt to replace variable name
+                            try
                             {
-                                word = (word[0] == '#') ? this.GetNumericVar(word).ToString() : this.GetStringVar(word);
+                                splitPart = (splitPart[0] == '#') ? this.GetNumericVar(splitPart).ToString() : this.GetStringVar(splitPart);
+                                splitPart += afterPunc;
+                            }
+                            catch (RunTimeException)
+                            {
+                                splitPart = s.Trim();
                             }
                         }
-                        retVal += word + " ";
+                        retVal += splitPart + " ";
                     }
                 }
             }
@@ -581,11 +618,8 @@
         internal void SetNumericVar(String varName, Double val)
         {
 
-            // adjust name if neccessary
-            varName = varName.Trim().ToUpper();
-            varName = (varName.StartsWith("#") == true) ? varName : "#" + varName;
-
             // add the variable if neccessary
+            varName = varName.Trim().ToUpper();
             if (this.numericVariables.Keys.Contains(varName) == false)
             {
                 this.numericVariables.Add(varName, 0);
@@ -603,11 +637,8 @@
         internal void SetStringVar(String varName, String val)
         {
 
-            // adjust name if neccessary
-            varName = varName.Trim().ToUpper();
-            varName = (varName.StartsWith("$") == true) ? varName : "$" + varName;
-
             // add the variable if neccessary
+            varName = varName.Trim().ToUpper();
             if (this.stringVariables.Keys.Contains(varName) == false)
             {
                 this.stringVariables.Add(varName, String.Empty);

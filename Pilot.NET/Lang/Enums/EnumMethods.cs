@@ -18,7 +18,7 @@
         {
 
             // var init
-            string retVal = "+";
+            string retVal = "=";
 
             // what op
             switch (op)
@@ -36,6 +36,11 @@
                 case NumericBinaryOperators.Mult:
                 {
                     retVal = "*";
+                    break;
+                }
+                case NumericBinaryOperators.Add:
+                {
+                    retVal = "+";
                     break;
                 }
                 case NumericBinaryOperators.Sub:

@@ -26,7 +26,7 @@
         /// <summary>
         /// The strings to match
         /// </summary>
-        public LinkedList<StringLiteral> Conditions { get; private set; }
+        public List<StringLiteral> Conditions { get; private set; }
 
         /// <summary>
         /// Constructor
@@ -34,7 +34,7 @@
         /// <param name="conditions">the conditions to match</param>
         /// <param name="matchType">the match type</param>
         /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
-        public PILOTMatch(LinkedList<StringLiteral> conditions, MatchTypes matchType, BooleanCondition ifCondition)
+        public PILOTMatch(List<StringLiteral> conditions, MatchTypes matchType, BooleanCondition ifCondition)
         {
 
             // var init

@@ -43,7 +43,7 @@
         {
 
             // form init
-            this.Height = this.graphicsImage.Height + this.saveButton.Height;
+            this.Height = this.graphicsImage.Height;
             this.Width = this.graphicsImage.Width;
             this.graphicsBox.Height = this.graphicsImage.Height;
             this.graphicsBox.Width = this.graphicsImage.Width;
@@ -103,7 +103,7 @@
         /// </summary>
         /// <param name="sender">who triggered the event</param>
         /// <param name="e">event args</param>
-        private void saveButton_Click(object sender, EventArgs e)
+        private void saveImage_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog sfd = new SaveFileDialog())
             {

@@ -34,7 +34,7 @@
         {
             get
             {
-                return this.right;
+                return this.left;
             }
             private set
             {

@@ -202,7 +202,7 @@
                     {
 
                         // evaluate boolean condition to determine whether or not to execute
-                        if ((line.LineStatement.IfCondition == null) || (this.EvaluateBooleanCondition(line.LineStatement.IfCondition) == true))
+                        if (this.EvaluateBooleanCondition(line.LineStatement.IfCondition) == true)
                         {
 
                             // evaluate keyword
@@ -449,8 +449,7 @@
                 }
                 else if (numericalExpression is RandomNumber)
                 {
-
-                    double sign = ((PILOTInterpreter.randomGenerator.NextDouble() * 2.0) > 1) ? -1 : 1;
+                    int sign = ((PILOTInterpreter.randomGenerator.NextDouble() * 2.0) > 1) ? -1 : 1;
                     double value = Math.Ceiling(PILOTInterpreter.randomGenerator.NextDouble() * ((sign > 0) ? 32767 : 32768));
                     retVal = sign * value;
                 }
@@ -481,7 +480,7 @@
                         }
                         else if (opExpression.Operator == NumericBinaryOperators.Mod)
                         {
-                            retVal = leftResult % rightResult;
+                            retVal = Convert.ToInt64(leftResult) % Convert.ToInt64(rightResult);
                         }
                         else if (opExpression.Operator == NumericBinaryOperators.Mult)
                         {
@@ -507,7 +506,7 @@
                 throw new RunTimeException(String.Format("Could not evaluate the expression: {0}", numericalExpression.ToString()), e);
             }
 
-            return retVal;
+            return Math.Round(retVal, 2);
         }
 
         /// <summary>

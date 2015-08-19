@@ -75,6 +75,12 @@
         QUIT,
 
         /// <summary>
+        /// Renumbers a program
+        /// </summary>
+        [Description("RENUMBERS A PROGRAM")]
+        REN,
+
+        /// <summary>
         /// Runs the program in memory
         /// </summary>
         [Description("RUNS THE PROGRAM CURRENTLY IN MEMORY")]

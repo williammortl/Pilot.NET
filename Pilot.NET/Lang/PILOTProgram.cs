@@ -137,6 +137,35 @@
         }
 
         /// <summary>
+        /// Gets the ordinal of the line number for the label
+        /// </summary>
+        /// <param name="label">the label to get the index of</param>
+        /// <returns>-1 if label doesn't exist, else the ordinal of the line number</returns>
+        public int OrdinalOfLabel(String label)
+        {
+
+            // var init
+            int retVal = -1;
+            List<int> listOfLineNumbers = this.LineNumbers;
+
+            // look for the line number
+            label = label.Trim().ToLower();
+            for (int i = 0; i < listOfLineNumbers.Count; i++)
+            {
+                int lineNumber = listOfLineNumbers[i];
+                if ((this[lineNumber] != null) &&
+                    (this[lineNumber].LineLabel != null) &&
+                    (this[lineNumber].LineLabel.ToString().ToLower() == label))
+                {
+                    retVal = i;
+                    break;
+                }
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
         /// Delete a line by index, if that index doesn't exist, does nothing
         /// </summary>
         /// <param name="lineNumber">the line number to delete</param>
@@ -207,7 +236,7 @@
             {
                 Line line = this[lineNumber];
                 String lineString = (line == null) ? String.Empty : line.ToString();
-                retVal += lineString + "\r\n";
+                retVal += String.Format("{0} {1}\r\n", lineNumber.ToString(), lineString);
             }
 
             return retVal;

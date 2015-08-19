@@ -5,6 +5,7 @@
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.PILOTExceptions;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
@@ -152,32 +153,19 @@
                             }
                             case ConsoleCommands.LIST:
                             {
-                                String toPrint = String.Empty; 
-                                if ((split.Length < 2) || (String.IsNullOrWhiteSpace(split[1]) == true))
+                                String toPrint = program.ToString().Trim();
+                                if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
                                 {
-                                    toPrint = program.ToString().Trim();
-                                }
-                                else
-                                {
-                                    String[] lineStartStop = split[1].Trim().Split(new char[1] { '-' });
+                                    String[] lineStartStop = split[1].Trim().Split(new char[1] { ',' }, 2);
                                     int lineStart = 0;
                                     int lineStop = 0;
                                     if ((lineStartStop.Length >= 2) && (Int32.TryParse(lineStartStop[0], out lineStart) == true) && (Int32.TryParse(lineStartStop[1], out lineStop) == true))
                                     {
                                         toPrint = program.ToString(lineStart, lineStop).Trim();
-
                                     }
                                     else if (Int32.TryParse(lineStartStop[0], out lineStart) == true)
                                     {
-                                        Line lineToPrint = program[lineStart];
-                                        if (lineToPrint != null)
-                                        {
-                                            toPrint = lineToPrint.ToString().Trim();
-                                        }
-                                        else
-                                        {
-                                            toPrint = "INVALID LINE NUMBER TO LIST";
-                                        }
+                                        toPrint = program.ToString(lineStart, lineStart).Trim();
                                     }
                                     else
                                     {
@@ -191,6 +179,7 @@
                             }
                             case ConsoleCommands.LOAD:
                             {
+                                program = new PILOTProgram();
                                 if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
                                 {
                                     try
@@ -355,14 +344,49 @@
                                 }
                                 break;
                             }
+                            case ConsoleCommands.REN:
+                            {
+                                List<int> lineNumbersOrig = program.LineNumbers;
+                                if ((lineNumbersOrig != null) && (lineNumbersOrig.Count > 0))
+                                {
+
+                                    // figure out start and incrememnt
+                                    int start = 10;
+                                    int increment = 10;
+                                    if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
+                                    {
+                                        String[] renumStartIncrement = split[1].Trim().Split(new char[1] { ',' }, 2);
+                                        if ((renumStartIncrement.Length >= 1) && (Program.IsInt(renumStartIncrement[0]) == true))
+                                        {
+                                            start = Convert.ToInt32(renumStartIncrement[0]);
+                                        }
+                                        if ((renumStartIncrement.Length == 2) && (Program.IsInt(renumStartIncrement[1]) == true))
+                                        {
+                                            increment = Convert.ToInt32(renumStartIncrement[1]);
+                                        }
+                                    }
+
+                                    // actually renumber
+                                    PILOTProgram newProgram = new PILOTProgram();
+                                    int currentValue = start;
+                                    int totalLines = program.LineNumbers.Count;
+                                    for (int i = 0; i < totalLines; i++)
+                                    {
+                                        newProgram[currentValue] = program[lineNumbersOrig[i]];
+                                        currentValue = currentValue + increment;
+                                    }
+                                    program = newProgram;
+                                }
+                                break;
+                            }
                         }
                     }
                     else if (Program.IsInt(split[0].Trim()) == true)
                     {
-
-                        // delete or add / replace a program line
                         if ((split.Length < 2) || (String.IsNullOrWhiteSpace(split[1]) == true))
                         {
+
+                            // delete the line
                             program[Convert.ToInt32(split[0])] = null;
                         }
                         else
@@ -370,9 +394,9 @@
                             try
                             {
 
-                                // parse the line and add
-                                Line line = PILOTParser.ParseLine(text);
-                                program[line.LineNumber] = line;
+                                // parse the line and add / replace
+                                Line line = PILOTParser.ParseLine(split[1]);
+                                program[Convert.ToInt32(split[0])] = line;
                             }
                             catch (PILOTException pe)
                             {

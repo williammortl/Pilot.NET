@@ -179,8 +179,8 @@
         /// <summary>
         /// Runs a PILOT program
         /// </summary>
-        /// <param name="prog">the program to execute</param>
-        public void Run(PILOTProgram prog)
+        /// <param name="program">the program to execute</param>
+        public void Run(PILOTProgram program)
         {
 
             // clear current memory first
@@ -193,11 +193,11 @@
             String acceptBuffer = String.Empty;
 
             // execute until we cant
-            while (executionPointer < prog.LineNumbers.Count)
+            while (executionPointer < program.LineNumbers.Count)
             {
                 
                 // execute statement
-                Line line = prog[prog.LineNumbers[executionPointer]];
+                Line line = program[program.LineNumbers[executionPointer]];
                 IStatement statement = line.LineStatement;
 
                 // check for match type to determine whether or not to execute
@@ -239,6 +239,25 @@
                             }
                             executionPointer++;
                         }
+                        else if (statement is Jump)
+                        {
+                            Jump j = (Jump)statement;
+                            executionPointer = program.OrdinalOfLabel(j.LabelToJumpTo.ToString());
+                            if (executionPointer < 0)
+                            {
+                                throw new RunTimeException(String.Format("Could not find label: {0}", j.LabelToJumpTo.ToString()));
+                            }
+                        }
+                        else if (statement is Use)
+                        {
+                            Use u = (Use)statement;
+                            callStack.Push(executionPointer + 1);
+                            executionPointer = program.OrdinalOfLabel(u.LabelToUse.ToString());
+                            if (executionPointer < 0)
+                            {
+                                throw new RunTimeException(String.Format("Could not find label: {0}", u.LabelToUse.ToString()));
+                            } 
+                        }
                         else if (statement is End)
                         {
                             if (callStack.Count == 0)
@@ -250,32 +269,10 @@
                                 executionPointer = callStack.Pop();
                             }
                         }
-                        else if (statement is Jump)
+                        else if (statement is PILOTMatch)
                         {
-                            Jump j = (Jump)statement;
-                            Line lineOfLabel = prog[j.LabelToJumpTo.ToString()];
-                            if (lineOfLabel == null)
-                            {
-                                throw new RunTimeException(String.Format("Could not find label: {0}", j.LabelToJumpTo.ToString()));
-                            }
-                            else
-                            {
-                                executionPointer = prog.OrdinalOfLineNumber(lineOfLabel.LineNumber);
-                            }
-                        }
-                        else if (statement is Use)
-                        {
-                            Use u = (Use)statement;
-                            Line lineOfLabel = prog[u.LabelToUse.ToString()];
-                            if (lineOfLabel == null)
-                            {
-                                throw new RunTimeException(String.Format("Could not find label: {0}", u.LabelToUse.ToString()));
-                            }
-                            else
-                            {
-                                callStack.Push(executionPointer + 1);
-                                executionPointer = prog.OrdinalOfLineNumber(lineOfLabel.LineNumber);
-                            }
+                            PILOTMatch m = (PILOTMatch)statement;
+                            executionPointer++;
                         }
                     }
                 }

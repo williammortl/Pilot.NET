@@ -11,11 +11,6 @@
     {
 
         /// <summary>
-        /// The line number
-        /// </summary>
-        public int LineNumber { get; private set; }
-
-        /// <summary>
         /// The label for the line, null if no label
         /// </summary>
         public Label LineLabel { get; private set; }
@@ -28,14 +23,12 @@
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="lineNumber">what line number</param>
         /// <param name="lineLabel">the label</param>
         /// <param name="lineStatement">what statement, can be null if this is just a label</param>
-        internal Line(int lineNumber, Label lineLabel, IStatement lineStatement)
+        internal Line(Label lineLabel, IStatement lineStatement)
         {
 
             // var init
-            this.LineNumber = lineNumber;
             this.LineLabel = lineLabel;
             this.LineStatement = lineStatement;
             
@@ -61,16 +54,16 @@
             {
                 if (this.LineStatement == null)
                 {
-                    retVal = String.Format("{0} {1}", this.LineNumber.ToString(), this.LineLabel);
+                    retVal = String.Format("{0}", this.LineLabel);
                 }
                 else
                 {
-                    retVal = String.Format("{0} {1} {2}", this.LineNumber.ToString(), this.LineLabel, this.LineStatement.ToString());
+                    retVal = String.Format("{0} {1}", this.LineLabel, this.LineStatement.ToString());
                 }
             }
             else
             {
-                retVal = String.Format("{0} {1}", this.LineNumber.ToString(), this.LineStatement.ToString());
+                retVal = String.Format("{0}", this.LineStatement.ToString());
             }
 
             return retVal;

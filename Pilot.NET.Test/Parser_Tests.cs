@@ -60,28 +60,28 @@
         {
 
             // test weird scenario
-            String PILOT = "20 *newlabel CY: 4 \\ (#var2 + ?)";
+            String PILOT = "*newlabel CY: 4 \\ (#var2 + ?)";
             Line l = PILOTParser.ParseLine(PILOT);
             String newPILOT = l.ToString();
             l = PILOTParser.ParseLine(newPILOT);
             Assert.AreEqual(newPILOT, l.ToString());
 
             // basic line, text, with a label and match type
-            PILOT = "10 *thisismylabel TN: this is test text";
+            PILOT = "*thisismylabel TN: this is test text";
             l = PILOTParser.ParseLine(PILOT);
             newPILOT = l.ToString();
             l = PILOTParser.ParseLine(newPILOT);
             Assert.AreEqual(newPILOT, l.ToString());
  
             // compute, with a label and match type
-            PILOT = "20 *newlabel CY:((((7 * #var1) + 7 - 4 \\ (#var2 + ?))))";
+            PILOT = "*newlabel CY:((((7 * #var1) + 7 - 4 \\ (#var2 + ?))))";
             l = PILOTParser.ParseLine(PILOT);
             newPILOT = l.ToString();
             l = PILOTParser.ParseLine(newPILOT);
             Assert.AreEqual(newPILOT, l.ToString());
 
             // compute, with a label and match type
-            PILOT = "20 *newlabel CY(((#var1 \\ 4) >= ((4 - #var5)))):((((7 * #var1) + 7 - 4 \\ (#var2 + ?))))";
+            PILOT = "*newlabel CY(((#var1 \\ 4) >= ((4 - #var5)))):((((7 * #var1) + 7 - 4 \\ (#var2 + ?))))";
             l = PILOTParser.ParseLine(PILOT);
             newPILOT = l.ToString();
             l = PILOTParser.ParseLine(newPILOT);

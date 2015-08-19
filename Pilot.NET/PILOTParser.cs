@@ -61,14 +61,41 @@
             String[] lines = text.Split(new char[] { '\n' });
             PILOTProgram retVal = new PILOTProgram();
 
-            // loop through each line, create line object
+            // loop through each line, extract line number, create the line object
             foreach (String line in lines)
             {
                 String trimmedLine = line.Trim();
                 if (String.IsNullOrWhiteSpace(trimmedLine) == false)
                 {
-                    Line newLine = PILOTParser.ParseLine(trimmedLine);
-                    retVal[newLine.LineNumber] = newLine;
+
+                    // short circuit
+                    if (String.IsNullOrWhiteSpace(trimmedLine) == true)
+                    {
+                        throw new ParserException("Line must contain syntax");
+                    }
+
+                    // split the string by ' ', make sure the split contains at least 2 items
+                    String[] split = trimmedLine.Split(new char[] { ' ' }, 2);
+                    if (split.Length < 2)
+                    {
+                        throw new ParserException(String.Format("The line:\r\n{0}\r\ndoes not contain valid syntax", text));
+                    }
+                    String lineNumberText = split[0].Trim();
+                    String lineText = split[1].Trim();
+
+                    // get line number, begin the statement string extraction
+                    int lineNumber = 0;
+                    try
+                    {
+                        lineNumber = System.Convert.ToInt32(lineNumberText);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ParserException(String.Format("The line:\r\n{0}\r\ndoes not contain a valid line number.", text), e);
+                    }
+
+                    Line newLine = PILOTParser.ParseLine(lineText);
+                    retVal[lineNumber] = newLine;
                 }
             }
 
@@ -84,52 +111,26 @@
         public static Line ParseLine(String text)
         {
 
-            // short circuit
-            text = text.Trim();
-            if (String.IsNullOrWhiteSpace(text) == true)
-            {
-                throw new ParserException("Line must contain syntax");
-            }
-
-            // split the string by ' ', make sure the split contains at least 2 items
-            String[] splitStr = text.Split(new char[] { ' ' }, 2);
-            if (splitStr.Length < 2)
-            {
-                throw new ParserException(String.Format("The line:\r\n{0}\r\ndoes not contain valid syntax", text));
-            }
-            String lineNumberString = splitStr[0].Trim();
-            String statementString = splitStr[1].Trim();
-
-            // get line number, begin the statement string extraction
-            int lineNumber = 0;
-            try
-            {
-                lineNumber = System.Convert.ToInt32(lineNumberString);
-            }
-            catch (Exception e)
-            {
-                throw new ParserException(String.Format("The line:\r\n{0}\r\ndoes not contain a valid line number.", text), e);
-            }
-
             // check for a label, build the Label object, build a statement object
+            text = text.Trim();
             String labelString = String.Empty;
-            if (statementString.StartsWith("*") == true)
+            if (text.StartsWith("*") == true)
             {
-                String[] splitStatementString = statementString.Split(new char[] { ' ' }, 2);
+                String[] splitStatementString = text.Split(new char[] { ' ' }, 2);
                 labelString = splitStatementString[0].Trim();
                 if (splitStatementString.Length > 1)
                 {
-                    statementString = splitStatementString[1].Trim();
+                    text = splitStatementString[1].Trim();
                 }
                 else
                 {
-                    statementString = String.Empty;
+                    text = String.Empty;
                 }
             }
             Label lineLabel = PILOTParser.ParseLabel(labelString);
-            IStatement lineStatement = PILOTParser.ParseStatement(statementString);
+            IStatement lineStatement = PILOTParser.ParseStatement(text);
 
-            return new Line(lineNumber, lineLabel, lineStatement);
+            return new Line(lineLabel, lineStatement);
         }
 
         /// <summary>

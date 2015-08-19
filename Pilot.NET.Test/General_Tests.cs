@@ -24,19 +24,15 @@
         {
 
             // setup program
-            PILOTProgram prog = new PILOTProgram();
-            prog[3] = PILOTParser.ParseLine("3 J:*testlabel");
+            String pilotString = "0 R:to be deleted\r\n3 J:*testlabel\r\n2 T:GOODBYE\r\n1 *testlabel T:HELLO\r\n2 T:WORLD\r\n4 E:";
+            PILOTProgram prog = PILOTParser.ParseProgram(pilotString);
             prog.DeleteLine(0);
-            prog[2] = PILOTParser.ParseLine("2 T:GOODBYE");
-            prog[1] = PILOTParser.ParseLine("1 *testlabel T:HELLO");
-            prog[2] = PILOTParser.ParseLine("2 T:WORLD");
-            prog[4] = PILOTParser.ParseLine("4 E:");
             prog.DeleteLine(3);
             int[] programLineNumbers = prog.LineNumbers.ToArray();
 
             // check the constructions
-            Assert.AreEqual(prog["*testlabel"].LineNumber, 1);
-            Assert.AreEqual("2 T:WORLD", prog[2].ToString());
+            Assert.AreEqual(prog.LabelToLineNumber("*testlabel"), 1);
+            Assert.AreEqual("T:WORLD", prog[2].ToString());
             Assert.AreEqual(prog[1].LineLabel.ToString(), "*testlabel");
             Assert.IsTrue(prog[2].LineStatement is Text);
             Assert.AreEqual(((Text)prog[2].LineStatement).TextToDisplay.ToString(), "WORLD");

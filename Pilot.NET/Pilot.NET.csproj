@@ -54,6 +54,8 @@
     <Compile Include="Lang\Enums\Keywords.cs" />
     <Compile Include="Lang\Enums\MatchTypes.cs" />
     <Compile Include="Lang\Enums\NumericBinaryOperators.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\IGraphicsExpression.cs" />
+    <Compile Include="Lang\Statements\TurtleGraphics.cs" />
     <Compile Include="PILOTExceptions\CannotAssignException.cs" />
     <Compile Include="PILOTExceptions\InvalidSyntax.cs" />
     <Compile Include="PILOTExceptions\NullStatementException.cs" />

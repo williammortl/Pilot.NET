@@ -29,6 +29,12 @@
         /// <summary>
         /// jump -> J: *MyLabel
         /// </summary>
+        [Description("TURTLE GRAPHICS*")]
+        GR,
+
+        /// <summary>
+        /// jump -> J: *MyLabel
+        /// </summary>
         [Description("JUMP")]
         J,
 

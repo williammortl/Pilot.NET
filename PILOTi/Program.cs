@@ -386,6 +386,12 @@
                                 }
                                 break;
                             }
+                            case ConsoleCommands.VERSION:
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine(String.Format("PILOT.NET VERSION: {0}", Assembly.GetAssembly(typeof(PILOTProgram)).GetName().Version.ToString()));
+                                break;
+                            }
                         }
                     }
                     else if (Program.IsInt(split[0].Trim()) == true)

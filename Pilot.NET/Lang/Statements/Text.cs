@@ -13,11 +13,6 @@
     {
 
         /// <summary>
-        /// The text to display
-        /// </summary>
-        private StringLiteral textToDisplay;
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -28,41 +23,9 @@
         public BooleanCondition IfCondition { get; private set; }
 
         /// <summary>
-        /// Add a carriage return after printing the text
-        /// </summary>
-        public Boolean CarriageReturn { get; private set; }
-
-        /// <summary>
         /// The text to display
         /// </summary>
-        public StringLiteral TextToDisplay 
-        {
-            get
-            {
-                return this.textToDisplay;
-            }
-            private set
-            {
-
-                // throw error if null
-                if (value == null)
-                {
-                    throw new InvalidSyntax("Cannot pass null string literal to Text statement");
-                }
-
-                // check for carriage return
-                if (value.StringText.EndsWith("\\") == true)
-                {
-                    this.textToDisplay = new StringLiteral(value.StringText.Substring(0, value.StringText.Length - 1));
-                    this.CarriageReturn = false;
-                }
-                else
-                {
-                    this.textToDisplay = value;
-                    this.CarriageReturn = true;
-                }
-            }
-        }
+        public IStringExpression TextToDisplay { get; private set;  }
 
         /// <summary>
         /// Constructor
@@ -70,7 +33,7 @@
         /// <param name="text">the text of the parameters</param>
         /// <param name="matchType">the match type</param>
         /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
-        public Text(StringLiteral text, MatchTypes matchType, BooleanCondition ifCondition)
+        public Text(IStringExpression text, MatchTypes matchType, BooleanCondition ifCondition)
         {
 
             // attribute init
@@ -87,7 +50,7 @@
         {
 
             // var init
-            String textToString = this.TextToDisplay.ToString() + ((this.CarriageReturn == false) ? " \\" : String.Empty);
+            String textToString = (this.TextToDisplay == null) ? String.Empty : this.TextToDisplay.ToString();
 
             return StatementMethods.StatementToString(Keywords.T, this.MatchType, this.IfCondition, textToString);
         }

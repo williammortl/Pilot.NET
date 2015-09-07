@@ -301,7 +301,7 @@
                 }
                 case Keywords.T:
                 {
-                    statement = new Text(new StringLiteral(parametersForKeyword), match, ifCondition);
+                    statement = new Text(PILOTParser.ParseStringExpression(parametersForKeyword), match, ifCondition);
                     break;
                 }
                 case Keywords.U:
@@ -452,6 +452,10 @@
                     {
                         retVal = new StringLiteral(text);
                     }
+                }
+                else if (text.ToUpper() == TextClear.CLEAR_TEXT)
+                {
+                    retVal = new TextClear();
                 }
                 else
                 {

@@ -102,6 +102,12 @@
         /// Print all variables
         /// </summary>
         [Description("PRINTS ALL VARIABLES IN MEMORY")]
-        VARS
+        VARS,
+
+        /// <summary>
+        /// Print all variables
+        /// </summary>
+        [Description("PRINTS THE PILOT VERSION")]
+        VERSION
     }
 }

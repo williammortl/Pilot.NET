@@ -34,5 +34,10 @@
         /// </summary>
         /// <returns>a line of text from the user</returns>
         String ReadTextLine();
+
+        /// <summary>
+        /// Clears the text screen
+        /// </summary>
+        void ClearText();
     }
 }

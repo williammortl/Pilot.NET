@@ -382,7 +382,21 @@
                 Text ts = (Text)statement;
                 if (this.EvaluateBooleanCondition(ts.IfCondition) == true)
                 {
-                    this.pilotInterface.WriteText(this.EvaluateStringExpression(ts.TextToDisplay), ts.CarriageReturn);
+                    if (ts.TextToDisplay is TextClear)
+                    {
+                        this.pilotInterface.ClearText();
+                    }
+                    else
+                    {
+                        String textOut = this.EvaluateStringExpression(ts.TextToDisplay).Trim();
+                        Boolean carriageReturn = false;
+                        if (textOut.EndsWith("\\") == true)
+                        {
+                            carriageReturn = true;
+                            textOut = textOut.Substring(0, textOut.Length - 1);
+                        }
+                        this.pilotInterface.WriteText(textOut, carriageReturn);
+                    }
                 }
             }
             else if (statement is Remark)

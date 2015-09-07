@@ -93,6 +93,14 @@
         }
 
         /// <summary>
+        /// Clears the text screen
+        /// </summary>
+        public void ClearText()
+        {
+            Console.Clear();
+        }
+
+        /// <summary>
         /// Disposes the class
         /// </summary>
         public void Dispose()

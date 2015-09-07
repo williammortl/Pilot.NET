@@ -54,7 +54,16 @@
     <Compile Include="Lang\Enums\Keywords.cs" />
     <Compile Include="Lang\Enums\MatchTypes.cs" />
     <Compile Include="Lang\Enums\NumericBinaryOperators.cs" />
+    <Compile Include="Lang\Enums\PenColors.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\ClearGraphics.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\DrawTo.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\FillTo.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\Goto.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\IGraphicsExpression.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\Pen.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\Turn.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\TurnTo.cs" />
+    <Compile Include="Lang\Expressions\StringExpressions\TextClear.cs" />
     <Compile Include="Lang\Statements\TurtleGraphics.cs" />
     <Compile Include="PILOTExceptions\CannotAssignException.cs" />
     <Compile Include="PILOTExceptions\InvalidSyntax.cs" />

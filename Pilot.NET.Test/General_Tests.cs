@@ -48,15 +48,22 @@
         [TestMethod]
         public void TestDefaultInterpreterInterfaceGraphicsForm()
         {
-            Image i = new Bitmap(300, 300);
-            DefaultInterpreterInterfaceGraphicsForm f = DefaultInterpreterInterfaceGraphicsForm.ShowForm(i);
-            Graphics g = Graphics.FromImage(i);
-            g.DrawLine(new Pen(Color.Blue, 10), new Point(0, 0), new Point(200, 200));
-            g.DrawLine(new Pen(Color.Red, 10), new Point(0, 200), new Point(200, 0));
-            f.Invoke(new Action(f.Invalidate));
+            IPILOTInterpreterInterface intf = new DefaultInterpreterInterface();
+            Graphics g = Graphics.FromImage(intf.GraphicsOutput);
+            g.DrawLine(new Pen(Color.Blue, 10), new Point(0, 0), new Point(1024, 768));
+            g.DrawLine(new Pen(Color.Red, 10), new Point(0, 768), new Point(1024, 0));
+            intf.RedrawGraphics();
             Thread.Sleep(3000);
-            f.Invoke(new Action(f.Close));
-            i.Dispose();
+            g.Dispose();
+            intf.ClearGraphics();
+            Thread.Sleep(3000);
+            g = Graphics.FromImage(intf.GraphicsOutput);
+            g.DrawLine(new Pen(Color.Green, 10), new Point(0, 0), new Point(1024, 768));
+            g.DrawLine(new Pen(Color.Purple, 10), new Point(0, 768), new Point(1024, 0));
+            intf.RedrawGraphics();
+            Thread.Sleep(3000);
+            g.Dispose();
+            intf.Dispose();
         }
     }
 }

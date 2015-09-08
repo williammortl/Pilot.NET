@@ -39,5 +39,10 @@
         /// Clears the text screen
         /// </summary>
         void ClearText();
+
+        /// <summary>
+        /// Clears the graphics
+        /// </summary>
+        void ClearGraphics();
     }
 }

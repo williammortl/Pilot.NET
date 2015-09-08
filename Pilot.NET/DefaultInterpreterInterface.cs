@@ -54,15 +54,7 @@
         /// </summary>
         public void RedrawGraphics()
         {
-
-            // create the form if it hasn't been created
-            if (this.graphicsForm.Visible == false)
-            {
-                this.graphicsForm.Invoke(new Action(this.graphicsForm.Close));
-            }
-            this.graphicsForm = DefaultInterpreterInterfaceGraphicsForm.ShowForm(this.GraphicsOutput);
-
-            // refresh the graphics
+            this.CreateGraphicsFormIfNeeded();
             this.graphicsForm.Invoke(new Action(this.graphicsForm.Invalidate));
         }
 
@@ -101,6 +93,17 @@
         }
 
         /// <summary>
+        /// Clears the graphics
+        /// </summary>
+        public void ClearGraphics()
+        {
+            this.GraphicsOutput = new Bitmap(this.GraphicsOutput.Width, this.GraphicsOutput.Height);
+            this.CreateGraphicsFormIfNeeded();
+            this.graphicsForm.GraphicsImage = this.GraphicsOutput;
+            this.RedrawGraphics();
+        }
+
+        /// <summary>
         /// Disposes the class
         /// </summary>
         public void Dispose()
@@ -117,6 +120,22 @@
             if (this.GraphicsOutput != null)
             {
                 this.GraphicsOutput.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Creates the graphics window if needed
+        /// </summary>
+        private void CreateGraphicsFormIfNeeded()
+        {
+            if ((this.graphicsForm != null) && (this.graphicsForm.Visible == false))
+            {
+                this.graphicsForm.Invoke(new Action(this.graphicsForm.Close));
+                this.graphicsForm = null;
+            }
+            if (this.graphicsForm == null)
+            {
+                this.graphicsForm = DefaultInterpreterInterfaceGraphicsForm.ShowForm(this.GraphicsOutput);
             }
         }
     }

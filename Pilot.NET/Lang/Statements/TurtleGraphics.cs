@@ -13,11 +13,6 @@
     {
 
         /// <summary>
-        /// The graphics expression for graphics to evaluates
-        /// </summary>
-        private IGraphicsExpression graphicsExpression;
-
-        /// <summary>
         /// Is this a command for a match (M) command?
         /// </summary>
         public MatchTypes MatchType { get; private set; }
@@ -30,21 +25,7 @@
         /// <summary>
         /// The graphics expression for graphics to evaluates
         /// </summary>
-        public IGraphicsExpression GraphicsExpression
-        {
-            get
-            {
-                return this.graphicsExpression;
-            }
-            private set
-            {
-                if (value == null)
-                {
-                    throw new InvalidSyntax("Cannot evaluate a null graphics expression");
-                }
-                this.graphicsExpression = value;
-            }
-        }
+        public IGraphicsExpression GraphicsExpression { get; private set; }
 
         /// <summary>
         /// Constructor

@@ -121,6 +121,7 @@
                                 Console.WriteLine(); 
                                 Console.WriteLine(Program.PILOT_MASTHEAD);
                                 Console.WriteLine(Program.PILOT_ABOUT);
+                                Console.WriteLine(String.Format("PILOT.NET VERSION: {0}", Assembly.GetAssembly(typeof(PILOTProgram)).GetName().Version.ToString()));
                                 break;
                             }
                             case ConsoleCommands.CLEAR:

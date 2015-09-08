@@ -1,23 +1,24 @@
-1 R: this is a test of PILOT by William Mortl, \ - means no line break
-2 *mainmenu T: select a test:
-3 T: 1 - numeric
-4 T: 2 - string
-5 T: 3 - exit
-6 T: Your choice - \
-7 A:
-8 M: 1, 2, 3
-9 JM: *numerictest, *stringtest, *exit
-10 *numerictest T: Enter a number - \
-11 A: #num1
-12 T: Enter another number - \
-13 A: #num2
-14 T: #num1 + #num2 = \
-15 C: #sum = #num1 + #num2
-16 T: #sum
-17 J: *mainmenu
-18 *stringtest T: Enter your name - \
-19 A: $name
-20 T: Hello $name!
-21 J: *mainmenu
-22 *exit
-23 E:
+10 R:this is a test of PILOT by William Mortl, \ - means no line break
+20 T:{CLEAR}
+30 *mainmenu T:select a test:
+40 T:1 - numeric
+50 T:2 - string
+60 T:3 - exit
+70 T:Your choice - \
+80 A:
+90 M: 1,  2,  3
+100 JM: *numerictest, *stringtest, *exit
+110 *numerictest T:Enter a number - \
+120 A:#num1
+130 T:Enter another number - \
+140 A:#num2
+150 T:#num1 + #num2 = \
+160 C:(#SUM = (#NUM1 + #NUM2))
+170 T:#sum
+180 J:*mainmenu
+190 *stringtest T:Enter your name - \
+200 A:$name
+210 T:Hello $name!
+220 J:*mainmenu
+230 *exit
+240 E:

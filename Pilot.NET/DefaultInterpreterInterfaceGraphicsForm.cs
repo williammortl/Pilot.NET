@@ -21,7 +21,7 @@
         /// <summary>
         /// the image containing the graphics, not responsible for the disposal of this
         /// </summary>
-        private Image graphicsImage;
+        public Image GraphicsImage;
 
         /// <summary>
         /// Private constructor, use ShowForm method instead
@@ -29,7 +29,7 @@
         /// <param name="graphicsImage">the image to draw</param>
         private DefaultInterpreterInterfaceGraphicsForm(Image graphicsImage)
         {
-            this.graphicsImage = graphicsImage;
+            this.GraphicsImage = graphicsImage;
             this.Text = DefaultInterpreterInterfaceGraphicsForm.TITLE;
             InitializeComponent();
         }
@@ -43,10 +43,10 @@
         {
 
             // form init
-            this.Height = this.graphicsImage.Height;
-            this.Width = this.graphicsImage.Width;
-            this.graphicsBox.Height = this.graphicsImage.Height;
-            this.graphicsBox.Width = this.graphicsImage.Width;
+            this.Height = this.GraphicsImage.Height;
+            this.Width = this.GraphicsImage.Width;
+            this.graphicsBox.Height = this.GraphicsImage.Height;
+            this.graphicsBox.Width = this.GraphicsImage.Width;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@
         /// <param name="e">event args</param>
         private void graphicsBox_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.DrawImage(this.graphicsImage, new Point(0, 0));   
+            e.Graphics.DrawImage(this.GraphicsImage, new Point(0, 0));   
         }
 
         /// <summary>
@@ -115,7 +115,7 @@
                 {
                     String fileName = sfd.FileName;
                     ImageFormat format = (Path.GetExtension(fileName).Trim().Substring(1).ToLower().Contains("bmp") == true) ? ImageFormat.Bmp : ImageFormat.Png;
-                    this.graphicsImage.Save(fileName, format);
+                    this.GraphicsImage.Save(fileName, format);
                 }
             }
         }

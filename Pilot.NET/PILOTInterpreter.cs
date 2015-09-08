@@ -389,10 +389,10 @@
                     else
                     {
                         String textOut = this.EvaluateStringExpression(ts.TextToDisplay).Trim();
-                        Boolean carriageReturn = false;
+                        Boolean carriageReturn = true;
                         if (textOut.EndsWith("\\") == true)
                         {
-                            carriageReturn = true;
+                            carriageReturn = false;
                             textOut = textOut.Substring(0, textOut.Length - 1);
                         }
                         this.pilotInterface.WriteText(textOut, carriageReturn);

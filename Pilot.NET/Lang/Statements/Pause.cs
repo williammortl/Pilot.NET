@@ -61,7 +61,7 @@
         /// </summary>
         /// <param name="timeToPause">numeric expression for how long to pause, each tick is 1/60 th of a second</param>
         /// <param name="matchType">the match type</param>
-        /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
+        /// <param name="ifCondition">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
         public Pause(INumericExpression timeToPause, MatchTypes matchType, BooleanCondition ifCondition)
         {
             this.MatchType = matchType;

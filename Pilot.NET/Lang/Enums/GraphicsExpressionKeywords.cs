@@ -7,64 +7,64 @@
     using System.Threading.Tasks;
     
     /// <summary>
-    /// Pen colors for turtle graphics
+    /// Graphics expression keywords
     /// </summary>
-    public enum PenColors
+    internal enum GraphicsExpressionKeywords
     {
 
         /// <summary>
-        /// Black
+        /// Clears the graphics
         /// </summary>
-        ERASE,
+        CLEAR,
 
         /// <summary>
-        /// Red
+        /// Draws
         /// </summary>
-        RED,
+        DRAW,
 
         /// <summary>
-        /// Yellow
+        /// Draws
         /// </summary>
-        YELLOW,
+        DRAWTO,
 
         /// <summary>
-        /// Blue
+        /// Fills
         /// </summary>
-        BLUE,
+        FILL,
 
         /// <summary>
-        /// Black
+        /// Fills
         /// </summary>
-        BLACK,
+        FILLTO,
 
         /// <summary>
-        /// Green
+        /// Moves the turtle
         /// </summary>
-        GREEN,
+        GO,
 
         /// <summary>
-        /// Orange
+        /// Moves the turtle
         /// </summary>
-        ORANGE,
+        GOTO,
 
         /// <summary>
-        /// Purple
+        /// Changes the pen color
         /// </summary>
-        PURPLE,
+        PEN,
 
         /// <summary>
-        /// Pink
+        /// Quits the graphics
         /// </summary>
-        PINK,
+        QUIT,
 
         /// <summary>
-        /// Turquoise
+        /// Turns the turls
         /// </summary>
-        TURQUOISE,
+        TURN,
 
         /// <summary>
-        /// White
+        /// Turns the turtle
         /// </summary>
-        WHITE
+        TURNTO
     }
 }

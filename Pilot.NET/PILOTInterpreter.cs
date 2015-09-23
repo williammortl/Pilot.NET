@@ -10,6 +10,7 @@
     using Pilot.NET.PILOTExceptions;
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -41,6 +42,16 @@
         private Dictionary<String, double> numericVariables;
 
         /// <summary>
+        /// The current pen color
+        /// </summary>
+        public PenColors PenColor { get; private set; }
+
+        /// <summary>
+        /// The turtle's position
+        /// </summary>
+        public Point TurtlePosition { get; private set; }
+
+        /// <summary>
         /// List of the name of string variables
         /// </summary>
         public List<String> StringVariables
@@ -70,8 +81,7 @@
 
             // attribute init
             this.pilotInterface = new DefaultInterpreterInterface();
-            this.stringVariables = new Dictionary<string, string>();
-            this.numericVariables = new Dictionary<string, double>();
+            this.ClearMemoryState();
         }
 
         /// <summary>
@@ -89,8 +99,7 @@
 
             // attribute init
             this.pilotInterface = pilotInterface;
-            this.stringVariables = new Dictionary<string, string>();
-            this.numericVariables = new Dictionary<string, double>();
+            this.ClearMemoryState();
         }
 
         /// <summary>
@@ -100,6 +109,13 @@
         {
             this.stringVariables = new Dictionary<string, string>();
             this.numericVariables = new Dictionary<string, double>();
+
+            // turtle graphics init
+            this.PenColor = PenColors.BLACK;
+            this.TurtlePosition = new Point(0, 0);
+            this.SetNumericVar("%X", 0);
+            this.SetNumericVar("%Y", 0);
+            this.SetNumericVar("%A", 0);
         }
 
         /// <summary>
@@ -714,6 +730,17 @@
             }
 
             return retVal;
+        }
+
+        /// <summary>
+        /// Translates points from zero-centered to .NET image box
+        /// </summary>
+        /// <param name="p">zero centered point</param>
+        /// <returns>.NET image style point</returns>
+        internal Point TranslatePoint(Point p)
+        {
+            return new Point(p.X + Convert.ToInt32(.5 * this.pilotInterface.GraphicsOutput.Width),
+                             p.Y + Convert.ToInt32(.5 * this.pilotInterface.GraphicsOutput.Height));
         }
 
         /// <summary>

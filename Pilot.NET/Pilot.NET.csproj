@@ -51,16 +51,21 @@
     </Compile>
     <Compile Include="Lang\Enums\BooleanConditionOperators.cs" />
     <Compile Include="Lang\Enums\EnumMethods.cs" />
+    <Compile Include="Lang\Enums\GraphicsExpressionKeywords.cs" />
     <Compile Include="Lang\Enums\Keywords.cs" />
     <Compile Include="Lang\Enums\MatchTypes.cs" />
     <Compile Include="Lang\Enums\NumericBinaryOperators.cs" />
     <Compile Include="Lang\Enums\PenColors.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\ClearGraphics.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\Draw.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\DrawTo.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\Fill.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\FillTo.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\Go.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\Goto.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\IGraphicsExpression.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\Pen.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\QuitGraphics.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\Turn.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\TurnTo.cs" />
     <Compile Include="Lang\Expressions\StringExpressions\TextClear.cs" />

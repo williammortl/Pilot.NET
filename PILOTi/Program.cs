@@ -68,6 +68,10 @@
                 // display the masthead
                 Console.WriteLine(Program.PILOT_MASTHEAD);
 
+                // display the splash form 
+                Splash splash = new Splash();
+                splash.ShowDialog();
+
                 // run the shell
                 Program.PilotShell();
 
@@ -391,6 +395,42 @@
                             {
                                 Console.WriteLine();
                                 Console.WriteLine(String.Format("PILOT.NET VERSION: {0}", Assembly.GetAssembly(typeof(PILOTProgram)).GetName().Version.ToString()));
+                                break;
+                            }
+                            case ConsoleCommands.OPERATORS:
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("BOOLEAN OPERATORS:");
+                                Console.WriteLine("------------------");
+                                BooleanConditionOperators[] boolOperators = (BooleanConditionOperators[])Enum.GetValues(typeof(BooleanConditionOperators));
+                                foreach (BooleanConditionOperators op in boolOperators)
+                                {
+                                    FieldInfo fi = op.GetType().GetField(op.ToString());
+                                    DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                                    Console.WriteLine(attributes[0].Description);
+                                }
+                                Console.WriteLine();
+                                Console.WriteLine("NUMERIC OPERATORS:");
+                                Console.WriteLine("------------------");
+                                NumericBinaryOperators[] numericOperators = (NumericBinaryOperators[])Enum.GetValues(typeof(NumericBinaryOperators));
+                                foreach (NumericBinaryOperators op in numericOperators)
+                                {
+                                    FieldInfo fi = op.GetType().GetField(op.ToString());
+                                    DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                                    Console.WriteLine(attributes[0].Description);
+                                } 
+                                break;
+                            }
+                            case ConsoleCommands.COLORS:
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("COLORS:");
+                                Console.WriteLine("-------");
+                                PenColors[] colors = (PenColors[])Enum.GetValues(typeof(PenColors));
+                                foreach (PenColors color in colors)
+                                {
+                                    Console.WriteLine(String.Format("{0, -10} - {1}", color.ToString(), ((int)color).ToString()));
+                                }
                                 break;
                             }
                         }

@@ -4,9 +4,9 @@
     using System;
 
     /// <summary>
-    /// Clear graphics expression
+    /// Quit graphics expression
     /// </summary>
-    class ClearGraphics : IGraphicsExpression
+    class QuitGraphics : IGraphicsExpression
     {
 
         /// <summary>
@@ -15,7 +15,7 @@
         /// <returns>the graphics expression as a string</returns>
         public override string ToString()
         {
-            return String.Format("{0}", GraphicsExpressionKeywords.CLEAR.ToString());
+            return String.Format("{0}", GraphicsExpressionKeywords.QUIT.ToString());
         }
     }
 }

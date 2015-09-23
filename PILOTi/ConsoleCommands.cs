@@ -13,7 +13,7 @@
         /// </summary>
         [Description("ABOUT PILOT.NET")]
         ABOUT,
-        
+
         /// <summary>
         /// Changes directory
         /// </summary>
@@ -25,6 +25,12 @@
         /// </summary>
         [Description("CLEARS THE SCREEN")]
         CLEAR,
+
+        /// <summary>
+        /// Lists the colors
+        /// </summary>
+        [Description("PILOT.NET COLORS")]
+        COLORS,
 
         /// <summary>
         /// Lists files in the directory
@@ -68,6 +74,12 @@
         [Description("CREATES A NEW PILOT PROGRAM")]
         NEW,
 
+        /// <summary>
+        /// Lists operators
+        /// </summary>
+        [Description("LISTS PILOT.NET OPERATORS")]
+        OPERATORS,
+        
         /// <summary>
         /// Quits Pilot.NET
         /// </summary>

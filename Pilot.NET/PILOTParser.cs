@@ -11,6 +11,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+using Pilot.NET.Lang.Expressions.GraphicsExpressions;
 
     /// <summary>
     /// Parses strings into a PILOT AST
@@ -309,6 +310,11 @@
                     statement = new Use(PILOTParser.ParseLabel(parametersForKeyword), match, ifCondition);
                     break;
                 }
+                case Keywords.GR:
+                {
+                    statement = new TurtleGraphics(PILOTParser.ParseGraphicsExpression(parametersForKeyword), match, ifCondition);
+                    break;
+                }
             }
 
             return statement;
@@ -465,6 +471,122 @@
             catch (PILOTException e)
             {
                 throw new ParserException(String.Format("Could not parse the PILOT text to a string expression: {0}", text), e);
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Parses a string to a graphics expression, can throw ParserException
+        /// </summary>
+        /// <param name="text">the text to parse</param>
+        /// <returns>the graphics expression, null if empty string</returns>
+        internal static IGraphicsExpression ParseGraphicsExpression(String text)
+        {
+
+            // if string is empty, then that is the same as a graphics clear
+            text = text.Trim();
+            if (String.IsNullOrWhiteSpace(text) == true)
+            {
+                return new ClearGraphics();
+            }
+
+            // var init
+            IGraphicsExpression retVal = null;
+
+            // split the expression keyword from the parameters
+            text = text.Trim().ToUpper();
+            String[] textSplit = text.Split(new char[1] { ' ' }, 2);
+            String expressionParameters = textSplit[1].Trim();
+
+            // throw exception on more than one assignment in the expression
+            if (PILOTParser.CountOf("=", expressionParameters) > 0)
+            {
+                throw new ParserException("Cannot have any assignments in a valid graphical expression");
+            }
+
+            // short circuit on malformed parentheses
+            int leftParens = PILOTParser.CountOf("(", expressionParameters);
+            int rightParens = PILOTParser.CountOf(")", expressionParameters);
+            if (leftParens != rightParens)
+            {
+                throw new ParserException("Graphical expression parentheses are malformed");
+            }
+
+            // cleanup the string
+            expressionParameters = PILOTParser.CleanupNumericExpression(expressionParameters).ToUpper();
+
+            // switch based upon expression keyword
+            if (Enum.IsDefined(typeof(GraphicsExpressionKeywords), textSplit[0]) == false)
+            {
+                throw new ParserException(String.Format("{0} is not a valid graphics expression keyword in PILOT", textSplit[0]));
+            }
+            GraphicsExpressionKeywords keyword = (GraphicsExpressionKeywords)Enum.Parse(typeof(Keywords), textSplit[0]);
+            switch(keyword)
+            {
+                case GraphicsExpressionKeywords.CLEAR:
+                {
+                    retVal = new ClearGraphics();
+                    break;
+                }
+                case GraphicsExpressionKeywords.DRAW:
+                {
+                    break;
+                }
+                case GraphicsExpressionKeywords.DRAWTO:
+                {
+                    break;
+                }
+                case GraphicsExpressionKeywords.FILL:
+                {
+                    break;
+                }
+                case GraphicsExpressionKeywords.FILLTO:
+                {
+                    break;
+                }
+                case GraphicsExpressionKeywords.GO:
+                {
+                    break;
+                }
+                case GraphicsExpressionKeywords.GOTO:
+                {
+                    int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
+                    String x = expressionParameters.Substring(0, splitPoint);
+                    String y = expressionParameters.Substring(splitPoint + 1);
+                    INumericExpression gotoX = PILOTParser.ParseNumericExpression(x);
+                    INumericExpression gotoY = PILOTParser.ParseNumericExpression(y);
+                    retVal = new Goto(gotoX, gotoY);
+                    break;
+                }
+                case GraphicsExpressionKeywords.PEN:
+                {
+
+                    // validate pen color
+                    if (Enum.IsDefined(typeof(PenColors), expressionParameters) == false)
+                    {
+                        throw new ParserException(String.Format("{0} is not a valid pen color in PILOT", expressionParameters));
+                    }
+                    PenColors penColor = (PenColors)Enum.Parse(typeof(PenColors), expressionParameters);
+
+                    // create pen object
+                    retVal = new Pen(penColor);
+
+                    break;
+                }
+                case GraphicsExpressionKeywords.QUIT:
+                {
+                    retVal = new QuitGraphics();
+                    break;
+                }
+                case GraphicsExpressionKeywords.TURN:
+                {
+                    break;
+                }
+                case GraphicsExpressionKeywords.TURNTO:
+                {
+                    break;
+                }
             }
 
             return retVal;
@@ -661,49 +783,97 @@
                 {
                     parenthesesDepth -= 1;
                 }
-                else if (i > 0)
+                else if ((i > 0) && (parenthesesDepth == 0))
                 {
 
                     // binary operator cannot exist at position 0
                     // only if we are not parentheses wrapped search for an operator
                     // eval order is by low operator precedence and then left to right
-                    if (parenthesesDepth == 0)
+                    if ((c == '-') && (prevOperatorFound > (int)NumericBinaryOperators.Sub) && (EnumMethods.IsNumericBinaryOperator(prevC) == false) && (prevC != '('))
                     {
-                        if ((c == '-') && (prevOperatorFound > (int)NumericBinaryOperators.Sub) && (EnumMethods.IsNumericBinaryOperator(prevC) == false) && (prevC != '('))
-                        {
-                            retVal = i;
-                            break;
-                        }
-                        else if ((c == '+') && (prevOperatorFound > (int)NumericBinaryOperators.Add) && (EnumMethods.IsNumericBinaryOperator(prevC) == false) && (prevC != '('))
-                        {
-                            prevOperatorFound = (int)NumericBinaryOperators.Add;
-                            retVal = i;
-                        }
-                        else if ((c == '\\') && (prevOperatorFound > (int)NumericBinaryOperators.Mod))
-                        {
-                            prevOperatorFound = (int)NumericBinaryOperators.Mod;
-                            retVal = i;
-                        }
-                        else if ((c == '/') && (prevOperatorFound > (int)NumericBinaryOperators.Div))
-                        {
-                            prevOperatorFound = (int)NumericBinaryOperators.Div;
-                            retVal = i;
-                        }
-                        else if ((c == '*') && (prevOperatorFound > (int)NumericBinaryOperators.Mult))
-                        {
-                            prevOperatorFound = (int)NumericBinaryOperators.Mult;
-                            retVal = i;
-                        }
-                        else if ((c == ',') && (prevOperatorFound > (int)NumericBinaryOperators.Log))
-                        {
-                            prevOperatorFound = (int)NumericBinaryOperators.Log;
-                            retVal = i;
-                        }
-                        else if ((c == '^') && (prevOperatorFound > (int)NumericBinaryOperators.Exp))
-                        {
-                            prevOperatorFound = (int)NumericBinaryOperators.Exp;
-                            retVal = i;
-                        }
+                        retVal = i;
+                        break;
+                    }
+                    else if ((c == '+') && (prevOperatorFound > (int)NumericBinaryOperators.Add) && (EnumMethods.IsNumericBinaryOperator(prevC) == false) && (prevC != '('))
+                    {
+                        prevOperatorFound = (int)NumericBinaryOperators.Add;
+                        retVal = i;
+                    }
+                    else if ((c == '\\') && (prevOperatorFound > (int)NumericBinaryOperators.Mod))
+                    {
+                        prevOperatorFound = (int)NumericBinaryOperators.Mod;
+                        retVal = i;
+                    }
+                    else if ((c == '/') && (prevOperatorFound > (int)NumericBinaryOperators.Div))
+                    {
+                        prevOperatorFound = (int)NumericBinaryOperators.Div;
+                        retVal = i;
+                    }
+                    else if ((c == '*') && (prevOperatorFound > (int)NumericBinaryOperators.Mult))
+                    {
+                        prevOperatorFound = (int)NumericBinaryOperators.Mult;
+                        retVal = i;
+                    }
+                    else if ((c == ',') && (prevOperatorFound > (int)NumericBinaryOperators.Log))
+                    {
+                        prevOperatorFound = (int)NumericBinaryOperators.Log;
+                        retVal = i;
+                    }
+                    else if ((c == '^') && (prevOperatorFound > (int)NumericBinaryOperators.Exp))
+                    {
+                        prevOperatorFound = (int)NumericBinaryOperators.Exp;
+                        retVal = i;
+                    }
+                }
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Finds the point split point in the graphical expression, i.e. the ',' that splits (x, y)
+        /// </summary>
+        /// <param name="text">the string expression to analyze, this string should already be cleansed (no whitespace, no wrapping parens)</param>
+        /// <returns>the position of the split point, 0 if no split point was found or error</returns>
+        internal static int GraphicsPointSplitPosition(String text)
+        {
+
+            // short circuit on empty string
+            if (String.IsNullOrWhiteSpace(text) == true)
+            {
+                return 0;
+            }
+
+            // var init for search
+            int retVal = 0;
+            int parenthesesDepth = 0;
+
+            // loop through string and find operator
+            for (int i = 0; i < text.Length; i++)
+            {
+
+                // loop var init
+                char c = text[i];
+                char prevC = text[Math.Max(0, i - 1)];
+
+                // analyze the character
+                if (c == '(')
+                {
+                    parenthesesDepth += 1;
+                }
+                else if (c == ')')
+                {
+                    parenthesesDepth -= 1;
+                }
+                else if ((i > 0) && (parenthesesDepth == 0))
+                {
+
+                    // the graphics split position cannot exist at position 0
+                    // only if we are not parentheses wrapped search for an operator
+                    if (c == ',')
+                    {
+                        retVal = i;
+                        break;
                     }
                 }
             }

@@ -33,7 +33,7 @@
         /// </summary>
         /// <param name="conditions">the conditions to match</param>
         /// <param name="matchType">the match type</param>
-        /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
+        /// <param name="ifCondition">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
         public PILOTMatch(List<StringLiteral> conditions, MatchTypes matchType, BooleanCondition ifCondition)
         {
 

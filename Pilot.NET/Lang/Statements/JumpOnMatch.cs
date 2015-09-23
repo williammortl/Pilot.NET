@@ -32,7 +32,7 @@
         /// </summary>
         /// <param name="labelsToJumpTo">the labels to jump to</param>
         /// <param name="matchType">the match type</param>
-        /// <param name="ifExpression">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
+        /// <param name="ifCondition">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
         public JumpOnMatch(List<Label> labelsToJumpTo, MatchTypes matchType, BooleanCondition ifCondition)
         {
 

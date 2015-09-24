@@ -68,7 +68,7 @@
                 // display the masthead
                 Console.WriteLine(Program.PILOT_MASTHEAD);
 
-                // display the splash form 
+                // display the splash form for 3 seconds
                 Splash splash = new Splash();
                 splash.ShowDialog();
 

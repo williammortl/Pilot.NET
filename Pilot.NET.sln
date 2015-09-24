@@ -22,6 +22,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{46A12CD3-1DCB-4CDD-882C-C2834CC31156}"
 	ProjectSection(SolutionItems) = preProject
 		Misc\pilot.bnf.txt = Misc\pilot.bnf.txt
+		Misc\PilotCover.png = Misc\PilotCover.png
+		Misc\PilotIcon.png = Misc\PilotIcon.png
 		README.txt = README.txt
 	EndProjectSection
 EndProject

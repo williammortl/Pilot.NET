@@ -1,14 +1,9 @@
 ﻿namespace Pilot.NET.Lang.Expressions.GraphicsExpressions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Pilot.NET.PILOTExceptions;
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
+    using Pilot.NET.PILOTExceptions;
+    using System;
 
     /// <summary>
     /// Goto graphics expression
@@ -29,8 +24,8 @@
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="gotoX"></param>
-        /// <param name="gotoY"></param>
+        /// <param name="gotoX">x</param>
+        /// <param name="gotoY">y</param>
         public Goto(INumericExpression gotoX, INumericExpression gotoY)
         {
             if ((gotoX == null) || (gotoY == null))

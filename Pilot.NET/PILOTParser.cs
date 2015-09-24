@@ -531,10 +531,18 @@ using Pilot.NET.Lang.Expressions.GraphicsExpressions;
                 }
                 case GraphicsExpressionKeywords.DRAW:
                 {
+                    INumericExpression drawLength = PILOTParser.ParseNumericExpression(expressionParameters);
+                    retVal = new Draw(drawLength);
                     break;
                 }
                 case GraphicsExpressionKeywords.DRAWTO:
                 {
+                    int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
+                    String x = expressionParameters.Substring(0, splitPoint);
+                    String y = expressionParameters.Substring(splitPoint + 1);
+                    INumericExpression drawToX = PILOTParser.ParseNumericExpression(x);
+                    INumericExpression drawToY = PILOTParser.ParseNumericExpression(y);
+                    retVal = new FillTo(drawToX, drawToY);
                     break;
                 }
                 case GraphicsExpressionKeywords.FILL:
@@ -543,6 +551,12 @@ using Pilot.NET.Lang.Expressions.GraphicsExpressions;
                 }
                 case GraphicsExpressionKeywords.FILLTO:
                 {
+                    int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
+                    String x = expressionParameters.Substring(0, splitPoint);
+                    String y = expressionParameters.Substring(splitPoint + 1);
+                    INumericExpression fillToX = PILOTParser.ParseNumericExpression(x);
+                    INumericExpression fillToY = PILOTParser.ParseNumericExpression(y);
+                    retVal = new FillTo(fillToX, fillToY);
                     break;
                 }
                 case GraphicsExpressionKeywords.GO:
@@ -581,10 +595,14 @@ using Pilot.NET.Lang.Expressions.GraphicsExpressions;
                 }
                 case GraphicsExpressionKeywords.TURN:
                 {
+                    INumericExpression turnAngle = PILOTParser.ParseNumericExpression(expressionParameters);
+                    retVal = new Turn(turnAngle);
                     break;
                 }
                 case GraphicsExpressionKeywords.TURNTO:
                 {
+                    INumericExpression turnToAngle = PILOTParser.ParseNumericExpression(expressionParameters);
+                    retVal = new TurnTo(turnToAngle);
                     break;
                 }
             }

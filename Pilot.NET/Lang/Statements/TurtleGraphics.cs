@@ -1,10 +1,11 @@
 ﻿namespace Pilot.NET.Lang.Statements
 {
-    using Pilot.NET.PILOTExceptions;
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.GraphicsExpressions;
+    using Pilot.NET.PILOTExceptions;
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// A turtle graphics statement, GR
@@ -25,17 +26,25 @@
         /// <summary>
         /// The graphics expression for graphics to evaluates
         /// </summary>
-        public IGraphicsExpression GraphicsExpression { get; private set; }
+        public List<IGraphicsExpression> GraphicsExpressions { get; private set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="graphicsExpression">the graphics expression to evaluate</param>
+        /// <param name="graphicsExpressions">the graphics expressions to evaluate</param>
         /// <param name="matchType">the match type</param>
         /// <param name="ifCondition">a boolean expression, if it evaluates to true then execute the statement, can be null</param>
-        public TurtleGraphics(IGraphicsExpression graphicsExpression, MatchTypes matchType, BooleanCondition ifCondition)
+        public TurtleGraphics(List<IGraphicsExpression> graphicsExpressions, MatchTypes matchType, BooleanCondition ifCondition)
         {
-            this.GraphicsExpression = graphicsExpression;
+
+            // make sure not null or an empty list
+            if ((graphicsExpressions == null) || (graphicsExpressions.Count < 1))
+            {
+                throw new InvalidSyntax("GR Cannot have a null Graphics Expression");
+            }
+
+            // set properties
+            this.GraphicsExpressions = graphicsExpressions;
             this.MatchType = matchType;
             this.IfCondition = ifCondition;
         }
@@ -46,7 +55,12 @@
         /// <returns>string representation of the accept</returns>
         public override String ToString()
         {
-            String expression = (this.GraphicsExpression == null) ? String.Empty : this.GraphicsExpression.ToString();
+            String expression = String.Empty;
+            foreach (IGraphicsExpression graphicsExp in this.GraphicsExpressions)
+            {
+                expression += String.Format("{0}; ", graphicsExp.ToString());
+            }
+            expression = expression.Substring(0, expression.Length - 2);
             return StatementMethods.StatementToString(Keywords.GR, this.MatchType, this.IfCondition, expression);
         }
     }

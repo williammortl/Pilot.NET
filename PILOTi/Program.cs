@@ -68,10 +68,6 @@
                 // display the masthead
                 Console.WriteLine(Program.PILOT_MASTHEAD);
 
-                // display the splash form for 3 seconds
-                Splash splash = new Splash();
-                splash.ShowDialog();
-
                 // run the shell
                 Program.PilotShell();
 
@@ -430,6 +426,20 @@
                                 foreach (PenColors color in colors)
                                 {
                                     Console.WriteLine(String.Format("{0, -10} - {1}", color.ToString(), ((int)color).ToString()));
+                                }
+                                break;
+                            }
+                            case ConsoleCommands.TURTLE:
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine("TURTLE EXPRESSIONS:");
+                                Console.WriteLine("-------------------");
+                                GraphicsExpressionKeywords[] graphExp = (GraphicsExpressionKeywords[])Enum.GetValues(typeof(GraphicsExpressionKeywords));
+                                foreach (GraphicsExpressionKeywords op in graphExp)
+                                {
+                                    FieldInfo fi = op.GetType().GetField(op.ToString());
+                                    DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                                    Console.WriteLine(String.Format("{0, -10} - {1}", op.ToString(), attributes[0].Description));
                                 }
                                 break;
                             }

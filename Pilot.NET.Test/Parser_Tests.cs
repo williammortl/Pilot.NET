@@ -3,7 +3,9 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Pilot.NET;
     using Pilot.NET.Lang;
+    using Pilot.NET.Lang.Expressions.GraphicsExpressions;
     using System;
+    using System.Collections.Generic;
     
     /// <summary>
     /// Tests for Pilot.NET.Lang
@@ -86,6 +88,27 @@
             newPILOT = l.ToString();
             l = PILOTParser.ParseLine(newPILOT);
             Assert.AreEqual(newPILOT, l.ToString());
+        }
+
+        /// <summary>
+        /// Test graphics expressions
+        /// </summary>
+        [TestMethod]
+        public void TestGraphicsExpressions()
+        {
+            List<IGraphicsExpression> g = PILOTParser.ParseGraphicsExpression("    CLeaR; Draw 15+-#a   ; DRawtO 14,     2^(5,2); fill 7; FILLTO #a, 8; go 88 \\ 3; goto ((-#c--1)), 4; Pen ReD ;    qUIT     ; Turn  #b; TurnTo 99");
+            Assert.IsTrue(g.Count == 11);
+            Assert.IsTrue(g[0].ToString() == "CLEAR");
+            Assert.IsTrue(g[1].ToString() == "DRAW (15 - #A)");
+            Assert.IsTrue(g[2].ToString() == "DRAWTO 14, (2 ^ (5 , 2))");
+            Assert.IsTrue(g[3].ToString() == "FILL 7");
+            Assert.IsTrue(g[4].ToString() == "FILLTO #A, 8");
+            Assert.IsTrue(g[5].ToString() == "GO (88 \\ 3)");
+            Assert.IsTrue(g[6].ToString() == "GOTO ((-1 * #C) + 1), 4");
+            Assert.IsTrue(g[7].ToString() == "PEN RED");
+            Assert.IsTrue(g[8].ToString() == "QUIT");
+            Assert.IsTrue(g[9].ToString() == "TURN #B");
+            Assert.IsTrue(g[10].ToString() == "TURNTO 99");
         }
     }
 }

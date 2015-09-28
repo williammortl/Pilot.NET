@@ -1,70 +1,77 @@
 ﻿namespace Pilot.NET.Lang.Enums
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    
+    using System.ComponentModel;
+
     /// <summary>
     /// Graphics expression keywords
     /// </summary>
-    internal enum GraphicsExpressionKeywords
+    public enum GraphicsExpressionKeywords
     {
 
         /// <summary>
         /// Clears the graphics
         /// </summary>
+        [Description("CLEARS THE SCREEN")]
         CLEAR,
 
         /// <summary>
         /// Draws
         /// </summary>
+        [Description("DRAWS THIS AMOUNT FORWARD")]
         DRAW,
 
         /// <summary>
         /// Draws
         /// </summary>
+        [Description("DRAWS A LINE TO THIS POINT")]
         DRAWTO,
 
         /// <summary>
         /// Fills
         /// </summary>
+        [Description("GO THIS AMOUNT FORWARD AND FILLS TO THE RIGHT")]
         FILL,
 
         /// <summary>
         /// Fills
         /// </summary>
+        [Description("GOES TO THE POINT AND FILLS TO THE RIGHT")]
         FILLTO,
 
         /// <summary>
         /// Moves the turtle
         /// </summary>
+        [Description("GO THIS AMOUNT FORWARD AND PLOT")]
         GO,
 
         /// <summary>
         /// Moves the turtle
         /// </summary>
+        [Description("GO TO POINT AND PLOT")]
         GOTO,
 
         /// <summary>
         /// Changes the pen color
         /// </summary>
+        [Description("CHANGES THE COLOR")]
         PEN,
-
-        /// <summary>
-        /// Quits the graphics
-        /// </summary>
-        QUIT,
 
         /// <summary>
         /// Turns the turls
         /// </summary>
+        [Description("TURN THIS AMOUNT")]
         TURN,
 
         /// <summary>
         /// Turns the turtle
         /// </summary>
-        TURNTO
+        [Description("TURN TO ANGLE")]
+        TURNTO,
+
+        /// <summary>
+        /// Quits the graphics
+        /// </summary>
+        [Description("CLOSES THE GRAPHICS")]
+        QUIT
     }
 }

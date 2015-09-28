@@ -33,7 +33,7 @@
                 throw new InvalidSyntax("Cannot have a null coordiante in GOTO expression");
             }
             this.GotoX = gotoX;
-            this.GotoY = gotoX;
+            this.GotoY = gotoY;
         }
 
         /// <summary>

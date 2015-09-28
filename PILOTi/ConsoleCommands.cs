@@ -103,7 +103,13 @@
         /// </summary>
         [Description("SAVES THE CURRENT PROGRAM TO FILE")]
         SAVE,
-        
+
+        /// <summary>
+        /// Lists turtle graphics expressions
+        /// </summary>
+        [Description("LISTS TURTLE GRAPHIC EXPRESSIONS")]
+        TURTLE,
+
         /// <summary>
         /// Save a program to a file
         /// </summary>

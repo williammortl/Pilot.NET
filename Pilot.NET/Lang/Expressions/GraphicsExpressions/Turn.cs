@@ -19,12 +19,12 @@
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="turnAngle">x</param>
+        /// <param name="turnAngle">angle</param>
         public Turn(INumericExpression turnAngle)
         {
             if (turnAngle == null)
             {
-                throw new InvalidSyntax("Cannot have a null turn angle in TURN expression");
+                throw new InvalidSyntax("Cannot have a null angle in TURN expression");
             }
             this.TurnAngle = turnAngle;
         }

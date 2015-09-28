@@ -1,17 +1,17 @@
 ﻿namespace Pilot.NET
 {
-    using Pilot.NET.PILOTExceptions;
     using Pilot.NET.Lang;
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Expressions;
     using Pilot.NET.Lang.Expressions.Boolean;
+    using Pilot.NET.Lang.Expressions.GraphicsExpressions;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
     using Pilot.NET.Lang.Expressions.StringExpressions;
     using Pilot.NET.Lang.Statements;
+    using Pilot.NET.PILOTExceptions;
     using System;
     using System.Collections.Generic;
     using System.IO;
-using Pilot.NET.Lang.Expressions.GraphicsExpressions;
 
     /// <summary>
     /// Parses strings into a PILOT AST
@@ -387,6 +387,13 @@ using Pilot.NET.Lang.Expressions.GraphicsExpressions;
                     // numeric variable
                     retVal = new NumericVariable(text);
                 }
+                else if ((text[0] == '-') && (text[1] == '#'))
+                {
+
+                    // handle -#varname
+                    String varName = text.Substring(1);
+                    retVal = PILOTParser.ParseNumericExpression(String.Format("(-1 * {0})", varName));
+                }
                 else
                 {
 
@@ -480,130 +487,141 @@ using Pilot.NET.Lang.Expressions.GraphicsExpressions;
         /// Parses a string to a graphics expression, can throw ParserException
         /// </summary>
         /// <param name="text">the text to parse</param>
-        /// <returns>the graphics expression, null if empty string</returns>
-        internal static IGraphicsExpression ParseGraphicsExpression(String text)
+        /// <returns>list of graphics expressions</returns>
+        internal static List<IGraphicsExpression> ParseGraphicsExpression(String text)
         {
+
+            // var init
+            List<IGraphicsExpression> retVal = new List<IGraphicsExpression>();
 
             // if string is empty, then that is the same as a graphics clear
             text = text.Trim();
             if (String.IsNullOrWhiteSpace(text) == true)
             {
-                return new ClearGraphics();
+                retVal.Add(new ClearGraphics());
+                return retVal;
             }
 
-            // var init
-            IGraphicsExpression retVal = null;
-
-            // split the expression keyword from the parameters
+            // split by ; to allow multiple expressions per line
             text = text.Trim().ToUpper();
-            String[] textSplit = text.Split(new char[1] { ' ' }, 2);
-            String expressionParameters = textSplit[1].Trim();
-
-            // throw exception on more than one assignment in the expression
-            if (PILOTParser.CountOf("=", expressionParameters) > 0)
+            String[] graphicsExpressions = text.Split(new char[1] { ';' });
+            foreach (String graphicsExpression in graphicsExpressions)
             {
-                throw new ParserException("Cannot have any assignments in a valid graphical expression");
-            }
 
-            // short circuit on malformed parentheses
-            int leftParens = PILOTParser.CountOf("(", expressionParameters);
-            int rightParens = PILOTParser.CountOf(")", expressionParameters);
-            if (leftParens != rightParens)
-            {
-                throw new ParserException("Graphical expression parentheses are malformed");
-            }
+                // split the expression keyword from the parameters
+                String[] textSplit = graphicsExpression.Trim().Split(new char[1] { ' ' }, 2);
+                String expressionParameters = (textSplit.Length > 1) ? textSplit[1].Trim() : String.Empty;
 
-            // cleanup the string
-            expressionParameters = PILOTParser.CleanupNumericExpression(expressionParameters).ToUpper();
+                // throw exception on more than one assignment in the expression
+                if (PILOTParser.CountOf("=", expressionParameters) > 0)
+                {
+                    throw new ParserException("Cannot have any assignments in a valid graphical expression");
+                }
 
-            // switch based upon expression keyword
-            if (Enum.IsDefined(typeof(GraphicsExpressionKeywords), textSplit[0]) == false)
-            {
-                throw new ParserException(String.Format("{0} is not a valid graphics expression keyword in PILOT", textSplit[0]));
-            }
-            GraphicsExpressionKeywords keyword = (GraphicsExpressionKeywords)Enum.Parse(typeof(Keywords), textSplit[0]);
-            switch(keyword)
-            {
-                case GraphicsExpressionKeywords.CLEAR:
+                // short circuit on malformed parentheses
+                int leftParens = PILOTParser.CountOf("(", expressionParameters);
+                int rightParens = PILOTParser.CountOf(")", expressionParameters);
+                if (leftParens != rightParens)
                 {
-                    retVal = new ClearGraphics();
-                    break;
+                    throw new ParserException("Graphical expression parentheses are malformed");
                 }
-                case GraphicsExpressionKeywords.DRAW:
-                {
-                    INumericExpression drawLength = PILOTParser.ParseNumericExpression(expressionParameters);
-                    retVal = new Draw(drawLength);
-                    break;
-                }
-                case GraphicsExpressionKeywords.DRAWTO:
-                {
-                    int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
-                    String x = expressionParameters.Substring(0, splitPoint);
-                    String y = expressionParameters.Substring(splitPoint + 1);
-                    INumericExpression drawToX = PILOTParser.ParseNumericExpression(x);
-                    INumericExpression drawToY = PILOTParser.ParseNumericExpression(y);
-                    retVal = new FillTo(drawToX, drawToY);
-                    break;
-                }
-                case GraphicsExpressionKeywords.FILL:
-                {
-                    break;
-                }
-                case GraphicsExpressionKeywords.FILLTO:
-                {
-                    int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
-                    String x = expressionParameters.Substring(0, splitPoint);
-                    String y = expressionParameters.Substring(splitPoint + 1);
-                    INumericExpression fillToX = PILOTParser.ParseNumericExpression(x);
-                    INumericExpression fillToY = PILOTParser.ParseNumericExpression(y);
-                    retVal = new FillTo(fillToX, fillToY);
-                    break;
-                }
-                case GraphicsExpressionKeywords.GO:
-                {
-                    break;
-                }
-                case GraphicsExpressionKeywords.GOTO:
-                {
-                    int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
-                    String x = expressionParameters.Substring(0, splitPoint);
-                    String y = expressionParameters.Substring(splitPoint + 1);
-                    INumericExpression gotoX = PILOTParser.ParseNumericExpression(x);
-                    INumericExpression gotoY = PILOTParser.ParseNumericExpression(y);
-                    retVal = new Goto(gotoX, gotoY);
-                    break;
-                }
-                case GraphicsExpressionKeywords.PEN:
-                {
 
-                    // validate pen color
-                    if (Enum.IsDefined(typeof(PenColors), expressionParameters) == false)
+                // cleanup the string
+                expressionParameters = PILOTParser.CleanupNumericExpression(expressionParameters).ToUpper();
+
+                // switch based upon expression keyword
+                if (Enum.IsDefined(typeof(GraphicsExpressionKeywords), textSplit[0]) == false)
+                {
+                    throw new ParserException(String.Format("{0} is not a valid graphics expression keyword in PILOT", textSplit[0]));
+                }
+                GraphicsExpressionKeywords keyword = (GraphicsExpressionKeywords)Enum.Parse(typeof(GraphicsExpressionKeywords), textSplit[0]);
+                switch (keyword)
+                {
+                    case GraphicsExpressionKeywords.CLEAR:
                     {
-                        throw new ParserException(String.Format("{0} is not a valid pen color in PILOT", expressionParameters));
+                        retVal.Add(new ClearGraphics());
+                        break;
                     }
-                    PenColors penColor = (PenColors)Enum.Parse(typeof(PenColors), expressionParameters);
+                    case GraphicsExpressionKeywords.DRAW:
+                    {
+                        INumericExpression drawDistance = PILOTParser.ParseNumericExpression(expressionParameters);
+                        retVal.Add(new Draw(drawDistance));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.DRAWTO:
+                    {
+                        int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
+                        String x = expressionParameters.Substring(0, splitPoint);
+                        String y = expressionParameters.Substring(splitPoint + 1);
+                        INumericExpression drawToX = PILOTParser.ParseNumericExpression(x);
+                        INumericExpression drawToY = PILOTParser.ParseNumericExpression(y);
+                        retVal.Add(new DrawTo(drawToX, drawToY));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.FILL:
+                    {
+                        INumericExpression fillDistance = PILOTParser.ParseNumericExpression(expressionParameters);
+                        retVal.Add(new Fill(fillDistance));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.FILLTO:
+                    {
+                        int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
+                        String x = expressionParameters.Substring(0, splitPoint);
+                        String y = expressionParameters.Substring(splitPoint + 1);
+                        INumericExpression fillToX = PILOTParser.ParseNumericExpression(x);
+                        INumericExpression fillToY = PILOTParser.ParseNumericExpression(y);
+                        retVal.Add(new FillTo(fillToX, fillToY));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.GO:
+                    {
+                        INumericExpression goDistance = PILOTParser.ParseNumericExpression(expressionParameters);
+                        retVal.Add(new Go(goDistance));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.GOTO:
+                    {
+                        int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
+                        String x = expressionParameters.Substring(0, splitPoint);
+                        String y = expressionParameters.Substring(splitPoint + 1);
+                        INumericExpression gotoX = PILOTParser.ParseNumericExpression(x);
+                        INumericExpression gotoY = PILOTParser.ParseNumericExpression(y);
+                        retVal.Add(new Goto(gotoX, gotoY));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.PEN:
+                    {
 
-                    // create pen object
-                    retVal = new Pen(penColor);
+                        // validate pen color
+                        if (Enum.IsDefined(typeof(PenColors), expressionParameters) == false)
+                        {
+                            throw new ParserException(String.Format("{0} is not a valid pen color in PILOT", expressionParameters));
+                        }
+                        PenColors penColor = (PenColors)Enum.Parse(typeof(PenColors), expressionParameters);
 
-                    break;
-                }
-                case GraphicsExpressionKeywords.QUIT:
-                {
-                    retVal = new QuitGraphics();
-                    break;
-                }
-                case GraphicsExpressionKeywords.TURN:
-                {
-                    INumericExpression turnAngle = PILOTParser.ParseNumericExpression(expressionParameters);
-                    retVal = new Turn(turnAngle);
-                    break;
-                }
-                case GraphicsExpressionKeywords.TURNTO:
-                {
-                    INumericExpression turnToAngle = PILOTParser.ParseNumericExpression(expressionParameters);
-                    retVal = new TurnTo(turnToAngle);
-                    break;
+                        // create pen object
+                        retVal.Add(new Pen(penColor));
+
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.QUIT:
+                    {
+                        retVal.Add(new QuitGraphics());
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.TURN:
+                    {
+                        INumericExpression turnAngle = PILOTParser.ParseNumericExpression(expressionParameters);
+                        retVal.Add(new Turn(turnAngle));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.TURNTO:
+                    {
+                        INumericExpression turnToAngle = PILOTParser.ParseNumericExpression(expressionParameters);
+                        retVal.Add(new TurnTo(turnToAngle));
+                        break;
+                    }
                 }
             }
 
@@ -1017,14 +1035,19 @@ using Pilot.NET.Lang.Expressions.GraphicsExpressions;
             text = text.Trim();
 
             // drop plus for positive integers
-            text = (text[0] == '+') ? text.Substring(1).Trim() : text;
-            text = text.Replace("-+", "-");
-            text = text.Replace("++", "+");
-            text = text.Replace("\\+", "\\");
-            text = text.Replace("/+", "/");
-            text = text.Replace("*+", "*");
-            text = text.Replace("=+", "=");
-            text = text.Replace("(+", "(");
+            if (String.IsNullOrWhiteSpace(text) == false)
+            {
+                text = (text[0] == '+') ? text.Substring(1).Trim() : text;
+                text = text.Replace("-+", "-");
+                text = text.Replace("+-", "-");
+                text = text.Replace("++", "+");
+                text = text.Replace("--", "+");
+                text = text.Replace("\\+", "\\");
+                text = text.Replace("/+", "/");
+                text = text.Replace("*+", "*");
+                text = text.Replace("=+", "=");
+                text = text.Replace("(+", "(");
+            }
 
             return text;
         }

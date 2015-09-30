@@ -35,7 +35,7 @@
                 }
 
                 // check for valid variable name
-                if ((value.Contains(" ") == true) || (value.Contains("=") == true) || (variableName.StartsWith("#") == false))
+                if ((value.Contains(" ") == true) || (value.Contains("=") == true) || ((variableName.StartsWith("#") == false) && (variableName.StartsWith("%") == false)))
                 {
                     throw new InvalidSyntax("Not a valid numeric variable name");
                 }

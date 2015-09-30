@@ -4,6 +4,7 @@
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.Lang.Expressions;
     using Pilot.NET.Lang.Expressions.Boolean;
+    using Pilot.NET.Lang.Expressions.GraphicsExpressions;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
     using Pilot.NET.Lang.Expressions.StringExpressions;
     using Pilot.NET.Lang.Statements;
@@ -21,6 +22,26 @@
     public sealed class PILOTInterpreter : IDisposable
     {
 
+        /// <summary>
+        /// turtle graphics x coordinate
+        /// </summary>
+        private const String X_VAR = "%X";
+
+        /// <summary>
+        /// turtle graphics y coordinate
+        /// </summary>
+        private const String Y_VAR = "%Y";
+
+        /// <summary>
+        /// turtle graphics theta coordinate
+        /// </summary>
+        private const String THETA_VAR = "%A";
+
+        /// <summary>
+        /// turtle graphics color value
+        /// </summary>
+        private const String COLOR_VAR = "%Z";
+        
         /// <summary>
         /// For the random number generator
         /// </summary>
@@ -40,11 +61,6 @@
         /// Numeric variables and their associated values
         /// </summary>
         private Dictionary<String, double> numericVariables;
-
-        /// <summary>
-        /// The current pen color
-        /// </summary>
-        public PenColors PenColor { get; private set; }
 
         /// <summary>
         /// The turtle's position
@@ -111,11 +127,11 @@
             this.numericVariables = new Dictionary<string, double>();
 
             // turtle graphics init
-            this.PenColor = PenColors.BLACK;
             this.TurtlePosition = new Point(0, 0);
-            this.SetNumericVar("%X", 0);
-            this.SetNumericVar("%Y", 0);
-            this.SetNumericVar("%A", 0);
+            this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
+            this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
+            this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
+            this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
         }
 
         /// <summary>
@@ -217,114 +233,124 @@
                     if ((matchState == MatchTypes.None) || (statement.MatchType == matchState) || (statement.MatchType == MatchTypes.None))
                     {
 
-                        // evaluate boolean condition to determine whether or not to execute
-                        if (this.EvaluateBooleanCondition(line.LineStatement.IfCondition) == true)
+                        // evaluate either immediate statement or others
+                        if (statement is IImmediateStatement)
                         {
-
-                            // evaluate keyword
-                            if (statement is IImmediateStatement)
-                            {
-                                this.EvaluateImmediateStatement((IImmediateStatement)statement);
-                                executionPointer++;
-                            }
-                            else if (statement is Accept)
-                            {
-                                acceptBuffer = this.pilotInterface.ReadTextLine().Trim();
-                                Accept a = (Accept)statement;
-                                if (a.VariableToSet != null)
-                                {
-                                    if (a.VariableToSet.VariableName.StartsWith("#") == true)
-                                    {
-                                        try
-                                        {
-                                            this.SetNumericVar(a.VariableToSet.VariableName, Convert.ToDouble(acceptBuffer));
-                                        }
-                                        catch (Exception)
-                                        {
-                                            throw new RunTimeException(String.Format("Variable {0} requires numeric input", a.VariableToSet.VariableName));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        this.SetStringVar(a.VariableToSet.VariableName, acceptBuffer);
-                                    }
-                                }
-                                executionPointer++;
-                            }
-                            else if (statement is Jump)
-                            {
-                                Jump j = (Jump)statement;
-                                executionPointer = program.OrdinalOfLabel(j.LabelToJumpTo.LabelName);
-                                if (executionPointer < 0)
-                                {
-                                    throw new RunTimeException(String.Format("Could not find label: {0}", j.LabelToJumpTo.LabelName));
-                                }
-                            }
-                            else if (statement is Use)
-                            {
-                                Use u = (Use)statement;
-                                callStack.Push(executionPointer + 1);
-                                executionPointer = program.OrdinalOfLabel(u.LabelToUse.LabelName);
-                                if (executionPointer < 0)
-                                {
-                                    throw new RunTimeException(String.Format("Could not find label: {0}", u.LabelToUse.LabelName));
-                                }
-                            }
-                            else if (statement is End)
-                            {
-                                if (callStack.Count == 0)
-                                {
-                                    break;
-                                }
-                                else
-                                {
-                                    executionPointer = callStack.Pop();
-                                }
-                            }
-                            else if (statement is PILOTMatch)
-                            {
-                                PILOTMatch m = (PILOTMatch)statement;
-                                matchState = MatchTypes.N;
-                                matchStateOrdinal = -1;
-                                for (int i = 0; i < m.Conditions.Count; i++)
-                                {
-                                    String evalCondition = this.EvaluateStringExpression(m.Conditions[i]).Trim().ToUpper();
-                                    if (acceptBuffer.ToUpper() == evalCondition)
-                                    {
-                                        matchState = MatchTypes.Y;
-                                        matchStateOrdinal = i;
-                                        break;
-                                    }
-                                }
-                                executionPointer++;
-                            }
-                            else if (statement is JumpOnMatch)
-                            {
-                                JumpOnMatch jom = (JumpOnMatch)statement;
-                                if (matchState != MatchTypes.Y)
-                                {
-                                    executionPointer++;
-                                }
-                                else
-                                {
-                                    if (matchStateOrdinal > jom.LabelsToJumpTo.Count)
-                                    {
-                                        throw new RunTimeException("Jump on Match statement does not have enough labels");
-                                    }
-                                    else
-                                    {
-                                        executionPointer = program.OrdinalOfLabel(jom.LabelsToJumpTo[matchStateOrdinal].LabelName);
-                                        if (executionPointer < 0)
-                                        {
-                                            throw new RunTimeException(String.Format("Could not find label: {0}", jom.LabelsToJumpTo[matchStateOrdinal].LabelName));
-                                        }
-                                    }
-                                }
-                            }
+                            this.EvaluateImmediateStatement((IImmediateStatement)statement);
+                            executionPointer++;
                         }
                         else
                         {
-                            executionPointer++;
+
+                            // evaluate boolean condition to determine whether or not to execute
+                            if (this.EvaluateBooleanCondition(line.LineStatement.IfCondition) == true)
+                            {
+
+                                // evaluate keyword
+                                if (statement is IImmediateStatement)
+                                {
+                                    this.EvaluateImmediateStatement((IImmediateStatement)statement);
+                                    executionPointer++;
+                                }
+                                else if (statement is Accept)
+                                {
+                                    acceptBuffer = this.pilotInterface.ReadTextLine().Trim();
+                                    Accept a = (Accept)statement;
+                                    if (a.VariableToSet != null)
+                                    {
+                                        if (a.VariableToSet.VariableName.StartsWith("#") == true)
+                                        {
+                                            try
+                                            {
+                                                this.SetNumericVar(a.VariableToSet.VariableName, Convert.ToDouble(acceptBuffer));
+                                            }
+                                            catch (Exception)
+                                            {
+                                                throw new RunTimeException(String.Format("Variable {0} requires numeric input", a.VariableToSet.VariableName));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            this.SetStringVar(a.VariableToSet.VariableName, acceptBuffer);
+                                        }
+                                    }
+                                    executionPointer++;
+                                }
+                                else if (statement is Jump)
+                                {
+                                    Jump j = (Jump)statement;
+                                    executionPointer = program.OrdinalOfLabel(j.LabelToJumpTo.LabelName);
+                                    if (executionPointer < 0)
+                                    {
+                                        throw new RunTimeException(String.Format("Could not find label: {0}", j.LabelToJumpTo.LabelName));
+                                    }
+                                }
+                                else if (statement is Use)
+                                {
+                                    Use u = (Use)statement;
+                                    callStack.Push(executionPointer + 1);
+                                    executionPointer = program.OrdinalOfLabel(u.LabelToUse.LabelName);
+                                    if (executionPointer < 0)
+                                    {
+                                        throw new RunTimeException(String.Format("Could not find label: {0}", u.LabelToUse.LabelName));
+                                    }
+                                }
+                                else if (statement is End)
+                                {
+                                    if (callStack.Count == 0)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        executionPointer = callStack.Pop();
+                                    }
+                                }
+                                else if (statement is PILOTMatch)
+                                {
+                                    PILOTMatch m = (PILOTMatch)statement;
+                                    matchState = MatchTypes.N;
+                                    matchStateOrdinal = -1;
+                                    for (int i = 0; i < m.Conditions.Count; i++)
+                                    {
+                                        String evalCondition = this.EvaluateStringExpression(m.Conditions[i]).Trim().ToUpper();
+                                        if (acceptBuffer.Trim().ToUpper() == evalCondition)
+                                        {
+                                            matchState = MatchTypes.Y;
+                                            matchStateOrdinal = i;
+                                            break;
+                                        }
+                                    }
+                                    executionPointer++;
+                                }
+                                else if (statement is JumpOnMatch)
+                                {
+                                    JumpOnMatch jom = (JumpOnMatch)statement;
+                                    if (matchState != MatchTypes.Y)
+                                    {
+                                        executionPointer++;
+                                    }
+                                    else
+                                    {
+                                        if (matchStateOrdinal > jom.LabelsToJumpTo.Count)
+                                        {
+                                            throw new RunTimeException("Jump on Match statement does not have enough labels");
+                                        }
+                                        else
+                                        {
+                                            executionPointer = program.OrdinalOfLabel(jom.LabelsToJumpTo[matchStateOrdinal].LabelName);
+                                            if (executionPointer < 0)
+                                            {
+                                                throw new RunTimeException(String.Format("Could not find label: {0}", jom.LabelsToJumpTo[matchStateOrdinal].LabelName));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                executionPointer++;
+                            }
                         }
                     }
                     else
@@ -335,9 +361,8 @@
                 else
                 {
                     executionPointer++;
-                }
+                }   
             }
-
         }
 
         /// <summary>
@@ -376,11 +401,11 @@
         /// <param name="statement">the statement to evaluate</param>
         internal void EvaluateImmediateStatement(IImmediateStatement statement)
         {
-            if (statement is Compute)
+            if (this.EvaluateBooleanCondition(statement.IfCondition) == true)
             {
-                Compute cs = (Compute)statement;
-                if (this.EvaluateBooleanCondition(cs.IfCondition) == true)
+                if (statement is Compute)
                 {
+                    Compute cs = (Compute)statement;
                     if (cs.ExpressionToCompute is INumericExpression)
                     {
                         INumericExpression ne = (INumericExpression)cs.ExpressionToCompute;
@@ -392,39 +417,50 @@
                         this.EvaluateStringExpression(se);
                     }
                 }
-            }
-            else if (statement is Text)
-            {
-                Text ts = (Text)statement;
-                if (this.EvaluateBooleanCondition(ts.IfCondition) == true)
+                else if (statement is Text)
                 {
-                    if (ts.TextToDisplay is TextClear)
+                    Text ts = (Text)statement;
+                    String textOut = this.EvaluateStringExpression(ts.TextToDisplay).Trim();
+                    Boolean carriageReturn = true;
+                    if (textOut.EndsWith("\\") == true)
                     {
-                        this.pilotInterface.ClearText();
+                        carriageReturn = false;
+                        textOut = textOut.Substring(0, textOut.Length - 1);
                     }
-                    else
+                    this.pilotInterface.WriteText(textOut, carriageReturn);
+                }
+                else if (statement is TextClear)
+                {
+                    TextClear tc = (TextClear)statement;
+                    this.pilotInterface.ClearText();
+                    String textOut = this.EvaluateStringExpression(tc.TextToDisplay).Trim();
+                    Boolean carriageReturn = true;
+                    if (textOut.EndsWith("\\") == true)
                     {
-                        String textOut = this.EvaluateStringExpression(ts.TextToDisplay).Trim();
-                        Boolean carriageReturn = true;
-                        if (textOut.EndsWith("\\") == true)
-                        {
-                            carriageReturn = false;
-                            textOut = textOut.Substring(0, textOut.Length - 1);
-                        }
-                        this.pilotInterface.WriteText(textOut, carriageReturn);
+                        carriageReturn = false;
+                        textOut = textOut.Substring(0, textOut.Length - 1);
+                    }
+                    this.pilotInterface.WriteText(textOut, carriageReturn);
+                }
+                else if (statement is TurtleGraphics)
+                {
+                    TurtleGraphics tg = (TurtleGraphics)statement;
+                    foreach (IGraphicsExpression ge in tg.GraphicsExpressions)
+                    {
+                        this.EvaluateGraphicsExpression(ge);
                     }
                 }
-            }
-            else if (statement is Remark)
-            {
+                else if (statement is Remark)
+                {
 
-                // do nothing!
-            }
-            else if (statement is Pause)
-            {
-                Pause pa = (Pause)statement;
-                double timeToPause = this.EvaluateNumericExpression(pa.TimeToPause);
-                Thread.Sleep(Convert.ToInt32(timeToPause * 1000 / 60));
+                    // do nothing!
+                }
+                else if (statement is Pause)
+                {
+                    Pause pa = (Pause)statement;
+                    double timeToPause = this.EvaluateNumericExpression(pa.TimeToPause);
+                    Thread.Sleep(Convert.ToInt32(timeToPause * 1000 / 60));
+                }
             }
         }
 
@@ -510,7 +546,7 @@
                         }
                         else if (opExpression.Operator == NumericBinaryOperators.Mod)
                         {
-                            retVal = Convert.ToInt64(leftResult) % Convert.ToInt64(rightResult);
+                            retVal = Math.Abs(Convert.ToInt64(leftResult) % Convert.ToInt64(rightResult));
                         }
                         else if (opExpression.Operator == NumericBinaryOperators.Mult)
                         {
@@ -569,7 +605,7 @@
             // short circuit on null
             if (stringExpression == null)
             {
-                throw new RunTimeException("Cannot evaluate a null string expression");
+                return String.Empty;
             }
 
             // var init
@@ -594,7 +630,7 @@
                     foreach (String s in split)
                     {
                         String splitPart = s.Trim();
-                        if ((splitPart.Length > 1) && ((splitPart[0] == '#') || (splitPart[0] == '$')))
+                        if ((splitPart.Length > 1) && ((splitPart[0] == '#') || (splitPart[0] == '$') || (splitPart[0] == '%')))
                         {
 
                             // extract the variable name
@@ -609,7 +645,7 @@
                             // attempt to replace variable name
                             try
                             {
-                                splitPart = (splitPart[0] == '#') ? this.GetNumericVar(splitPart).ToString() : this.GetStringVar(splitPart);
+                                splitPart = ((splitPart[0] == '#') || (splitPart[0] == '%')) ? this.GetNumericVar(splitPart).ToString("0.00") : this.GetStringVar(splitPart);
                                 splitPart += afterPunc;
                             }
                             catch (RunTimeException)
@@ -627,6 +663,110 @@
             }
 
             return retVal;
+        }
+
+        /// <summary>
+        /// Evaluates a graphics expression
+        /// </summary>
+        /// <param name="graphicsExpression">the graphics expression to evaluate</param>
+        internal void EvaluateGraphicsExpression(IGraphicsExpression graphicsExpression)
+        {
+            
+            // short circuit on null
+            if (graphicsExpression == null)
+            {
+                throw new RunTimeException("Cannot evaluate a null graphics expression");
+            }
+
+            // var init
+            String retVal = String.Empty;
+
+            // evaluate based upon what type of string expression
+            try
+            {
+                if (graphicsExpression is ClearGraphics)
+                {
+                    this.pilotInterface.ClearGraphics();
+                }
+                else if (graphicsExpression is Draw)
+                {
+
+                    // var init
+                    Draw d = (Draw)graphicsExpression;
+                    Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
+                    int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
+                    Point endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(d.DrawDistance));
+                    
+                    // update current point
+                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
+                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
+
+                    // plot
+                    using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                    {
+                        PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
+                        {
+                            Point transStart = this.TranslatePoint(currentPoint);
+                            Point transEnd = this.TranslatePoint(endPoint);
+                            g.DrawLine(p, transStart, transEnd);
+                        }
+                    }
+                    this.pilotInterface.RedrawGraphics();
+                }
+                else if (graphicsExpression is DrawTo)
+                {
+                }
+                else if (graphicsExpression is Fill)
+                {
+                }
+                else if (graphicsExpression is FillTo)
+                {
+                }
+                else if (graphicsExpression is Go)
+                {
+                }
+                else if (graphicsExpression is Goto)
+                {
+                }
+                else if (graphicsExpression is PILOTPen)
+                {
+                    PILOTPen pp = (PILOTPen)graphicsExpression;
+                    if (pp.PenColorExpression == null)
+                    {
+                        this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)pp.PenColor);
+                    }
+                    else
+                    {
+                        int colorVal = (int)this.EvaluateNumericExpression(pp.PenColorExpression);
+                        if ((colorVal >= (int)PenColors.ERASE) && (colorVal <= (int)PenColors.WHITE))
+                        {
+                            this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)colorVal);
+                        }
+                        else
+                        {
+                            this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.ERASE);
+                        }
+                    }
+                }
+                else if (graphicsExpression is QuitGraphics)
+                {
+                }
+                else if (graphicsExpression is Turn)
+                {
+                    Turn t = (Turn)graphicsExpression;
+                    int turnAngle = (int)this.EvaluateNumericExpression(t.TurnAngle);
+                    int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
+                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, Convert.ToInt32((currentAngle + turnAngle) % 360));
+                }
+                else if (graphicsExpression is TurnTo)
+                {
+                }
+            }
+            catch (Exception e)
+            {
+                throw new RunTimeException(String.Format("Could not evaluate the expression: {0}", graphicsExpression.ToString()), e);
+            }
         }
 
         /// <summary>
@@ -739,8 +879,8 @@
         /// <returns>.NET image style point</returns>
         internal Point TranslatePoint(Point p)
         {
-            return new Point(p.X + Convert.ToInt32(.5 * this.pilotInterface.GraphicsOutput.Width),
-                             p.Y + Convert.ToInt32(.5 * this.pilotInterface.GraphicsOutput.Height));
+            return new Point(Convert.ToInt32(.5 * this.pilotInterface.GraphicsOutput.Width) + p.X,
+                             Convert.ToInt32(.5 * this.pilotInterface.GraphicsOutput.Height) - p.Y);
         }
 
         /// <summary>
@@ -756,6 +896,84 @@
                 pilotOutput = pilotOutput.Substring(0, pilotOutput.Length - 1);
             }
             this.pilotInterface.WriteText(pilotOutput, newLine);
+        }
+
+        /// <summary>
+        /// Draw from a point a particular distance
+        /// </summary>
+        /// <param name="start">the start point</param>
+        /// <param name="angle">the PILOT angle</param>
+        /// <param name="distance">the distance</param>
+        /// <returns>the destination point to draw to in PILOT coordinates</returns>
+        internal static Point DrawDistanceAngle(Point start, int angle, int distance)
+        {
+
+            // var init
+            Point retVal = new Point(start.X, start.Y);
+
+            // calculate destination point in PILOT coordinates
+            if ((angle >= 0) && (angle <= 360))
+            {
+                if ((angle == 0) || (angle == 360))
+                {
+                    retVal.Y += distance;
+                }
+                else if (angle == 90)
+                {
+                    retVal.X += distance;
+                }
+                else if (angle == 180)
+                {
+                    retVal.Y -= distance;
+                }
+                else if (angle == 270)
+                {
+                    retVal.X -= distance;
+                }
+                else if (angle < 90)
+                {
+                    retVal.X += (int)(Math.Sin(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.Y += (int)(Math.Cos(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                }
+                else if (angle < 180)
+                {
+                    angle -= 90;
+                    retVal.X += (int)(Math.Cos(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.Y -= (int)(Math.Sin(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                }
+                else if (angle < 270)
+                {
+                    angle -= 180;
+                    retVal.X -= (int)(Math.Sin(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.Y -= (int)(Math.Cos(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                }
+                else
+                {
+                    angle -= 270;
+                    retVal.X -= (int)(Math.Cos(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.Y += (int)(Math.Sin(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                }
+            }
+            else if (angle > 360)
+            {
+                retVal = PILOTInterpreter.DrawDistanceAngle(start, angle % 360, distance);
+            }
+            else
+            {
+                retVal = PILOTInterpreter.DrawDistanceAngle(start, 360 + angle, distance);
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Conversion from degrees to radians
+        /// </summary>
+        /// <param name="degrees">degrees</param>
+        /// <returns>radians</returns>
+        private static double DegreesToRadians(int degrees)
+        {
+            return (Convert.ToDouble(degrees) / 360) * Math.PI;
         }
 
         /// <summary>

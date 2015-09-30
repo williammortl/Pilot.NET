@@ -59,9 +59,9 @@
             String labelsString = String.Empty;
             foreach (Label label in this.LabelsToJumpTo)
             {
-                labelsString += " " + label.ToString() + ",";
+                labelsString += label.ToString() + ", ";
             }
-            labelsString = labelsString.Substring(0, labelsString.Length - 1);
+            labelsString = labelsString.Substring(0, labelsString.Length - 2);
 
             return StatementMethods.StatementToString(Keywords.JM, this.MatchType, this.IfCondition, labelsString);
         }

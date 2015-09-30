@@ -2,6 +2,7 @@
 {
     using Pilot.NET.PILOTExceptions;
     using System;
+    using System.Drawing;
 
     /// <summary>
     /// Class with enum conversion functions
@@ -225,6 +226,74 @@
             else
             {
                 throw new InvalidSyntax("Incorrect boolean operator");
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Convert PenColors to Color
+        /// </summary>
+        /// <param name="color">the color to convert</param>
+        /// <returns>the color</returns>
+        public static Color PenColorToColor(PenColors color)
+        {
+
+            // var init
+            Color retVal = Color.Black;
+
+            switch(color)
+            {
+                case PenColors.ERASE:
+                {
+                    retVal = Color.Black;
+                    break;
+                }
+                case PenColors.BLUE:
+                {
+                    retVal = Color.Blue;
+                    break;
+                }
+                case PenColors.GREEN:
+                {
+                    retVal = Color.Green;
+                    break;
+                }
+                case PenColors.ORANGE:
+                {
+                    retVal = Color.Orange;
+                    break;
+                }
+                case PenColors.PINK:
+                {
+                    retVal = Color.Pink;
+                    break;
+                }
+                case PenColors.PURPLE:
+                {
+                    retVal = Color.Purple;
+                    break;
+                }
+                case PenColors.RED:
+                {
+                    retVal = Color.Red;
+                    break;
+                }
+                case PenColors.TURQUOISE:
+                {
+                    retVal = Color.Turquoise;
+                    break;
+                }
+                case PenColors.WHITE:
+                {
+                    retVal = Color.White;
+                    break;
+                }
+                case PenColors.YELLOW:
+                {
+                    retVal = Color.Yellow;
+                    break;
+                }
             }
 
             return retVal;

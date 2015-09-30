@@ -60,7 +60,7 @@
             String conditionsString = String.Empty;
             foreach (StringLiteral condition in this.Conditions)
             {
-                conditionsString += " " + condition.ToString() + ",";
+                conditionsString += condition.ToString() + ",";
             }
             conditionsString = conditionsString.Substring(0, conditionsString.Length - 1);
 

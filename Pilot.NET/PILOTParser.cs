@@ -305,6 +305,11 @@
                     statement = new Text(PILOTParser.ParseStringExpression(parametersForKeyword), match, ifCondition);
                     break;
                 }
+                case Keywords.TC:
+                {
+                    statement = new TextClear(PILOTParser.ParseStringExpression(parametersForKeyword), match, ifCondition);
+                    break;
+                }
                 case Keywords.U:
                 {
                     statement = new Use(PILOTParser.ParseLabel(parametersForKeyword), match, ifCondition);
@@ -381,16 +386,16 @@
                     // random number
                     return new RandomNumber();
                 }
-                else if (text.StartsWith("#") == true)
+                else if ((text.StartsWith("#") == true) || (text.StartsWith("%") == true))
                 {
 
                     // numeric variable
                     retVal = new NumericVariable(text);
                 }
-                else if ((text[0] == '-') && (text[1] == '#'))
+                else if ((text[0] == '-') && ((text[1] == '#') || (text.StartsWith("%") == true)))
                 {
 
-                    // handle -#varname
+                    // handle -#varname -> (-1 * #varname)
                     String varName = text.Substring(1);
                     retVal = PILOTParser.ParseNumericExpression(String.Format("(-1 * {0})", varName));
                 }
@@ -418,7 +423,7 @@
             catch (PILOTException e)
             {
                 retVal = null;
-                throw new ParserException(String.Format("Cannot parse the text as a numeric expression: {0}", text), e);
+                throw new ParserException(String.Format("Cannot parse the text as a valid numeric expression: {0}", text), e);
             }
 
             return retVal;
@@ -465,10 +470,6 @@
                     {
                         retVal = new StringLiteral(text);
                     }
-                }
-                else if (text.ToUpper() == TextClear.CLEAR_TEXT)
-                {
-                    retVal = new TextClear();
                 }
                 else
                 {
@@ -593,15 +594,15 @@
                     case GraphicsExpressionKeywords.PEN:
                     {
 
-                        // validate pen color
-                        if (Enum.IsDefined(typeof(PenColors), expressionParameters) == false)
+                        // set pen color
+                        if (Enum.IsDefined(typeof(PenColors), expressionParameters) == true)
                         {
-                            throw new ParserException(String.Format("{0} is not a valid pen color in PILOT", expressionParameters));
+                            retVal.Add(new PILOTPen((PenColors)Enum.Parse(typeof(PenColors), expressionParameters)));
                         }
-                        PenColors penColor = (PenColors)Enum.Parse(typeof(PenColors), expressionParameters);
-
-                        // create pen object
-                        retVal.Add(new Pen(penColor));
+                        else
+                        {
+                            retVal.Add(new PILOTPen(PILOTParser.ParseNumericExpression(expressionParameters)));
+                        }
 
                         break;
                     }

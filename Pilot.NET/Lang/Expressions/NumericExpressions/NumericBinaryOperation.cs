@@ -51,9 +51,16 @@
                 }
 
                 // make sure that the left expression is a NumericVariable if the operator for this expression is an assign operator ('=')
-                if ((this.Operator == NumericBinaryOperators.Eq) && ((value is NumericVariable) == false))
+                if (this.Operator == NumericBinaryOperators.Eq)
                 {
-                    throw new CannotAssignException("Cannot assign to anything other than a NumericVariable");
+                    if ((value is NumericVariable) == false)
+                    {
+                        throw new CannotAssignException("Cannot assign to anything other than a NumericVariable");
+                    }
+                    else if (((NumericVariable)value).VariableName.StartsWith("%") == true)
+                    {
+                        throw new InvalidSyntax("Cannot assign to read-only '%' variables");
+                    }
                 }
 
                 // assign

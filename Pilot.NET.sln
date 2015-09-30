@@ -12,17 +12,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pilot Examples", "Pilot Examples", "{F985134D-013F-4409-8A12-9D15F2383079}"
 	ProjectSection(SolutionItems) = preProject
 		Pilot Examples\coinflip.pilot = Pilot Examples\coinflip.pilot
+		Pilot Examples\drunkwalker.pilot = Pilot Examples\drunkwalker.pilot
 		Pilot Examples\first.pilot = Pilot Examples\first.pilot
 		Pilot Examples\matchtest.pilot = Pilot Examples\matchtest.pilot
-		Pilot Examples\second.pilot = Pilot Examples\second.pilot
+		Pilot Examples\subroutine.pilot = Pilot Examples\subroutine.pilot
 		Pilot Examples\test.pilot = Pilot Examples\test.pilot
-		Pilot Examples\third.pilot = Pilot Examples\third.pilot
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{46A12CD3-1DCB-4CDD-882C-C2834CC31156}"
 	ProjectSection(SolutionItems) = preProject
 		Misc\pilot.bnf.txt = Misc\pilot.bnf.txt
-		Misc\PilotCover.png = Misc\PilotCover.png
 		Misc\PilotIcon.png = Misc\PilotIcon.png
 		README.txt = README.txt
 	EndProjectSection

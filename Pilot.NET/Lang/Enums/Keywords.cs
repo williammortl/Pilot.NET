@@ -69,6 +69,12 @@
         T,
 
         /// <summary>
+        /// clear screen then type something -> TC: HELLO
+        /// </summary>
+        [Description("CLEAR SCREEN, PRINT TEXT*")]
+        TC,
+
+        /// <summary>
         /// use -> U: *myLabel
         /// </summary>
         [Description("JUMP TO LABEL (OR USE)")]

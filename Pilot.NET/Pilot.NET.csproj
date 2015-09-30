@@ -64,11 +64,11 @@
     <Compile Include="Lang\Expressions\GraphicsExpressions\Go.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\Goto.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\IGraphicsExpression.cs" />
-    <Compile Include="Lang\Expressions\GraphicsExpressions\Pen.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\PILOTPen.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\QuitGraphics.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\Turn.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\TurnTo.cs" />
-    <Compile Include="Lang\Expressions\StringExpressions\TextClear.cs" />
+    <Compile Include="Lang\Statements\TextClear.cs" />
     <Compile Include="Lang\Statements\TurtleGraphics.cs" />
     <Compile Include="PILOTExceptions\CannotAssignException.cs" />
     <Compile Include="PILOTExceptions\InvalidSyntax.cs" />

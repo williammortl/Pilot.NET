@@ -33,11 +33,6 @@
         BLUE,
 
         /// <summary>
-        /// Black
-        /// </summary>
-        BLACK,
-
-        /// <summary>
         /// Green
         /// </summary>
         GREEN,

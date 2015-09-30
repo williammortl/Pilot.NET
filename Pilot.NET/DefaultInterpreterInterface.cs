@@ -55,6 +55,7 @@
         public void RedrawGraphics()
         {
             this.CreateGraphicsFormIfNeeded();
+            this.graphicsForm.GraphicsImage = this.GraphicsOutput;
             this.graphicsForm.Invoke(new Action(this.graphicsForm.Invalidate));
         }
 
@@ -98,8 +99,6 @@
         public void ClearGraphics()
         {
             this.GraphicsOutput = new Bitmap(this.GraphicsOutput.Width, this.GraphicsOutput.Height);
-            this.CreateGraphicsFormIfNeeded();
-            this.graphicsForm.GraphicsImage = this.GraphicsOutput;
             this.RedrawGraphics();
         }
 
@@ -130,7 +129,7 @@
         {
             if ((this.graphicsForm != null) && (this.graphicsForm.Visible == false))
             {
-                this.graphicsForm.Invoke(new Action(this.graphicsForm.Close));
+                this.graphicsForm.Dispose();
                 this.graphicsForm = null;
             }
             if (this.graphicsForm == null)

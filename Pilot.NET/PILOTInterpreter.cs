@@ -2,7 +2,6 @@
 {
     using Pilot.NET.Lang;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Expressions;
     using Pilot.NET.Lang.Expressions.Boolean;
     using Pilot.NET.Lang.Expressions.GraphicsExpressions;
     using Pilot.NET.Lang.Expressions.NumericExpressions;
@@ -687,6 +686,10 @@
                 if (graphicsExpression is ClearGraphics)
                 {
                     this.pilotInterface.ClearGraphics();
+                    this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
                 }
                 else if (graphicsExpression is Draw)
                 {
@@ -716,6 +719,28 @@
                 }
                 else if (graphicsExpression is DrawTo)
                 {
+
+                    // var init
+                    DrawTo dt = (DrawTo)graphicsExpression;
+                    Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
+                    Point endPoint = new Point((int)this.EvaluateNumericExpression(dt.DrawToX), (int)this.EvaluateNumericExpression(dt.DrawToY));
+
+                    // update current point
+                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
+                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
+
+                    // plot
+                    using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                    {
+                        PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
+                        {
+                            Point transStart = this.TranslatePoint(currentPoint);
+                            Point transEnd = this.TranslatePoint(endPoint);
+                            g.DrawLine(p, transStart, transEnd);
+                        }
+                    }
+                    this.pilotInterface.RedrawGraphics();
                 }
                 else if (graphicsExpression is Fill)
                 {
@@ -725,9 +750,51 @@
                 }
                 else if (graphicsExpression is Go)
                 {
+
+                    // var init
+                    Go go = (Go)graphicsExpression;
+                    Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
+                    int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
+                    Point endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(go.GoDistance));
+
+                    // update current point
+                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
+                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
+
+                    // plot
+                    using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                    {
+                        PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
+                        {
+                            Point transEnd = this.TranslatePoint(endPoint);
+                            g.DrawRectangle(p, transEnd.X, transEnd.Y, 1, 1);
+                        }
+                    }
+                    this.pilotInterface.RedrawGraphics();
                 }
                 else if (graphicsExpression is Goto)
                 {
+                    
+                    // var init
+                    Goto gt = (Goto)graphicsExpression;
+                    Point endPoint = new Point((int)this.EvaluateNumericExpression(gt.GotoX), (int)this.EvaluateNumericExpression(gt.GotoY));
+
+                    // update current point
+                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
+                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
+
+                    // plot
+                    using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                    {
+                        PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
+                        {
+                            Point transEnd = this.TranslatePoint(endPoint);
+                            g.DrawRectangle(p, transEnd.X, transEnd.Y, 1, 1);
+                        }
+                    }
+                    this.pilotInterface.RedrawGraphics();
                 }
                 else if (graphicsExpression is PILOTPen)
                 {
@@ -751,6 +818,11 @@
                 }
                 else if (graphicsExpression is QuitGraphics)
                 {
+                    this.pilotInterface.ClearGraphics();
+                    this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
                 }
                 else if (graphicsExpression is Turn)
                 {
@@ -761,6 +833,9 @@
                 }
                 else if (graphicsExpression is TurnTo)
                 {
+                    TurnTo tt = (TurnTo)graphicsExpression;
+                    int turnToAngle = (int)this.EvaluateNumericExpression(tt.TurnToAngle);
+                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, Convert.ToInt32(turnToAngle % 360));
                 }
             }
             catch (Exception e)
@@ -973,7 +1048,27 @@
         /// <returns>radians</returns>
         private static double DegreesToRadians(int degrees)
         {
-            return (Convert.ToDouble(degrees) / 360) * Math.PI;
+            // var init
+            double retVal = 0;
+
+            if (degrees == 360)
+            {
+                retVal = 0;
+            }
+            else if ((degrees >= 0) && (degrees < 360))
+            {
+                retVal = (Convert.ToDouble(degrees) / 360.0) * (2 * Math.PI);
+            }
+            else if (degrees < 0)
+            {
+                retVal = PILOTInterpreter.DegreesToRadians(360 + degrees);
+            }
+            else
+            {
+                retVal = PILOTInterpreter.DegreesToRadians(degrees % 360);
+            }
+
+            return retVal;
         }
 
         /// <summary>

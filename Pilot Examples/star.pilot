@@ -1,0 +1,6 @@
+10 C: #X = 0
+20 *start GR: Goto 0, 0
+30 GR: TurnTo #X
+40 GR: Draw 300
+50 C: #X = #X + 4
+60 J(#X <= 360): *start

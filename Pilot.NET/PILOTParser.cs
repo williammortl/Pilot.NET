@@ -623,6 +623,12 @@
                         retVal.Add(new TurnTo(turnToAngle));
                         break;
                     }
+                    case GraphicsExpressionKeywords.WIDTH:
+                    {
+                        INumericExpression penWidth = PILOTParser.ParseNumericExpression(expressionParameters);
+                        retVal.Add(new Width(penWidth));
+                        break;
+                    }
                 }
             }
 

@@ -72,6 +72,12 @@
         /// Quits the graphics
         /// </summary>
         [Description("CLOSES THE GRAPHICS")]
-        QUIT
+        QUIT,
+
+        /// <summary>
+        /// Pen width
+        /// </summary>
+        [Description("THE WIDTH OF THE PEN IN TURTLE GRAPHICS")]
+        WIDTH
     }
 }

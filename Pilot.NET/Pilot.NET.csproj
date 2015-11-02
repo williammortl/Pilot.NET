@@ -68,6 +68,7 @@
     <Compile Include="Lang\Expressions\GraphicsExpressions\QuitGraphics.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\Turn.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\TurnTo.cs" />
+    <Compile Include="Lang\Expressions\GraphicsExpressions\Width.cs" />
     <Compile Include="Lang\Statements\TextClear.cs" />
     <Compile Include="Lang\Statements\TurtleGraphics.cs" />
     <Compile Include="PILOTExceptions\CannotAssignException.cs" />

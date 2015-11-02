@@ -184,14 +184,27 @@
                                     program = new PILOTProgram();
                                     if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
                                     {
-                                        try
+                                        
+                                        // check to see if the filename exists, if not try adding ".pilot" to the filename
+                                        String fileName = split[1].Trim();
+                                        fileName = (File.Exists(fileName) == false) ? fileName + ".pilot" : fileName;
+
+                                        if (File.Exists(fileName) == true)
                                         {
-                                            program = PILOTParser.ParseProgram(new FileInfo(split[1].Trim()));
+                                            try
+                                            {
+                                                program = PILOTParser.ParseProgram(new FileInfo(fileName));
+                                            }
+                                            catch (PILOTException pe)
+                                            {
+                                                program = new PILOTProgram();
+                                                Console.WriteLine(pe.Message.ToUpper());
+                                            }
                                         }
-                                        catch (PILOTException pe)
+                                        else
                                         {
-                                            program = new PILOTProgram();
-                                            Console.WriteLine(pe.Message);
+                                            Console.WriteLine();
+                                            Console.WriteLine("FILE NOT FOUND");
                                         }
                                     }
                                     else
@@ -243,7 +256,7 @@
                                     }
                                     catch (PILOTException pe)
                                     {
-                                        Console.WriteLine(pe.Message);
+                                        Console.WriteLine(pe.Message.ToUpper());
                                     }
                                     break;
                                 }
@@ -466,7 +479,7 @@
                                 catch (PILOTException pe)
                                 {
                                     Console.WriteLine();
-                                    Console.WriteLine(pe.Message);
+                                    Console.WriteLine(pe.Message.ToUpper());
                                 }
                             }
                         }
@@ -481,7 +494,7 @@
                             catch (PILOTException pe)
                             {
                                 Console.WriteLine();
-                                Console.WriteLine(pe.Message);
+                                Console.WriteLine(pe.Message.ToUpper());
                             }
                         }
                     }
@@ -502,7 +515,7 @@
             }
             else
             {
-                Console.WriteLine("File not found!");
+                Console.WriteLine("FILE NOT FOUND");
                 Console.WriteLine();
                 Console.WriteLine(Program.PILOT_MASTHEAD);
                 Console.WriteLine(Program.PILOT_ABOUT);

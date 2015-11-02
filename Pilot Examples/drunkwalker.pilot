@@ -7,15 +7,18 @@
 70 A:#MAXTURN
 80 T:Enter line segment length (5-50): \
 90 A:#LINELENGTH
-100 T:Number of cycles (200-500): \
-110 A:#MAXCYCLES
-120 TC:Drunken walker max. turn = #MAXTURN deg.
-130 C:(#CYCLES = 0)
-140 *walk
-150 C:(#COLOR = ((? \ 9) + 1))
-160 GR:PEN #COLOR; DRAW #LINELENGTH
-170 PA:5
-180 GR:TURN (? \ #MAXTURN)
-190 C:(#CYCLES = (#CYCLES + 1))
-200 J(#CYCLES < #MAXCYCLES):*walk
-210 E:
+100 T:Enter line width (1-20): \
+110 A:#LINEWIDTH
+120 T:Number of cycles (200-500): \
+130 A:#MAXCYCLES
+140 GR:WIDTH #LINEWIDTH
+150 TC:Drunken walker max. turn = #MAXTURN deg.
+160 C:(#CYCLES = 0)
+170 *walk
+180 C:(#COLOR = ((? \ 9) + 1))
+190 GR:PEN #COLOR; DRAW #LINELENGTH
+200 PA:5
+210 GR:TURN (? \ #MAXTURN)
+220 C:(#CYCLES = (#CYCLES + 1))
+230 J(#CYCLES < #MAXCYCLES):*walk
+240 E:

@@ -40,7 +40,12 @@
         /// turtle graphics color value
         /// </summary>
         private const String COLOR_VAR = "%Z";
-        
+
+        /// <summary>
+        /// turtle graphics pen width value
+        /// </summary>
+        private const String WIDTH_VAR = "%W";
+
         /// <summary>
         /// For the random number generator
         /// </summary>
@@ -130,6 +135,7 @@
             this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
             this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
             this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
+            this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, 1);
             this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
         }
 
@@ -689,6 +695,7 @@
                     this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
                     this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, 1);
                     this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
                 }
                 else if (graphicsExpression is Draw)
@@ -708,7 +715,7 @@
                     using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
                     {
                         PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
+                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
                         {
                             Point transStart = this.TranslatePoint(currentPoint);
                             Point transEnd = this.TranslatePoint(endPoint);
@@ -733,7 +740,7 @@
                     using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
                     {
                         PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
+                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
                         {
                             Point transStart = this.TranslatePoint(currentPoint);
                             Point transEnd = this.TranslatePoint(endPoint);
@@ -765,7 +772,7 @@
                     using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
                     {
                         PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
+                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
                         {
                             Point transEnd = this.TranslatePoint(endPoint);
                             g.DrawRectangle(p, transEnd.X, transEnd.Y, 1, 1);
@@ -788,7 +795,7 @@
                     using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
                     {
                         PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
+                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
                         {
                             Point transEnd = this.TranslatePoint(endPoint);
                             g.DrawRectangle(p, transEnd.X, transEnd.Y, 1, 1);
@@ -822,6 +829,7 @@
                     this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
                     this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, 1);
                     this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
                 }
                 else if (graphicsExpression is Turn)
@@ -836,6 +844,12 @@
                     TurnTo tt = (TurnTo)graphicsExpression;
                     int turnToAngle = (int)this.EvaluateNumericExpression(tt.TurnToAngle);
                     this.SetNumericVar(PILOTInterpreter.THETA_VAR, Convert.ToInt32(turnToAngle % 360));
+                }
+                else if (graphicsExpression is Width)
+                {
+                    Width w = (Width)graphicsExpression;
+                    int penWidth = Math.Max(1, (int)this.EvaluateNumericExpression(w.PenWidth));
+                    this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, penWidth);
                 }
             }
             catch (Exception e)

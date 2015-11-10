@@ -35,6 +35,32 @@
         }
 
         /// <summary>
+        /// Creates and shows a DefaultInterpreterInterfaceGraphicsForm form
+        /// </summary>
+        /// <param name="graphicsImage">the image to be drawn</param>
+        /// <returns>a DefaultInterpreterInterfaceGraphicsForm variable</returns>
+        public static DefaultInterpreterInterfaceGraphicsForm ShowForm(Image graphicsImage)
+        {
+            DefaultInterpreterInterfaceGraphicsForm frm = new DefaultInterpreterInterfaceGraphicsForm(graphicsImage);
+            Thread t = new Thread(new ParameterizedThreadStart(DefaultInterpreterInterfaceGraphicsForm.MessagePump));
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start(frm);
+            while (frm.IsHandleCreated == false)
+            {
+                Thread.Sleep(0);
+            }
+            return frm;
+        }
+
+        /// <summary>
+        /// Repaint the graphics window
+        /// </summary>
+        public void RepaintGraphics()
+        {
+            this.graphicsBox.Invalidate();
+        }
+
+        /// <summary>
         /// Form load event
         /// </summary>
         /// <param name="sender">who triggered the event</param>
@@ -56,7 +82,12 @@
         /// <param name="e">event args</param>
         private void graphicsBox_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.DrawImage(this.GraphicsImage, new Point(0, 0));   
+
+            // mutex the image to make sure we don't have a race condition with a draw event
+            lock (this.GraphicsImage)
+            {
+                e.Graphics.DrawImage(this.GraphicsImage, new Point(0, 0));
+            } 
         }
 
         /// <summary>
@@ -67,24 +98,6 @@
         private void DefaultInterpreterInterfaceGraphicsForm_Paint(object sender, PaintEventArgs e)
         {
             this.graphicsBox.Invalidate();
-        }
-
-        /// <summary>
-        /// Creates and shows a DefaultInterpreterInterfaceGraphicsForm form
-        /// </summary>
-        /// <param name="graphicsImage">the image to be drawn</param>
-        /// <returns>a DefaultInterpreterInterfaceGraphicsForm variable</returns>
-        public static DefaultInterpreterInterfaceGraphicsForm ShowForm(Image graphicsImage)
-        {
-            DefaultInterpreterInterfaceGraphicsForm frm = new DefaultInterpreterInterfaceGraphicsForm(graphicsImage);
-            Thread t = new Thread(new ParameterizedThreadStart(DefaultInterpreterInterfaceGraphicsForm.MessagePump));
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start(frm);
-            while (frm.IsHandleCreated == false)
-            {
-                Thread.Sleep(0);
-            }
-            return frm;
         }
 
         /// <summary>

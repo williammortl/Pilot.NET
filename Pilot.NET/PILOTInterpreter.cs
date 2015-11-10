@@ -712,7 +712,7 @@
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
 
                     // plot
-                    using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                    using (Graphics g = PILOTInterpreter.GetGraphicsFromImage(this.pilotInterface.GraphicsOutput))
                     {
                         PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
                         using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
@@ -737,7 +737,7 @@
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
 
                     // plot
-                    using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                    using (Graphics g = PILOTInterpreter.GetGraphicsFromImage(this.pilotInterface.GraphicsOutput))
                     {
                         PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
                         using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
@@ -769,7 +769,7 @@
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
 
                     // plot
-                    using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                    using (Graphics g = PILOTInterpreter.GetGraphicsFromImage(this.pilotInterface.GraphicsOutput))
                     {
                         PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
                         using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
@@ -792,7 +792,7 @@
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
 
                     // plot
-                    using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                    using (Graphics g = PILOTInterpreter.GetGraphicsFromImage(this.pilotInterface.GraphicsOutput))
                     {
                         PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
                         using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
@@ -854,6 +854,10 @@
             }
             catch (Exception e)
             {
+                using (StreamWriter sw = new StreamWriter("error.txt"))
+                {
+                    sw.WriteLine(e.ToString());
+                }
                 throw new RunTimeException(String.Format("Could not evaluate the expression: {0}", graphicsExpression.ToString()), e);
             }
         }
@@ -973,21 +977,6 @@
         }
 
         /// <summary>
-        /// Writes output to the interface, handles trailing slashes and new lines
-        /// </summary>
-        /// <param name="pilotOutput">the pilot output to write</param>
-        private void WriteOutput(String pilotOutput)
-        {
-            Boolean newLine = true;
-            if (pilotOutput[pilotOutput.Length - 1] == '\\')
-            {
-                newLine = false;
-                pilotOutput = pilotOutput.Substring(0, pilotOutput.Length - 1);
-            }
-            this.pilotInterface.WriteText(pilotOutput, newLine);
-        }
-
-        /// <summary>
         /// Draw from a point a particular distance
         /// </summary>
         /// <param name="start">the start point</param>
@@ -1056,6 +1045,21 @@
         }
 
         /// <summary>
+        /// Writes output to the interface, handles trailing slashes and new lines
+        /// </summary>
+        /// <param name="pilotOutput">the pilot output to write</param>
+        private void WriteOutput(String pilotOutput)
+        {
+            Boolean newLine = true;
+            if (pilotOutput[pilotOutput.Length - 1] == '\\')
+            {
+                newLine = false;
+                pilotOutput = pilotOutput.Substring(0, pilotOutput.Length - 1);
+            }
+            this.pilotInterface.WriteText(pilotOutput, newLine);
+        }
+
+        /// <summary>
         /// Conversion from degrees to radians
         /// </summary>
         /// <param name="degrees">degrees</param>
@@ -1104,6 +1108,27 @@
                     retVal = i;
                     break;
                 }
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Gets graphics from image, handles multithreading issues where
+        ///     the operation could fail
+        /// </summary>
+        /// <param name="i">the image to get graphics for</param>
+        /// <returns>graphics for the image</returns>
+        private static Graphics GetGraphicsFromImage(Image i)
+        {
+
+            // var init
+            Graphics retVal = null;
+
+            // mutex the image to ensure that we don't have a race condition with a redraw
+            lock(i)
+            {
+                retVal = Graphics.FromImage(i);
             }
 
             return retVal;

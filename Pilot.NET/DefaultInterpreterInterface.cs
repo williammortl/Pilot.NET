@@ -2,6 +2,7 @@
 {
     using System;
     using System.Drawing;
+    using System.Threading;
 
     /// <summary>
     /// The default interpreter interface
@@ -56,7 +57,7 @@
         {
             this.CreateGraphicsFormIfNeeded();
             this.graphicsForm.GraphicsImage = this.GraphicsOutput;
-            this.graphicsForm.Invoke(new Action(this.graphicsForm.Invalidate));
+            this.graphicsForm.Invoke(new Action(this.graphicsForm.RepaintGraphics));
         }
 
         /// <summary>

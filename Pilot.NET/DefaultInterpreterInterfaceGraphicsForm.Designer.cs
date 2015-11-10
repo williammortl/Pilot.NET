@@ -39,9 +39,10 @@
             // graphicsBox
             // 
             this.graphicsBox.BackColor = System.Drawing.Color.Black;
-            this.graphicsBox.Location = new System.Drawing.Point(0, 56);
+            this.graphicsBox.Location = new System.Drawing.Point(0, 29);
+            this.graphicsBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.graphicsBox.Name = "graphicsBox";
-            this.graphicsBox.Size = new System.Drawing.Size(504, 418);
+            this.graphicsBox.Size = new System.Drawing.Size(252, 217);
             this.graphicsBox.TabIndex = 0;
             this.graphicsBox.TabStop = false;
             this.graphicsBox.Paint += new System.Windows.Forms.PaintEventHandler(this.graphicsBox_Paint);
@@ -53,7 +54,8 @@
             this.fileMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1168, 40);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(3, 1, 0, 1);
+            this.menuStrip1.Size = new System.Drawing.Size(584, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -62,29 +64,31 @@
             this.fileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveImage});
             this.fileMenu.Name = "fileMenu";
-            this.fileMenu.Size = new System.Drawing.Size(64, 36);
+            this.fileMenu.Size = new System.Drawing.Size(37, 22);
             this.fileMenu.Text = "File";
             // 
             // saveImage
             // 
             this.saveImage.Name = "saveImage";
-            this.saveImage.Size = new System.Drawing.Size(253, 38);
+            this.saveImage.Size = new System.Drawing.Size(143, 22);
             this.saveImage.Text = "Save Image...";
             this.saveImage.Click += new System.EventHandler(this.saveImage_Click);
             // 
             // DefaultInterpreterInterfaceGraphicsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1168, 607);
+            this.ClientSize = new System.Drawing.Size(584, 316);
             this.Controls.Add(this.graphicsBox);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DefaultInterpreterInterfaceGraphicsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Pilot.NET - Graphics";
             this.Load += new System.EventHandler(this.DefaultInterpreterInterfaceGraphicsForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.DefaultInterpreterInterfaceGraphicsForm_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.graphicsBox)).EndInit();

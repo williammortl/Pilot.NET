@@ -10,12 +10,33 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.InteropServices;
 
     /// <summary>
     /// Entry point for PILOTi
     /// </summary>
     class Program
     {
+
+        /// <summary>
+        /// Init X pos
+        /// </summary>
+        private const int INIT_X = 0;
+
+        /// <summary>
+        /// Init Y pos
+        /// </summary>
+        private const int INIT_Y = 0;
+
+        /// <summary>
+        /// Init width
+        /// </summary>
+        private const int INIT_WIDTH = 1024;
+
+        /// <summary>
+        /// Init height
+        /// </summary>
+        private const int INIT_HEIGHT = 768;
 
         /// <summary>
         /// Usage for PILOTi
@@ -43,6 +64,27 @@
         private const String PILOT_PROMPT = "READY";
 
         /// <summary>
+        /// Windows API call used to get the handle of the console window
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("kernel32.dll", ExactSpelling = true)]
+        private static extern IntPtr GetConsoleWindow();
+
+        /// <summary>
+        /// Windows API call used to move the window on the screen
+        /// </summary>
+        /// <param name="hWnd">window handle</param>
+        /// <param name="hWndInsertAfter">the Z order of the window</param>
+        /// <param name="x">x pos</param>
+        /// <param name="Y">y pos</param>
+        /// <param name="cx">window width</param>
+        /// <param name="cy">window height</param>
+        /// <param name="wFlags">flags</param>
+        /// <returns></returns>
+        [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
+        public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
+
+        /// <summary>
         /// Main entry point of the application
         /// </summary>
         /// <param name="args">Command line arguments</param>
@@ -54,16 +96,18 @@
             {
 
                 // get the current console colors
-                ConsoleColor background = Console.BackgroundColor;
-                ConsoleColor foreground = Console.ForegroundColor;
+                ConsoleColor origBackground = Console.BackgroundColor;
+                ConsoleColor origForeground = Console.ForegroundColor;
 
-                // init the console including console colors 
+                // init the console including console colors
                 Console.Title = Program.PILOT_TITLE;
                 Console.WindowLeft = 0;
                 Console.WindowTop = 0;
                 Console.BackgroundColor = ConsoleColor.Blue;
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Clear();
+                IntPtr consoleWindowHandle = GetConsoleWindow();
+                Program.SetWindowPos(consoleWindowHandle, 0, Program.INIT_X, Program.INIT_Y, Program.INIT_WIDTH, Program.INIT_HEIGHT, 0);
 
                 // display the masthead
                 Console.WriteLine(Program.PILOT_MASTHEAD);
@@ -72,8 +116,8 @@
                 Program.PilotShell();
 
                 // set the colors back to what they were
-                Console.BackgroundColor = background;
-                Console.ForegroundColor = foreground;
+                Console.BackgroundColor = origBackground;
+                Console.ForegroundColor = origForeground;
                 Console.Clear();
             }
             else if (args[0].Trim() == "/?")

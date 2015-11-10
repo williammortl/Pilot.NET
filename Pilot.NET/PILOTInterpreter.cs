@@ -67,6 +67,11 @@
         private Dictionary<String, double> numericVariables;
 
         /// <summary>
+        /// The size of the graphics display area
+        /// </summary>
+        private Point graphicsSize;
+
+        /// <summary>
         /// The turtle's position
         /// </summary>
         public Point TurtlePosition { get; private set; }
@@ -101,6 +106,7 @@
 
             // attribute init
             this.pilotInterface = new DefaultInterpreterInterface();
+            this.graphicsSize = new Point(this.pilotInterface.GraphicsOutput.Width, this.pilotInterface.GraphicsOutput.Height);
             this.ClearMemoryState();
         }
 
@@ -119,6 +125,7 @@
 
             // attribute init
             this.pilotInterface = pilotInterface;
+            this.graphicsSize = new Point(this.pilotInterface.GraphicsOutput.Width, this.pilotInterface.GraphicsOutput.Height);
             this.ClearMemoryState();
         }
 
@@ -706,22 +713,27 @@
                     Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
                     int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
                     Point endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(d.DrawDistance));
-                    
+                    Point transStart = this.TranslatePoint(currentPoint);
+                    Point transEnd = this.TranslatePoint(endPoint);
+
                     // update current point
                     this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
 
                     // plot
-                    using (Graphics g = PILOTInterpreter.GetGraphicsFromImage(this.pilotInterface.GraphicsOutput))
+                    lock (this.pilotInterface.GraphicsOutput)
                     {
-                        PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
+                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
                         {
-                            Point transStart = this.TranslatePoint(currentPoint);
-                            Point transEnd = this.TranslatePoint(endPoint);
-                            g.DrawLine(p, transStart, transEnd);
+                            PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                            using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
+                            {
+                                g.DrawLine(p, transStart, transEnd);
+                            }
                         }
                     }
+
+                    // redraw
                     this.pilotInterface.RedrawGraphics();
                 }
                 else if (graphicsExpression is DrawTo)
@@ -731,22 +743,27 @@
                     DrawTo dt = (DrawTo)graphicsExpression;
                     Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
                     Point endPoint = new Point((int)this.EvaluateNumericExpression(dt.DrawToX), (int)this.EvaluateNumericExpression(dt.DrawToY));
+                    Point transStart = this.TranslatePoint(currentPoint);
+                    Point transEnd = this.TranslatePoint(endPoint);
 
                     // update current point
                     this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
 
                     // plot
-                    using (Graphics g = PILOTInterpreter.GetGraphicsFromImage(this.pilotInterface.GraphicsOutput))
+                    lock(this.pilotInterface.GraphicsOutput)
                     {
-                        PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
+                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
                         {
-                            Point transStart = this.TranslatePoint(currentPoint);
-                            Point transEnd = this.TranslatePoint(endPoint);
-                            g.DrawLine(p, transStart, transEnd);
+                            PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                            using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
+                            {
+                                g.DrawLine(p, transStart, transEnd);
+                            }
                         }
                     }
+
+                    //redraw
                     this.pilotInterface.RedrawGraphics();
                 }
                 else if (graphicsExpression is Fill)
@@ -763,21 +780,26 @@
                     Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
                     int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
                     Point endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(go.GoDistance));
+                    Point transEnd = this.TranslatePoint(endPoint);
 
                     // update current point
                     this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
 
                     // plot
-                    using (Graphics g = PILOTInterpreter.GetGraphicsFromImage(this.pilotInterface.GraphicsOutput))
+                    lock (this.pilotInterface.GraphicsOutput)
                     {
-                        PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
+                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
                         {
-                            Point transEnd = this.TranslatePoint(endPoint);
-                            g.DrawRectangle(p, transEnd.X, transEnd.Y, 1, 1);
+                            PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                            using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
+                            {
+                                g.DrawRectangle(p, transEnd.X, transEnd.Y, 1, 1);
+                            }
                         }
                     }
+
+                    // redraw
                     this.pilotInterface.RedrawGraphics();
                 }
                 else if (graphicsExpression is Goto)
@@ -786,21 +808,26 @@
                     // var init
                     Goto gt = (Goto)graphicsExpression;
                     Point endPoint = new Point((int)this.EvaluateNumericExpression(gt.GotoX), (int)this.EvaluateNumericExpression(gt.GotoY));
+                    Point transEnd = this.TranslatePoint(endPoint);
 
                     // update current point
                     this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
 
                     // plot
-                    using (Graphics g = PILOTInterpreter.GetGraphicsFromImage(this.pilotInterface.GraphicsOutput))
+                    lock (this.pilotInterface.GraphicsOutput)
                     {
-                        PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                        using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
+                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
                         {
-                            Point transEnd = this.TranslatePoint(endPoint);
-                            g.DrawRectangle(p, transEnd.X, transEnd.Y, 1, 1);
+                            PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                            using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
+                            {
+                                g.DrawRectangle(p, transEnd.X, transEnd.Y, 1, 1);
+                            }
                         }
                     }
+
+                    // redraw
                     this.pilotInterface.RedrawGraphics();
                 }
                 else if (graphicsExpression is PILOTPen)
@@ -972,8 +999,8 @@
         /// <returns>.NET image style point</returns>
         internal Point TranslatePoint(Point p)
         {
-            return new Point(Convert.ToInt32(.5 * this.pilotInterface.GraphicsOutput.Width) + p.X,
-                             Convert.ToInt32(.5 * this.pilotInterface.GraphicsOutput.Height) - p.Y);
+            return new Point(Convert.ToInt32(.5 * this.graphicsSize.X) + p.X,
+                             Convert.ToInt32(.5 * this.graphicsSize.Y) - p.Y);
         }
 
         /// <summary>
@@ -1108,27 +1135,6 @@
                     retVal = i;
                     break;
                 }
-            }
-
-            return retVal;
-        }
-
-        /// <summary>
-        /// Gets graphics from image, handles multithreading issues where
-        ///     the operation could fail
-        /// </summary>
-        /// <param name="i">the image to get graphics for</param>
-        /// <returns>graphics for the image</returns>
-        private static Graphics GetGraphicsFromImage(Image i)
-        {
-
-            // var init
-            Graphics retVal = null;
-
-            // mutex the image to ensure that we don't have a race condition with a redraw
-            lock(i)
-            {
-                retVal = Graphics.FromImage(i);
             }
 
             return retVal;

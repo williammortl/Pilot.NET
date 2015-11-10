@@ -14,11 +14,6 @@
     {
 
         /// <summary>
-        /// The title for the graphics window
-        /// </summary>
-        private const String TITLE = "Pilot.NET - Graphics";
-
-        /// <summary>
         /// the image containing the graphics, not responsible for the disposal of this
         /// </summary>
         public Image GraphicsImage;
@@ -30,7 +25,6 @@
         private DefaultInterpreterInterfaceGraphicsForm(Image graphicsImage)
         {
             this.GraphicsImage = graphicsImage;
-            this.Text = DefaultInterpreterInterfaceGraphicsForm.TITLE;
             InitializeComponent();
         }
 

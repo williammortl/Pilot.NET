@@ -1,0 +1,16 @@
+10 T:Random Stars
+20 GR:CLEAR
+30 *start
+40 C:#X=?\1024
+50 C:#Y=?\768
+60 C:#N=#N+1
+70 C(#N = 2):#Y=-#Y
+80 C(#N = 3):#Y=-#Y
+90 C(#N = 3):#X=-#X
+100 C(#N = 4):#X=-#X
+110 GR:GOTO #X, #Y
+120 C(#N = 4):#N=0
+130 C:#NUMSTARS=#NUMSTARS+1
+140 J(#NUMSTARS<200): *start
+
+

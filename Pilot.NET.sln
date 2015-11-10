@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilot.NET", "Pilot.NET\Pilot.NET.csproj", "{1617770A-B3ED-44BB-A63E-D94986EE90E6}"
 EndProject
@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pilot Examples", "Pilot Exa
 		Pilot Examples\first.pilot = Pilot Examples\first.pilot
 		Pilot Examples\matchtest.pilot = Pilot Examples\matchtest.pilot
 		Pilot Examples\star.pilot = Pilot Examples\star.pilot
+		Pilot Examples\stars.pilot = Pilot Examples\stars.pilot
 		Pilot Examples\subroutine.pilot = Pilot Examples\subroutine.pilot
 		Pilot Examples\test.pilot = Pilot Examples\test.pilot
 	EndProjectSection

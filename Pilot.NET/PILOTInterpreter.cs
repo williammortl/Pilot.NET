@@ -197,6 +197,31 @@
         }
 
         /// <summary>
+        /// Checks to see if a variable exists
+        /// </summary>
+        /// <param name="varName">the name of the variable</param>
+        /// <returns>true if it exists</returns>
+        public Boolean VarExists(String varName)
+        {
+
+            // var init
+            Boolean retVal = false;
+
+            // look for variable
+            varName = varName.Trim().ToUpper();
+            if (this.stringVariables.Keys.Contains(varName) == true)
+            {
+                retVal = true;
+            }
+            else if (this.numericVariables.Keys.Contains(varName) == true)
+            {
+                retVal = true;
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
         /// Runs a PILOT program, can throw PILOTException
         /// </summary>
         /// <param name="text">the program in a string, each line is sperated by \r\n</param>
@@ -534,7 +559,7 @@
                 else if (numericalExpression is NumericVariable)
                 {
                     NumericVariable numVar = (NumericVariable)numericalExpression;
-                    retVal = this.GetNumericVar(numVar.ToString());
+                    retVal = (this.VarExists(numVar.VariableName) == true) ? this.GetNumericVar(numVar.VariableName) : 0;
                 }
                 else if (numericalExpression is NumericBinaryOperation)
                 {
@@ -628,7 +653,8 @@
             {
                 if (stringExpression is StringVariable)
                 {
-                    retVal = this.GetStringVar(((StringVariable)stringExpression).VariableName);
+                    StringVariable stringVar = (StringVariable)stringExpression;
+                    retVal = (this.VarExists(stringVar.VariableName) == true) ? this.GetStringVar(stringVar.VariableName) : String.Empty;
                 }
                 else if (stringExpression is StringAssignExpression)
                 {
@@ -768,6 +794,24 @@
                 }
                 else if (graphicsExpression is Fill)
                 {
+                    // var init
+
+
+                    // plot
+                    lock (this.pilotInterface.GraphicsOutput)
+                    {
+                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                        {
+                            PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                            using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
+                            {
+                                //g.Fi
+                            }
+                        }
+                    }
+
+                    // redraw
+                    this.pilotInterface.RedrawGraphics();
                 }
                 else if (graphicsExpression is FillTo)
                 {
@@ -881,10 +925,6 @@
             }
             catch (Exception e)
             {
-                using (StreamWriter sw = new StreamWriter("error.txt"))
-                {
-                    sw.WriteLine(e.ToString());
-                }
                 throw new RunTimeException(String.Format("Could not evaluate the expression: {0}", graphicsExpression.ToString()), e);
             }
         }

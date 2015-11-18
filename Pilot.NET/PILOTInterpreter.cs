@@ -722,7 +722,7 @@
             // evaluate based upon what type of string expression
             try
             {
-                if (graphicsExpression is ClearGraphics)
+                if ((graphicsExpression is ClearGraphics) || (graphicsExpression is QuitGraphics))
                 {
                     this.pilotInterface.ClearGraphics();
                     this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
@@ -730,199 +730,6 @@
                     this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
                     this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, 1);
                     this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
-                }
-                else if (graphicsExpression is Draw)
-                {
-
-                    // var init
-                    Draw d = (Draw)graphicsExpression;
-                    Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
-                    int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
-                    Point endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(d.DrawDistance));
-                    Point transStart = this.TranslatePoint(currentPoint);
-                    Point transEnd = this.TranslatePoint(endPoint);
-
-                    // update current point
-                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
-                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
-
-                    // plot
-                    lock (this.pilotInterface.GraphicsOutput)
-                    {
-                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
-                        {
-                            PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                            using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
-                            {
-                                g.DrawLine(p, transStart, transEnd);
-                            }
-                        }
-                    }
-
-                    // redraw
-                    this.pilotInterface.RedrawGraphics();
-                }
-                else if (graphicsExpression is DrawTo)
-                {
-
-                    // var init
-                    DrawTo dt = (DrawTo)graphicsExpression;
-                    Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
-                    Point endPoint = new Point((int)this.EvaluateNumericExpression(dt.DrawToX), (int)this.EvaluateNumericExpression(dt.DrawToY));
-                    Point transStart = this.TranslatePoint(currentPoint);
-                    Point transEnd = this.TranslatePoint(endPoint);
-
-                    // update current point
-                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
-                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
-
-                    // plot
-                    lock(this.pilotInterface.GraphicsOutput)
-                    {
-                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
-                        {
-                            PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                            using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR)))
-                            {
-                                g.DrawLine(p, transStart, transEnd);
-                            }
-                        }
-                    }
-
-                    //redraw
-                    this.pilotInterface.RedrawGraphics();
-                }
-                else if (graphicsExpression is Fill)
-                {
-
-                    // var init
-                    Fill f = (Fill)graphicsExpression;
-                    Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
-                    int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
-                    Point endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(f.FillDistance));
-                    Point transStart = this.TranslatePoint(currentPoint);
-                    Point transEnd = this.TranslatePoint(endPoint);
-
-                    // update current point
-                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
-                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
-
-                    // plot
-                    lock (this.pilotInterface.GraphicsOutput)
-                    {
-                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
-                        {
-                            using (Bitmap b = new Bitmap(this.pilotInterface.GraphicsOutput))
-                            {
-                                PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                                using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
-                                {
-                                    if (transStart.Y != transEnd.Y)
-                                    {
-
-                                        // points
-                                        Point leftmost = (transStart.X <= transEnd.X) ? transStart : transEnd;
-                                        Point rightmost = (transStart.X > transEnd.X) ? transStart : transEnd;
-                                        Point topmost = (transStart.Y >= transEnd.Y) ? transStart : transEnd;
-                                        Point bottommost = (transStart.Y < transEnd.Y) ? transStart : transEnd;
-
-                                        // build frame
-                                        for (int x = transStart.X + 1; x < this.graphicsSize.X; x++)
-                                        {
-                                            if (Color.Black == b.GetPixel(x, transStart.Y))
-                                            {
-                                                g.DrawLine(p, transStart, new Point(x, transStart.Y));
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-                                        for (int x = transEnd.X + 1; x < this.graphicsSize.X; x++)
-                                        {
-                                            if (Color.Black == b.GetPixel(x, transEnd.Y))
-                                            {
-                                                g.DrawLine(p, transEnd, new Point(x, transEnd.Y));
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    // draw line
-                                    g.DrawLine(p, transStart, transEnd);
-                                }
-                            }
-                        }
-                    }
-
-                    // redraw
-                    this.pilotInterface.RedrawGraphics();
-                }
-                else if (graphicsExpression is FillTo)
-                {
-                }
-                else if (graphicsExpression is Go)
-                {
-
-                    // var init
-                    Go go = (Go)graphicsExpression;
-                    Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
-                    int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
-                    Point endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(go.GoDistance));
-                    Point transEnd = this.TranslatePoint(endPoint);
-
-                    // update current point
-                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
-                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
-
-                    // plot
-                    lock (this.pilotInterface.GraphicsOutput)
-                    {
-                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
-                        {
-                            PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                            int width = (int)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR);
-                            using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(pc)))
-                            {
-                                g.FillRectangle(b, (float)(transEnd.X - (.5 * width)), (float)(transEnd.Y - (.5 * width)), width, width);
-                            }
-                        }
-                    }
-
-                    // redraw
-                    this.pilotInterface.RedrawGraphics();
-                }
-                else if (graphicsExpression is Goto)
-                {
-                    
-                    // var init
-                    Goto gt = (Goto)graphicsExpression;
-                    Point endPoint = new Point((int)this.EvaluateNumericExpression(gt.GotoX), (int)this.EvaluateNumericExpression(gt.GotoY));
-                    Point transEnd = this.TranslatePoint(endPoint);
-
-                    // update current point
-                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
-                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
-
-                    // plot
-                    lock (this.pilotInterface.GraphicsOutput)
-                    {
-                        using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
-                        {
-                            PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                            int width = (int)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR);
-                            using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(pc)))
-                            {
-                                g.FillRectangle(b, (float)(transEnd.X - (.5 * width)), (float)(transEnd.Y - (.5 * width)), width, width);
-                            }
-                        }
-                    }
-
-                    // redraw
-                    this.pilotInterface.RedrawGraphics();
                 }
                 else if (graphicsExpression is PILOTPen)
                 {
@@ -944,15 +751,6 @@
                         }
                     }
                 }
-                else if (graphicsExpression is QuitGraphics)
-                {
-                    this.pilotInterface.ClearGraphics();
-                    this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
-                    this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
-                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
-                    this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, 1);
-                    this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
-                }
                 else if (graphicsExpression is Turn)
                 {
                     Turn t = (Turn)graphicsExpression;
@@ -971,6 +769,219 @@
                     Width w = (Width)graphicsExpression;
                     int penWidth = Math.Max(1, (int)this.EvaluateNumericExpression(w.PenWidth));
                     this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, penWidth);
+                }
+                else
+                {
+
+                    // var init
+                    Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
+                    Point transStart = this.TranslatePoint(currentPoint);
+                    Point endPoint = new Point(currentPoint.X, currentPoint.Y);
+                    float currentLineWidth = (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR);
+                    PenColors currentColor = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
+                    int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
+
+                    // parse commands that actually draw
+                    if (graphicsExpression is Draw)
+                    {
+
+                        // var init & calculations
+                        Draw d = (Draw)graphicsExpression;
+                        endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(d.DrawDistance));
+                        Point transEnd = this.TranslatePoint(endPoint);
+
+                        // plot
+                        lock (this.pilotInterface.GraphicsOutput)
+                        {
+                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            {
+                                using (Pen p = new Pen(EnumMethods.PenColorToColor(currentColor), currentLineWidth))
+                                {
+                                    g.DrawLine(p, transStart, transEnd);
+                                }
+                            }
+                        }
+                    }
+                    else if (graphicsExpression is DrawTo)
+                    {
+
+                        // var init & calculations
+                        DrawTo dt = (DrawTo)graphicsExpression;
+                        endPoint = new Point((int)this.EvaluateNumericExpression(dt.DrawToX), (int)this.EvaluateNumericExpression(dt.DrawToY));
+                        Point transEnd = this.TranslatePoint(endPoint);
+
+                        // plot
+                        lock (this.pilotInterface.GraphicsOutput)
+                        {
+                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            {
+                                using (Pen p = new Pen(EnumMethods.PenColorToColor(currentColor), currentLineWidth))
+                                {
+                                    g.DrawLine(p, transStart, transEnd);
+                                }
+                            }
+                        }
+                    }
+                    else if (graphicsExpression is Fill)
+                    {
+                    }
+                    else if (graphicsExpression is FillTo)
+                    {
+                    }
+                    else if (graphicsExpression is Go)
+                    {
+
+                        // var init & calculations
+                        Go go = (Go)graphicsExpression;
+                        endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(go.GoDistance));
+                        Point transEnd = this.TranslatePoint(endPoint);
+
+                        // plot
+                        lock (this.pilotInterface.GraphicsOutput)
+                        {
+                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            {
+                                using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(currentColor)))
+                                {
+                                    g.FillRectangle(b, (float)(transEnd.X - (.5 * currentLineWidth)), (float)(transEnd.Y - (.5 * currentLineWidth)), currentLineWidth, currentLineWidth);
+                                }
+                            }
+                        }
+                    }
+                    else if (graphicsExpression is Goto)
+                    {
+
+                        // var init & calculations
+                        Goto gt = (Goto)graphicsExpression;
+                        endPoint = new Point((int)this.EvaluateNumericExpression(gt.GotoX), (int)this.EvaluateNumericExpression(gt.GotoY));
+                        Point transEnd = this.TranslatePoint(endPoint);
+
+                        // plot
+                        lock (this.pilotInterface.GraphicsOutput)
+                        {
+                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            {
+                                using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(currentColor)))
+                                {
+                                    g.FillRectangle(b, (float)(transEnd.X - (.5 * currentLineWidth)), (float)(transEnd.Y - (.5 * currentLineWidth)), currentLineWidth, currentLineWidth);
+                                }
+                            }
+                        }
+                    }
+                    else if (graphicsExpression is Box)
+                    {
+
+                        // var init & calculations
+                        Box b = (Box)graphicsExpression;
+                        int width = (int)this.EvaluateNumericExpression(b.BoxWidth);
+                        int height = (int)this.EvaluateNumericExpression(b.BoxHeight);
+
+                        // plot
+                        lock (this.pilotInterface.GraphicsOutput)
+                        {
+                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            {
+                                using (Pen p = new Pen(EnumMethods.PenColorToColor(currentColor), currentLineWidth))
+                                {
+                                    Rectangle r = new Rectangle(transStart.X, transStart.Y, width, height);
+                                    g.DrawRectangle(p, r);
+                                }
+                            }
+                        }
+                    }
+                    else if (graphicsExpression is BoxFill)
+                    {
+
+                        // var init & calculations
+                        BoxFill bf = (BoxFill)graphicsExpression;
+                        int width = (int)this.EvaluateNumericExpression(bf.BoxWidth);
+                        int height = (int)this.EvaluateNumericExpression(bf.BoxHeight);
+
+                        // plot
+                        lock (this.pilotInterface.GraphicsOutput)
+                        {
+                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            {
+                                using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(currentColor)))
+                                {
+                                    Rectangle r = new Rectangle(transStart.X, transStart.Y, width, height);
+                                    g.FillRectangle(b, r);
+                                }
+                            }
+                        }
+                    }
+                    else if (graphicsExpression is Ellipse)
+                    {
+
+                        // var init & calculations
+                        Ellipse e = (Ellipse)graphicsExpression;
+                        int horizontalRadius = (int)this.EvaluateNumericExpression(e.HorizontalRadius);
+                        int verticalRadius = (int)this.EvaluateNumericExpression(e.VerticalRadius);
+
+                        // plot
+                        lock (this.pilotInterface.GraphicsOutput)
+                        {
+                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            {
+                                using (Pen p = new Pen(EnumMethods.PenColorToColor(currentColor), currentLineWidth))
+                                {
+                                    Rectangle r = new Rectangle(transStart.X - horizontalRadius, transStart.Y - verticalRadius, 2 * horizontalRadius, 2 * verticalRadius);
+                                    g.DrawEllipse(p, r);
+                                }
+                            }
+                        }
+                    }
+                    else if (graphicsExpression is EllipseFill)
+                    {
+
+                        // var init & calculations
+                        EllipseFill ef = (EllipseFill)graphicsExpression;
+                        int horizontalRadius = (int)this.EvaluateNumericExpression(ef.HorizontalRadius);
+                        int verticalRadius = (int)this.EvaluateNumericExpression(ef.VerticalRadius);
+
+                        // plot
+                        lock (this.pilotInterface.GraphicsOutput)
+                        {
+                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            {
+                                using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(currentColor)))
+                                {
+                                    Rectangle r = new Rectangle(transStart.X - horizontalRadius, transStart.Y - verticalRadius, 2 * horizontalRadius, 2 * verticalRadius);
+                                    g.FillEllipse(b, r);
+                                }
+                            }
+                        }
+                    }
+                    else if (graphicsExpression is Print)
+                    {
+
+                        // var init & calculations
+                        Print p = (Print)graphicsExpression;
+                        String text = this.EvaluateStringExpression(p.TextToPrint);
+                        int size = (int)this.EvaluateNumericExpression(p.TextSize);
+
+                        // plot
+                        lock (this.pilotInterface.GraphicsOutput)
+                        {
+                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            {
+                                using (Font f = new Font("System", size))
+                                {
+                                    using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(currentColor)))
+                                    {
+                                        g.DrawString(text, f, b, transStart);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // update current point
+                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
+                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
+
+                    // redraw
+                    this.pilotInterface.RedrawGraphics();
                 }
             }
             catch (Exception e)

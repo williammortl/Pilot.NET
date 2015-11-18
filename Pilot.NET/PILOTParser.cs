@@ -551,11 +551,9 @@
                     }
                     case GraphicsExpressionKeywords.DRAWTO:
                     {
-                        int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
-                        String x = expressionParameters.Substring(0, splitPoint);
-                        String y = expressionParameters.Substring(splitPoint + 1);
-                        INumericExpression drawToX = PILOTParser.ParseNumericExpression(x);
-                        INumericExpression drawToY = PILOTParser.ParseNumericExpression(y);
+                        String[] split = expressionParameters.Split(new char[] { ',' });
+                        INumericExpression drawToX = PILOTParser.ParseNumericExpression(split[0]);
+                        INumericExpression drawToY = PILOTParser.ParseNumericExpression(split[1]);
                         retVal.Add(new DrawTo(drawToX, drawToY));
                         break;
                     }
@@ -567,11 +565,9 @@
                     }
                     case GraphicsExpressionKeywords.FILLTO:
                     {
-                        int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
-                        String x = expressionParameters.Substring(0, splitPoint);
-                        String y = expressionParameters.Substring(splitPoint + 1);
-                        INumericExpression fillToX = PILOTParser.ParseNumericExpression(x);
-                        INumericExpression fillToY = PILOTParser.ParseNumericExpression(y);
+                        String[] split = expressionParameters.Split(new char[] { ',' });
+                        INumericExpression fillToX = PILOTParser.ParseNumericExpression(split[0]);
+                        INumericExpression fillToY = PILOTParser.ParseNumericExpression(split[1]);
                         retVal.Add(new FillTo(fillToX, fillToY));
                         break;
                     }
@@ -583,11 +579,9 @@
                     }
                     case GraphicsExpressionKeywords.GOTO:
                     {
-                        int splitPoint = PILOTParser.GraphicsPointSplitPosition(expressionParameters);
-                        String x = expressionParameters.Substring(0, splitPoint);
-                        String y = expressionParameters.Substring(splitPoint + 1);
-                        INumericExpression gotoX = PILOTParser.ParseNumericExpression(x);
-                        INumericExpression gotoY = PILOTParser.ParseNumericExpression(y);
+                        String[] split = expressionParameters.Split(new char[] { ',' });
+                        INumericExpression gotoX = PILOTParser.ParseNumericExpression(split[0]);
+                        INumericExpression gotoY = PILOTParser.ParseNumericExpression(split[1]);
                         retVal.Add(new Goto(gotoX, gotoY));
                         break;
                     }
@@ -627,6 +621,46 @@
                     {
                         INumericExpression penWidth = PILOTParser.ParseNumericExpression(expressionParameters);
                         retVal.Add(new Width(penWidth));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.BOX:
+                    {
+                        String[] split = expressionParameters.Split(new char[] { ',' });
+                        INumericExpression height = PILOTParser.ParseNumericExpression(split[0]);
+                        INumericExpression width = PILOTParser.ParseNumericExpression(split[1]);
+                        retVal.Add(new Box(height, width));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.BOXFILL:
+                    {
+                        String[] split = expressionParameters.Split(new char[] { ',' });
+                        INumericExpression height = PILOTParser.ParseNumericExpression(split[0]);
+                        INumericExpression width = PILOTParser.ParseNumericExpression(split[1]);
+                        retVal.Add(new BoxFill(height, width));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.ELLIPSE:
+                    {
+                        String[] split = expressionParameters.Split(new char[] { ',' });
+                        INumericExpression horizontalRadius = PILOTParser.ParseNumericExpression(split[0]);
+                        INumericExpression verticalRadius = PILOTParser.ParseNumericExpression(split[1]);
+                        retVal.Add(new Ellipse(horizontalRadius, verticalRadius));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.ELLIPSEFILL:
+                    {
+                        String[] split = expressionParameters.Split(new char[] { ',' });
+                        INumericExpression horizontalRadius = PILOTParser.ParseNumericExpression(split[0]);
+                        INumericExpression verticalRadius = PILOTParser.ParseNumericExpression(split[1]);
+                        retVal.Add(new EllipseFill(horizontalRadius, verticalRadius));
+                        break;
+                    }
+                    case GraphicsExpressionKeywords.PRINT:
+                    {
+                        String[] split = expressionParameters.Split(new char[] { ',' });
+                        StringVariable textToPrint = (StringVariable)PILOTParser.ParseVariable(split[0]);
+                        INumericExpression textSize = PILOTParser.ParseNumericExpression(split[1]);
+                        retVal.Add(new Print(textToPrint, textSize));
                         break;
                     }
                 }
@@ -866,57 +900,6 @@
                     {
                         prevOperatorFound = (int)NumericBinaryOperators.Exp;
                         retVal = i;
-                    }
-                }
-            }
-
-            return retVal;
-        }
-
-        /// <summary>
-        /// Finds the point split point in the graphical expression, i.e. the ',' that splits (x, y)
-        /// </summary>
-        /// <param name="text">the string expression to analyze, this string should already be cleansed (no whitespace, no wrapping parens)</param>
-        /// <returns>the position of the split point, 0 if no split point was found or error</returns>
-        internal static int GraphicsPointSplitPosition(String text)
-        {
-
-            // short circuit on empty string
-            if (String.IsNullOrWhiteSpace(text) == true)
-            {
-                return 0;
-            }
-
-            // var init for search
-            int retVal = 0;
-            int parenthesesDepth = 0;
-
-            // loop through string and find operator
-            for (int i = 0; i < text.Length; i++)
-            {
-
-                // loop var init
-                char c = text[i];
-                char prevC = text[Math.Max(0, i - 1)];
-
-                // analyze the character
-                if (c == '(')
-                {
-                    parenthesesDepth += 1;
-                }
-                else if (c == ')')
-                {
-                    parenthesesDepth -= 1;
-                }
-                else if ((i > 0) && (parenthesesDepth == 0))
-                {
-
-                    // the graphics split position cannot exist at position 0
-                    // only if we are not parentheses wrapped search for an operator
-                    if (c == ',')
-                    {
-                        retVal = i;
-                        break;
                     }
                 }
             }

@@ -112,17 +112,20 @@
         /// <param name="e">event args</param>
         private void saveImage_Click(object sender, EventArgs e)
         {
-            using (SaveFileDialog sfd = new SaveFileDialog())
+            lock (this.GraphicsImage)
             {
-                sfd.Filter = "Bitmap Files (.bmp)|*.bmp|PNG Files (*.png)|*.png";
-                sfd.FilterIndex = 0;
-                sfd.InitialDirectory = Environment.CurrentDirectory;
-                sfd.FileName = "PilotImage.bmp";
-                if (sfd.ShowDialog() == DialogResult.OK)
+                using (SaveFileDialog sfd = new SaveFileDialog())
                 {
-                    String fileName = sfd.FileName;
-                    ImageFormat format = (Path.GetExtension(fileName).Trim().Substring(1).ToLower().Contains("bmp") == true) ? ImageFormat.Bmp : ImageFormat.Png;
-                    this.GraphicsImage.Save(fileName, format);
+                    sfd.Filter = "Bitmap Files (.bmp)|*.bmp|PNG Files (*.png)|*.png";
+                    sfd.FilterIndex = 0;
+                    sfd.InitialDirectory = Environment.CurrentDirectory;
+                    sfd.FileName = "PilotImage.bmp";
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        String fileName = sfd.FileName;
+                        ImageFormat format = (Path.GetExtension(fileName).Trim().Substring(1).ToLower().Contains("bmp") == true) ? ImageFormat.Bmp : ImageFormat.Png;
+                        this.GraphicsImage.Save(fileName, format);
+                    }
                 }
             }
         }

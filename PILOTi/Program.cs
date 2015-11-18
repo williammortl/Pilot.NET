@@ -188,7 +188,7 @@
                                     {
                                         FieldInfo fi = command.GetType().GetField(command.ToString());
                                         DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                                        Console.WriteLine(String.Format("{0, -10} - {1}", command.ToString(), attributes[0].Description));
+                                        Console.WriteLine(String.Format("{0, -12} - {1}", command.ToString(), attributes[0].Description));
                                     }
                                     break;
                                 }
@@ -384,7 +384,7 @@
                                     {
                                         FieldInfo fi = keyword.GetType().GetField(keyword.ToString());
                                         DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                                        Console.WriteLine(String.Format("{0, -10} - {1}", keyword.ToString(), attributes[0].Description));
+                                        Console.WriteLine(String.Format("{0, -12} - {1}", keyword.ToString(), attributes[0].Description));
                                     }
                                     break;
                                 }
@@ -397,11 +397,11 @@
                                     {
                                         foreach (String varName in interpreter.StringVariables)
                                         {
-                                            Console.WriteLine(String.Format("{0, -10} = {1}", varName, interpreter.GetStringVar(varName)));
+                                            Console.WriteLine(String.Format("{0, -12} = {1}", varName, interpreter.GetStringVar(varName)));
                                         }
                                         foreach (String varName in interpreter.NumericVariables)
                                         {
-                                            Console.WriteLine(String.Format("{0, -10} = {1}", varName, interpreter.GetNumericVar(varName).ToString("0.00")));
+                                            Console.WriteLine(String.Format("{0, -12} = {1}", varName, interpreter.GetNumericVar(varName).ToString("0.00")));
                                         }
                                     }
                                     else
@@ -483,7 +483,7 @@
                                     PenColors[] colors = (PenColors[])Enum.GetValues(typeof(PenColors));
                                     foreach (PenColors color in colors)
                                     {
-                                        Console.WriteLine(String.Format("{0, -10} - {1}", color.ToString(), ((int)color).ToString()));
+                                        Console.WriteLine(String.Format("{0, -12} - {1}", color.ToString(), ((int)color).ToString()));
                                     }
                                     break;
                                 }
@@ -497,7 +497,7 @@
                                     {
                                         FieldInfo fi = op.GetType().GetField(op.ToString());
                                         DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                                        Console.WriteLine(String.Format("{0, -10} - {1}", op.ToString(), attributes[0].Description));
+                                        Console.WriteLine(String.Format("{0, -12} - {1}", op.ToString(), attributes[0].Description));
                                     }
                                     break;
                                 }

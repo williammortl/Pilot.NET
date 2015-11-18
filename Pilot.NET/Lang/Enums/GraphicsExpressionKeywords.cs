@@ -9,6 +9,18 @@
     {
 
         /// <summary>
+        /// Draws a box
+        /// </summary>
+        [Description("DRAWS A BOX")]
+        BOX,
+
+        /// <summary>
+        /// Draws a box and fills it
+        /// </summary>
+        [Description("DRAWS A BOX AND FILLS IT")]
+        BOXFILL,
+
+        /// <summary>
         /// Clears the graphics
         /// </summary>
         [Description("CLEARS THE SCREEN")]
@@ -25,6 +37,18 @@
         /// </summary>
         [Description("DRAWS A LINE TO THIS POINT")]
         DRAWTO,
+
+        /// <summary>
+        /// Draws an ellipse
+        /// </summary>
+        [Description("DRAWS AN ELLIPSE")]
+        ELLIPSE,
+
+        /// <summary>
+        /// Draws an ellipse and fills it
+        /// </summary>
+        [Description("DRAWS AN ELLIPSE AND FILLS IT")]
+        ELLIPSEFILL,
 
         /// <summary>
         /// Fills
@@ -55,6 +79,12 @@
         /// </summary>
         [Description("CHANGES THE COLOR")]
         PEN,
+
+        /// <summary>
+        /// Prints text on the graphics form
+        /// </summary>
+        [Description("PRINTS TEXT ON THE GRAPHICS FORM")]
+        PRINT,
 
         /// <summary>
         /// Turns the turls

@@ -817,29 +817,37 @@
                                 PenColors pc = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
                                 using (Pen p = new Pen(EnumMethods.PenColorToColor(pc), 1))
                                 {
-                                    Color cBackground = b.GetPixel(transStart.X + 1, transStart.Y);
+                                    if (transStart.Y != transEnd.Y)
+                                    {
 
-                                    // build frame
-                                    for (int x = transStart.X + 1; x < this.graphicsSize.X; x++)
-                                    {
-                                        if (cBackground == b.GetPixel(x, transStart.Y))
+                                        // points
+                                        Point leftmost = (transStart.X <= transEnd.X) ? transStart : transEnd;
+                                        Point rightmost = (transStart.X > transEnd.X) ? transStart : transEnd;
+                                        Point topmost = (transStart.Y >= transEnd.Y) ? transStart : transEnd;
+                                        Point bottommost = (transStart.Y < transEnd.Y) ? transStart : transEnd;
+
+                                        // build frame
+                                        for (int x = transStart.X + 1; x < this.graphicsSize.X; x++)
                                         {
-                                            g.DrawLine(p, transStart, new Point(x, transStart.Y));
+                                            if (Color.Black == b.GetPixel(x, transStart.Y))
+                                            {
+                                                g.DrawLine(p, transStart, new Point(x, transStart.Y));
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
                                         }
-                                        else
+                                        for (int x = transEnd.X + 1; x < this.graphicsSize.X; x++)
                                         {
-                                            break;
-                                        }
-                                    }
-                                    for (int x = transEnd.X + 1; x < this.graphicsSize.X; x++)
-                                    {
-                                        if (cBackground == b.GetPixel(x, transEnd.Y))
-                                        {
-                                            g.DrawLine(p, transEnd, new Point(x, transEnd.Y));
-                                        }
-                                        else
-                                        {
-                                            break;
+                                            if (Color.Black == b.GetPixel(x, transEnd.Y))
+                                            {
+                                                g.DrawLine(p, transEnd, new Point(x, transEnd.Y));
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
                                         }
                                     }
 

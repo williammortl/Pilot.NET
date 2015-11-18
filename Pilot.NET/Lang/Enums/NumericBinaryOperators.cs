@@ -48,7 +48,7 @@
         /// <summary>
         /// Logarithm: a,b is log a to base b
         /// </summary>
-        [Description("LOGARITHM           - ,")]
+        [Description("LOGARITHM           - ~")]
         Log,
 
         /// <summary>

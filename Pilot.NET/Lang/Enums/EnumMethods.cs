@@ -51,7 +51,7 @@
                 }
                 case NumericBinaryOperators.Log:
                 {
-                    retVal = ",";
+                    retVal = "~";
                     break;
                 }
                 case NumericBinaryOperators.Exp:
@@ -101,7 +101,7 @@
             {
                 retVal = NumericBinaryOperators.Sub;
             }
-            else if (op.StartsWith(",") == true)
+            else if (op.StartsWith("~") == true)
             {
                 retVal = NumericBinaryOperators.Log;
             }

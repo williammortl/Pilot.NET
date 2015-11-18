@@ -402,8 +402,8 @@
                 else
                 {
 
-                    // at this point, since it's not a variable, it should be ok to do a replace
-                    //  for mathematical constants
+                    // at this point, since it's not a variable, its a Numeric Literal, 
+                    //  it should be ok to do a replace for mathematical constants
                     text = text.Replace("E", Math.E.ToString());
                     text = text.Replace("PI", Math.PI.ToString());
 
@@ -798,7 +798,7 @@
             }
 
             // short circuit if assignment operator is found
-            int equalPos = text.IndexOf('=');
+            int equalPos = text.IndexOf(EnumMethods.NumericBinaryOperatorToString(NumericBinaryOperators.Eq)[0]);
             if (equalPos > 0)
             {
                 return equalPos;
@@ -832,37 +832,37 @@
                     // binary operator cannot exist at position 0
                     // only if we are not parentheses wrapped search for an operator
                     // eval order is by low operator precedence and then left to right
-                    if ((c == '-') && (prevOperatorFound > (int)NumericBinaryOperators.Sub) && (EnumMethods.IsNumericBinaryOperator(prevC) == false) && (prevC != '('))
+                    if ((c == EnumMethods.NumericBinaryOperatorToString(NumericBinaryOperators.Sub)[0]) && (prevOperatorFound > (int)NumericBinaryOperators.Sub) && (EnumMethods.IsNumericBinaryOperator(prevC) == false) && (prevC != '('))
                     {
                         retVal = i;
                         break;
                     }
-                    else if ((c == '+') && (prevOperatorFound > (int)NumericBinaryOperators.Add) && (EnumMethods.IsNumericBinaryOperator(prevC) == false) && (prevC != '('))
+                    else if ((c == EnumMethods.NumericBinaryOperatorToString(NumericBinaryOperators.Add)[0]) && (prevOperatorFound > (int)NumericBinaryOperators.Add) && (EnumMethods.IsNumericBinaryOperator(prevC) == false) && (prevC != '('))
                     {
                         prevOperatorFound = (int)NumericBinaryOperators.Add;
                         retVal = i;
                     }
-                    else if ((c == '\\') && (prevOperatorFound > (int)NumericBinaryOperators.Mod))
+                    else if ((c == EnumMethods.NumericBinaryOperatorToString(NumericBinaryOperators.Mod)[0]) && (prevOperatorFound > (int)NumericBinaryOperators.Mod))
                     {
                         prevOperatorFound = (int)NumericBinaryOperators.Mod;
                         retVal = i;
                     }
-                    else if ((c == '/') && (prevOperatorFound > (int)NumericBinaryOperators.Div))
+                    else if ((c == EnumMethods.NumericBinaryOperatorToString(NumericBinaryOperators.Div)[0]) && (prevOperatorFound > (int)NumericBinaryOperators.Div))
                     {
                         prevOperatorFound = (int)NumericBinaryOperators.Div;
                         retVal = i;
                     }
-                    else if ((c == '*') && (prevOperatorFound > (int)NumericBinaryOperators.Mult))
+                    else if ((c == EnumMethods.NumericBinaryOperatorToString(NumericBinaryOperators.Mult)[0]) && (prevOperatorFound > (int)NumericBinaryOperators.Mult))
                     {
                         prevOperatorFound = (int)NumericBinaryOperators.Mult;
                         retVal = i;
                     }
-                    else if ((c == ',') && (prevOperatorFound > (int)NumericBinaryOperators.Log))
+                    else if ((c == EnumMethods.NumericBinaryOperatorToString(NumericBinaryOperators.Log)[0]) && (prevOperatorFound > (int)NumericBinaryOperators.Log))
                     {
                         prevOperatorFound = (int)NumericBinaryOperators.Log;
                         retVal = i;
                     }
-                    else if ((c == '^') && (prevOperatorFound > (int)NumericBinaryOperators.Exp))
+                    else if ((c == EnumMethods.NumericBinaryOperatorToString(NumericBinaryOperators.Exp)[0]) && (prevOperatorFound > (int)NumericBinaryOperators.Exp))
                     {
                         prevOperatorFound = (int)NumericBinaryOperators.Exp;
                         retVal = i;
@@ -936,14 +936,14 @@
             int retVal = 0;
 
             // find the operator
-            retVal = text.IndexOf("<");
+            retVal = text.IndexOf(EnumMethods.BooleanOperatorToString(BooleanConditionOperators.LT));
             if (retVal < 0)
             {
-                retVal = text.IndexOf(">");
+                retVal = text.IndexOf(EnumMethods.BooleanOperatorToString(BooleanConditionOperators.GT));
             }
             if (retVal < 0)
             {
-                retVal = text.IndexOf("=");
+                retVal = text.IndexOf(EnumMethods.BooleanOperatorToString(BooleanConditionOperators.Eq));
             }
 
             return retVal;

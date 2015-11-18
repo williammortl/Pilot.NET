@@ -96,11 +96,11 @@
         [TestMethod]
         public void TestGraphicsExpressions()
         {
-            List<IGraphicsExpression> g = PILOTParser.ParseGraphicsExpression("    CLeaR; Draw 15+-#a   ; DRawtO 14,     2^(5,2); fill 7; FILLTO #a, 8; go 88 \\ 3; goto ((-#c--1)), 4; Pen ReD ;    qUIT     ; Turn  #b; TurnTo 99");
+            List<IGraphicsExpression> g = PILOTParser.ParseGraphicsExpression("    CLeaR; Draw 15+-#a   ; DRawtO 14,     2^(5~2); fill 7; FILLTO #a, 8; go 88 \\ 3; goto ((-#c--1)), 4; Pen ReD ;    qUIT     ; Turn  #b; TurnTo 99");
             Assert.IsTrue(g.Count == 11);
             Assert.IsTrue(g[0].ToString() == "CLEAR");
             Assert.IsTrue(g[1].ToString() == "DRAW (15 - #A)");
-            Assert.IsTrue(g[2].ToString() == "DRAWTO 14, (2 ^ (5 , 2))");
+            Assert.IsTrue(g[2].ToString() == "DRAWTO 14, (2 ^ (5 ~ 2))");
             Assert.IsTrue(g[3].ToString() == "FILL 7");
             Assert.IsTrue(g[4].ToString() == "FILLTO #A, 8");
             Assert.IsTrue(g[5].ToString() == "GO (88 \\ 3)");

@@ -55,6 +55,7 @@
     <Compile Include="Lang\Enums\Keywords.cs" />
     <Compile Include="Lang\Enums\MatchTypes.cs" />
     <Compile Include="Lang\Enums\NumericBinaryOperators.cs" />
+    <Compile Include="Lang\Enums\NumericUnaryOperators.cs" />
     <Compile Include="Lang\Enums\PenColors.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\Box.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\BoxFill.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Lang\Expressions\GraphicsExpressions\Turn.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\TurnTo.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\Width.cs" />
+    <Compile Include="Lang\Expressions\NumericExpressions\UnaryExpression.cs" />
     <Compile Include="Lang\Statements\TextClear.cs" />
     <Compile Include="Lang\Statements\TurtleGraphics.cs" />
     <Compile Include="PILOTExceptions\CannotAssignException.cs" />

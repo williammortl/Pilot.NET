@@ -1,8 +1,7 @@
 ﻿namespace Pilot.NET.Lang.Expressions.NumericExpressions
 {
-    using Pilot.NET.PILOTExceptions;
     using Pilot.NET.Lang.Enums;
-    using Pilot.NET.Lang.Expressions;
+    using Pilot.NET.PILOTExceptions;
     using System;
 
     /// <summary>

@@ -722,9 +722,18 @@
             // evaluate based upon what type of string expression
             try
             {
-                if ((graphicsExpression is ClearGraphics) || (graphicsExpression is QuitGraphics))
+                if (graphicsExpression is ClearGraphics)
                 {
                     this.pilotInterface.ClearGraphics();
+                    this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
+                    this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, 1);
+                    this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
+                }
+                else if (graphicsExpression is QuitGraphics)
+                {
+                    this.pilotInterface.CloseGraphicsWindow();
                     this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
                     this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
                     this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);

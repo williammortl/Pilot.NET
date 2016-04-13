@@ -104,6 +104,23 @@
         }
 
         /// <summary>
+        /// Close the graphics windows
+        /// </summary>
+        public void CloseGraphicsWindow()
+        {
+
+            // clear the graphics image
+            this.ClearGraphics();
+
+            // dispose the form if neccessary
+            if ((this.graphicsForm != null) && (this.graphicsForm.IsDisposed == false))
+            {
+                this.graphicsForm.Invoke(new Action(this.graphicsForm.Close));
+            }
+            this.graphicsForm = null;
+        }
+
+        /// <summary>
         /// Disposes the class
         /// </summary>
         public void Dispose()

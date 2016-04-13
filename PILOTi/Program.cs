@@ -51,7 +51,7 @@
         /// <summary>
         /// Pilot.NET masthead
         /// </summary>
-        private const String PILOT_MASTHEAD = "PILOT.NET (c) COPYRIGHT WILLIAM MORTL 2015";
+        private const String PILOT_MASTHEAD = "PILOT.NET (c) COPYRIGHT WILLIAM MORTL 2016";
 
         /// <summary>
         /// Pilot.NET about
@@ -314,7 +314,12 @@
                                     {
                                         Console.WriteLine(String.Format("[{0}]", Path.GetFileName(dir)));
                                     }
-                                    foreach (String file in Directory.GetFiles(Environment.CurrentDirectory))
+                                    String searchPattern = "*.*";
+                                    if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
+                                    {
+                                        searchPattern = split[1].Trim();
+                                    }
+                                    foreach (String file in Directory.GetFiles(Environment.CurrentDirectory, searchPattern))
                                     {
                                         Console.WriteLine(String.Format("{0}", Path.GetFileName(file)));
                                     }
@@ -445,12 +450,6 @@
                                     }
                                     break;
                                 }
-                                case ConsoleCommands.VERSION:
-                                {
-                                    Console.WriteLine();
-                                    Console.WriteLine(String.Format("PILOT.NET VERSION: {0}", Assembly.GetAssembly(typeof(PILOTProgram)).GetName().Version.ToString()));
-                                    break;
-                                }
                                 case ConsoleCommands.OPERATORS:
                                 {
                                     Console.WriteLine();
@@ -468,6 +467,16 @@
                                     Console.WriteLine("------------------");
                                     NumericBinaryOperators[] numericOperators = (NumericBinaryOperators[])Enum.GetValues(typeof(NumericBinaryOperators));
                                     foreach (NumericBinaryOperators op in numericOperators)
+                                    {
+                                        FieldInfo fi = op.GetType().GetField(op.ToString());
+                                        DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                                        Console.WriteLine(attributes[0].Description);
+                                    }
+                                    Console.WriteLine();
+                                    Console.WriteLine("UNARY OPERATORS:");
+                                    Console.WriteLine("----------------");
+                                    NumericUnaryOperators[] unaryOperators = (NumericUnaryOperators[])Enum.GetValues(typeof(NumericUnaryOperators));
+                                    foreach (NumericUnaryOperators op in numericOperators)
                                     {
                                         FieldInfo fi = op.GetType().GetField(op.ToString());
                                         DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);

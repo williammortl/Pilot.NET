@@ -44,5 +44,10 @@
         /// Clears the graphics
         /// </summary>
         void ClearGraphics();
+
+        /// <summary>
+        /// Close the graphics windows
+        /// </summary>
+        void CloseGraphicsWindow();
     }
 }

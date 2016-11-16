@@ -46,7 +46,7 @@
         Mult,
         
         /// <summary>
-        /// Logarithm: a,b is log a to base b
+        /// Logarithm: a~b is log a to base b
         /// </summary>
         [Description("LOGARITHM           - ~")]
         Log,

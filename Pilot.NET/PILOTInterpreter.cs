@@ -99,18 +99,6 @@
         }
 
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public PILOTInterpreter()
-        {
-
-            // attribute init
-            this.pilotInterface = new DefaultInterpreterInterface();
-            this.graphicsSize = new Point(this.pilotInterface.GraphicsOutput.Width, this.pilotInterface.GraphicsOutput.Height);
-            this.ClearMemoryState();
-        }
-
-        /// <summary>
         /// Constructor for the interpreter
         /// </summary>
         /// <param name="pilotInterface">the interface to use for the PILOT translator to use for text IO and graphics output</param>
@@ -487,16 +475,28 @@
                         this.EvaluateGraphicsExpression(ge);
                     }
                 }
-                else if (statement is Remark)
+                else if (statement is Sound)
                 {
+                    Sound s = (Sound)statement;
+                    int note = Convert.ToInt32(this.EvaluateNumericExpression(s.Note));
+                    int durationMilliseconds = Convert.ToInt32((this.EvaluateNumericExpression(s.Duration) / 60) * 1000);
 
-                    // do nothing!
+                    // convert to frequency
+                    double frequency = SoundTranslation.Translate(note);
+
+                    // actually play the note
+                    this.pilotInterface.PlaySound(frequency, durationMilliseconds);
                 }
                 else if (statement is Pause)
                 {
                     Pause pa = (Pause)statement;
                     double timeToPause = this.EvaluateNumericExpression(pa.TimeToPause);
                     Thread.Sleep(Convert.ToInt32(timeToPause * 1000 / 60));
+                }
+                else if (statement is Remark)
+                {
+
+                    // do nothing!
                 }
             }
         }
@@ -1194,11 +1194,6 @@
                 pilotOutput = pilotOutput.Substring(0, pilotOutput.Length - 1);
             }
             this.pilotInterface.WriteText(pilotOutput, newLine);
-        }
-
-        private static void RecurseFill(Graphics g, Bitmap b, Point start, Point end, Point examine)
-        {
-
         }
 
         /// <summary>

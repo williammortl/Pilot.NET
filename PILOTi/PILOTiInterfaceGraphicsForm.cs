@@ -1,4 +1,4 @@
-﻿namespace Pilot.NET
+﻿namespace PILOTi
 {
     using System;
     using System.Drawing;
@@ -10,7 +10,7 @@
     /// <summary>
     /// Window to display PILOT graphics
     /// </summary>
-    internal partial class DefaultInterpreterInterfaceGraphicsForm : Form
+    internal partial class PILOTiInterfaceGraphicsForm : Form
     {
 
         /// <summary>
@@ -22,7 +22,7 @@
         /// Private constructor, use ShowForm method instead
         /// </summary>
         /// <param name="graphicsImage">the image to draw</param>
-        private DefaultInterpreterInterfaceGraphicsForm(Image graphicsImage)
+        private PILOTiInterfaceGraphicsForm(Image graphicsImage)
         {
             this.GraphicsImage = graphicsImage;
             InitializeComponent();
@@ -33,10 +33,10 @@
         /// </summary>
         /// <param name="graphicsImage">the image to be drawn</param>
         /// <returns>a DefaultInterpreterInterfaceGraphicsForm variable</returns>
-        public static DefaultInterpreterInterfaceGraphicsForm ShowForm(Image graphicsImage)
+        public static PILOTiInterfaceGraphicsForm ShowForm(Image graphicsImage)
         {
-            DefaultInterpreterInterfaceGraphicsForm frm = new DefaultInterpreterInterfaceGraphicsForm(graphicsImage);
-            Thread t = new Thread(new ParameterizedThreadStart(DefaultInterpreterInterfaceGraphicsForm.MessagePump));
+            PILOTiInterfaceGraphicsForm frm = new PILOTiInterfaceGraphicsForm(graphicsImage);
+            Thread t = new Thread(new ParameterizedThreadStart(PILOTiInterfaceGraphicsForm.MessagePump));
             t.SetApartmentState(ApartmentState.STA);
             t.Start(frm);
             while (frm.IsHandleCreated == false)
@@ -100,7 +100,7 @@
         /// <param name="obj">the DefaultInterpreterInterfaceGraphicsForm that this a pump for</param>
         private static void MessagePump(Object obj)
         {
-            DefaultInterpreterInterfaceGraphicsForm frm = (DefaultInterpreterInterfaceGraphicsForm)obj;
+            PILOTiInterfaceGraphicsForm frm = (PILOTiInterfaceGraphicsForm)obj;
             Application.Run(frm);
             frm.Dispose();
         }

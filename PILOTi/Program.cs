@@ -120,10 +120,11 @@
                 Console.ForegroundColor = origForeground;
                 Console.Clear();
             }
-            else if (args[0].Trim() == "/?")
+            else if ((args[0].Trim() == "/?") || (File.Exists(args[0].Trim()) == false))
             {
                 Console.WriteLine(Program.PILOT_MASTHEAD);
                 Console.WriteLine(Program.PILOT_ABOUT);
+                Console.WriteLine(String.Format("PILOT.NET VERSION: {0}", Assembly.GetAssembly(typeof(PILOTProgram)).GetName().Version.ToString()));
                 Console.WriteLine(Program.PILOT_USAGE);
             }
             else
@@ -137,7 +138,7 @@
         /// </summary>
         private static void PilotShell()
         {
-            using (PILOTInterpreter interpreter = new PILOTInterpreter())
+            using (PILOTInterpreter interpreter = new PILOTInterpreter(new PILOTiInterface()))
             {
 
                 // var init
@@ -306,18 +307,19 @@
                                 }
                                 case ConsoleCommands.DIR:
                                 {
-                                    Console.WriteLine();
                                     String message = String.Format("CONTENTS OF: {0}", Environment.CurrentDirectory).ToUpper();
+                                    String searchPattern = "*.*";
+                                    if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
+                                    {
+                                        searchPattern = split[1].Trim();
+                                        message = String.Format("[ {0} ] - ", searchPattern) + message;
+                                    }
+                                    Console.WriteLine();                                    
                                     Console.WriteLine(message);
                                     Console.WriteLine(new String('-', message.Length));
                                     foreach (String dir in Directory.GetDirectories(Environment.CurrentDirectory))
                                     {
                                         Console.WriteLine(String.Format("[{0}]", Path.GetFileName(dir)));
-                                    }
-                                    String searchPattern = "*.*";
-                                    if ((split != null) && (split.Length == 2) && (String.IsNullOrWhiteSpace(split[1]) == false))
-                                    {
-                                        searchPattern = split[1].Trim();
                                     }
                                     foreach (String file in Directory.GetFiles(Environment.CurrentDirectory, searchPattern))
                                     {
@@ -561,18 +563,9 @@
         /// <param name="pilotFile">the Pilot program to execute</param>
         private static void ExecutePilotProgram(String pilotFile)
         {
-            if (File.Exists(pilotFile) == true)
+            using (PILOTInterpreter interpreter = new PILOTInterpreter(new PILOTiInterface()))
             {
-                PILOTInterpreter interpreter = new PILOTInterpreter();
                 interpreter.Run(new FileInfo(pilotFile));
-            }
-            else
-            {
-                Console.WriteLine("FILE NOT FOUND");
-                Console.WriteLine();
-                Console.WriteLine(Program.PILOT_MASTHEAD);
-                Console.WriteLine(Program.PILOT_ABOUT);
-                Console.WriteLine(Program.PILOT_USAGE);
             }
         }
 

@@ -41,29 +41,5 @@
             Assert.AreEqual(programLineNumbers[1], 2);
             Assert.AreEqual(programLineNumbers[2], 4);
         }
-
-        /// <summary>
-        /// Tests DefaultInterpreterInterfaceGraphicsForm
-        /// </summary>
-        [TestMethod]
-        public void TestDefaultInterpreterInterfaceGraphicsForm()
-        {
-            IPILOTInterpreterInterface intf = new DefaultInterpreterInterface();
-            Graphics g = Graphics.FromImage(intf.GraphicsOutput);
-            g.DrawLine(new Pen(Color.Blue, 10), new Point(0, 0), new Point(1024, 768));
-            g.DrawLine(new Pen(Color.Red, 10), new Point(0, 768), new Point(1024, 0));
-            intf.RedrawGraphics();
-            Thread.Sleep(3000);
-            g.Dispose();
-            intf.ClearGraphics();
-            Thread.Sleep(3000);
-            g = Graphics.FromImage(intf.GraphicsOutput);
-            g.DrawLine(new Pen(Color.Green, 10), new Point(0, 0), new Point(1024, 768));
-            g.DrawLine(new Pen(Color.Purple, 10), new Point(0, 768), new Point(1024, 0));
-            intf.RedrawGraphics();
-            Thread.Sleep(3000);
-            g.Dispose();
-            intf.Dispose();
-        }
     }
 }

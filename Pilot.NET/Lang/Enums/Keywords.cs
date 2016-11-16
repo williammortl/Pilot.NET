@@ -63,6 +63,12 @@
         R,
 
         /// <summary>
+        /// sound, this is for playing a sound for 1.2 seconds -> SO: 4, 1.2
+        /// </summary>
+        [Description("SOUND*")]
+        SO,
+
+        /// <summary>
         /// type something -> T: HELLO
         /// </summary>
         [Description("PRINT TEXT*")]

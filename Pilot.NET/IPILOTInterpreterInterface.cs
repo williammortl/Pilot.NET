@@ -49,5 +49,12 @@
         /// Close the graphics windows
         /// </summary>
         void CloseGraphicsWindow();
+
+        /// <summary>
+        /// Play a sound
+        /// </summary>
+        /// <param name="frequency">frequency of sound</param>
+        /// <param name="playMilliseconds">sound duration</param>
+        void PlaySound(double frequency, int playMilliseconds);
     }
 }

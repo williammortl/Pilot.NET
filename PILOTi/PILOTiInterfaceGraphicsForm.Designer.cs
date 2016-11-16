@@ -1,6 +1,6 @@
-﻿namespace Pilot.NET
+﻿namespace PILOTi
 {
-    partial class DefaultInterpreterInterfaceGraphicsForm
+    partial class PILOTiInterfaceGraphicsForm
     {
         /// <summary>
         /// Required designer variable.

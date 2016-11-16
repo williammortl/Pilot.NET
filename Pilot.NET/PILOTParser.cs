@@ -320,6 +320,33 @@
                     statement = new TurtleGraphics(PILOTParser.ParseGraphicsExpression(parametersForKeyword), match, ifCondition);
                     break;
                 }
+                case Keywords.SO:
+                {
+
+                    // get the two numeric expressions for the sound keyword
+                    INumericExpression Note = null;
+                    INumericExpression Duration = null;
+                    if (String.IsNullOrWhiteSpace(parametersForKeyword) == false)
+                    {
+                        String[] conditionsString = parametersForKeyword.Split(new char[] { ',' });
+                        if (conditionsString.Length == 2)
+                        {
+                            Note = PILOTParser.ParseNumericExpression(conditionsString[0]);
+                            Duration = PILOTParser.ParseNumericExpression(conditionsString[1]);
+                        }
+                        else
+                        {
+                            throw new ParserException("Sound requires two numeric expression seperated by a comma");
+                        }
+                    }
+                    if ((Note == null) || (Duration == null))
+                    {
+                        throw new ParserException("Invalid sound keyword");
+                    }
+
+                    statement = new Sound(Note, Duration, match, ifCondition);
+                    break;
+                }
             }
 
             return statement;

@@ -51,7 +51,7 @@
         /// <summary>
         /// Pilot.NET masthead
         /// </summary>
-        private const String PILOT_MASTHEAD = "PILOT.NET (c) COPYRIGHT WILLIAM MORTL 2016";
+        private const String PILOT_MASTHEAD = "PILOT.NET (c) COPYRIGHT WILLIAM MORTL {0}";
 
         /// <summary>
         /// Pilot.NET about
@@ -110,7 +110,7 @@
                 Program.SetWindowPos(consoleWindowHandle, 0, Program.INIT_X, Program.INIT_Y, Program.INIT_WIDTH, Program.INIT_HEIGHT, 0);
 
                 // display the masthead
-                Console.WriteLine(Program.PILOT_MASTHEAD);
+                Console.WriteLine(String.Format(Program.PILOT_MASTHEAD, DateTime.Now.Year.ToString()));
 
                 // run the shell
                 Program.PilotShell();

@@ -1,0 +1,11 @@
+1 T:Coin flip program
+2 T:Press enter when you're ready... \
+3 A:
+4 *flip C:#heads = ? \ 2
+6 T(#heads = 1): Heads!
+7 T(#heads <> 1): Tails!
+8 T:Type C to flip again: \
+9 A:
+10 M:C
+11 JY:*flip
+12 EN:

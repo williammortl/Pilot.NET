@@ -1,0 +1,32 @@
+10 R:This is a simple test of PILOT by William Mortl, \ - means no line break
+20 TC:\
+30 *mainmenu T:Select a test:
+40 T:1 - Numeric
+50 T:2 - String
+60 T:3 - Exit
+70 T:Your choice - \
+80 A:
+90 M: 1, 2, 3
+100 JM: *numerictest, *stringtest, *exit
+110 T:
+120 T:That is not a choice!
+130 T:
+140 J:*mainmenu
+150 *numerictest T:Enter a number - \
+160 A:#num1
+170 T:Enter another number - \
+180 A:#num2
+190 T:
+200 T:#num1 + #num2 = \
+210 C:(#SUM = (#NUM1 + #NUM2))
+220 T:#sum
+230 T:
+240 J:*mainmenu
+250 *stringtest T:Enter your name - \
+260 A:$name
+270 T:
+280 T:Hello $name!
+290 T:
+300 J:*mainmenu
+310 *exit
+320 E:

@@ -1,4 +1,6 @@
-﻿namespace Pilot.NET
+﻿// TODO get rid of most of this shit and just let each object use this as state
+
+namespace Pilot.NET
 {
     using Pilot.NET.Lang;
     using Pilot.NET.Lang.Enums;
@@ -54,7 +56,7 @@
         /// <summary>
         /// The interface to use for the PILOT translator to use for text IO and graphics output
         /// </summary>
-        private IPILOTInterpreterInterface pilotInterface;
+        private IPILOTExternalInterface pilotInterface;
 
         /// <summary>
         /// String variables and their associated values
@@ -102,7 +104,7 @@
         /// Constructor for the interpreter
         /// </summary>
         /// <param name="pilotInterface">the interface to use for the PILOT translator to use for text IO and graphics output</param>
-        public PILOTInterpreter(IPILOTInterpreterInterface pilotInterface)
+        public PILOTInterpreter(IPILOTExternalInterface pilotInterface)
         {
 
             // check to make sure that interface is not null
@@ -1016,7 +1018,6 @@
         /// <param name="val">the value</param>
         internal void SetNumericVar(String varName, Double val)
         {
-
             // add the variable if neccessary
             varName = varName.Trim().ToUpper();
             if (this.numericVariables.Keys.Contains(varName) == false)
@@ -1035,7 +1036,6 @@
         /// <param name="val">the value</param>
         internal void SetStringVar(String varName, String val)
         {
-
             // add the variable if neccessary
             varName = varName.Trim().ToUpper();
             if (this.stringVariables.Keys.Contains(varName) == false)

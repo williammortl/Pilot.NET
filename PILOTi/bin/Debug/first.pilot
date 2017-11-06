@@ -1,0 +1,4 @@
+10 T:Please enter your name: \
+20 A:$name
+30 T:Hello $name, I hope you have a great day!
+40 E:

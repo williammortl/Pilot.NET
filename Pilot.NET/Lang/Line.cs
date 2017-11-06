@@ -7,7 +7,7 @@
     /// <summary>
     /// Represents a line of the PILOT programming language
     /// </summary>
-    public sealed class Line
+    public sealed class Line : IExecutable
     {
 
         /// <summary>
@@ -67,6 +67,16 @@
             }
 
             return retVal;
+        }
+
+        /// <summary>
+        /// Executes an action upon the state using the interpreter,
+        /// throws a PILOTException if an error occurs
+        /// </summary>
+        /// <param name="state">interpreter</param>
+        public void Execute(IPILOTState state)
+        {
+            throw new NotImplementedException();
         }
     }
 }

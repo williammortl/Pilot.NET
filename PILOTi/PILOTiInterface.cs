@@ -6,12 +6,11 @@
     using System.IO;
     using System.Media;
     using System.Text;
-    using System.Threading;
 
     /// <summary>
     /// The default interpreter interface
     /// </summary>
-    internal sealed class PILOTiInterface : IPILOTInterpreterInterface
+    internal sealed class PILOTiInterface : IPILOTExternalInterface
     {
 
         /// <summary>

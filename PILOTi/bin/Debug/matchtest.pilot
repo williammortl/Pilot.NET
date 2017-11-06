@@ -1,0 +1,14 @@
+1 *start T:Match test
+2 T:Y or N? \
+3 A:
+4 M:Y
+5 TY:You picked Y!
+6 TN:You picked N! (Boo)
+7 T:Type X to exit, C to continue: \
+8 A:
+9 M:X, C
+10 TN:You picked neither option, you can start over.
+11 JN:*start
+12 JM:*end, *start
+13 T:This should never be displayed
+14 *end E:

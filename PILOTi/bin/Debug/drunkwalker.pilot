@@ -1,0 +1,24 @@
+10 R:Drunk walker program from atari student pilot reference guide
+20 R:My favorite program as a kid :-)
+30 R:By William Mortl
+40 *drunkwalker
+50 GR:CLEAR
+60 T:Enter maximum turn (0-360): \
+70 A:#MAXTURN
+80 T:Enter line segment length (5-50): \
+90 A:#LINELENGTH
+100 T:Enter line width (1-20): \
+110 A:#LINEWIDTH
+120 T:Number of cycles (200-500): \
+130 A:#MAXCYCLES
+140 GR:WIDTH #LINEWIDTH
+150 TC:Drunken walker max. turn = #MAXTURN deg.
+160 C:(#CYCLES = 0)
+170 *walk
+180 C:(#COLOR = ((? \ 9) + 1))
+190 GR:PEN #COLOR; DRAW #LINELENGTH
+200 PA:5
+210 GR:TURN (? \ #MAXTURN)
+220 C:(#CYCLES = (#CYCLES + 1))
+230 J(#CYCLES < #MAXCYCLES):*walk
+240 E:

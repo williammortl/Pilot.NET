@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilot.NET", "Pilot.NET\Pilot.NET.csproj", "{1617770A-B3ED-44BB-A63E-D94986EE90E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PILOTi", "PILOTi\PILOTi.csproj", "{887B0711-8CC6-41E9-8D10-1202633F4E29}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilot.NET.Test", "Pilot.NET.Test\Pilot.NET.Test.csproj", "{143ADB73-641A-4D5F-912A-F0EEFB650CF7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pilot Examples", "Pilot Examples", "{F985134D-013F-4409-8A12-9D15F2383079}"
 	ProjectSection(SolutionItems) = preProject
@@ -25,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{46A12CD3-1
 	ProjectSection(SolutionItems) = preProject
 		Misc\pilot.bnf.txt = Misc\pilot.bnf.txt
 		Misc\PilotIcon.png = Misc\PilotIcon.png
-		README.txt = README.txt
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
@@ -42,10 +40,6 @@ Global
 		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Release|Any CPU.Build.0 = Release|Any CPU
-		{143ADB73-641A-4D5F-912A-F0EEFB650CF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{143ADB73-641A-4D5F-912A-F0EEFB650CF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{143ADB73-641A-4D5F-912A-F0EEFB650CF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{143ADB73-641A-4D5F-912A-F0EEFB650CF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,6 @@
 ﻿namespace Pilot.NET
 {
+    using Pilot.NET.iPilotnterop;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -11,10 +12,9 @@
     {
 
         /// <summary>
-        /// A reference to an external interface for PILOT to interact with 
-        /// with the program
+        /// A reference to a way for PILOT to interop with the outside world 
         /// </summary>
-        IPILOTExternalInterface ExternalInterface { get; }
+        IiPilotnterop Interop { get; }
 
         /// <summary>
         /// List of the name of string variables
@@ -29,12 +29,7 @@
         /// <summary>
         /// The turtle's position
         /// </summary>
-        Point TurtlePosition { get; }
-
-        /// <summary>
-        /// Random number generator
-        /// </summary>
-        Random RandomGenerator { get; }
+        Point Turtle { get; }
 
         /// <summary>
         /// Clears the memory state with respect to variables
@@ -75,12 +70,5 @@
         /// <param name="varName">the var name</param>
         /// <param name="val">the value</param>
         void SetStringVar(string varName, string val);
-
-        /// <summary>
-        /// Translates points from zero-centered to .NET image box
-        /// </summary>
-        /// <param name="p">zero centered point</param>
-        /// <returns>.NET image style point</returns>
-        Point TranslateZeroCenteredPointToNET(Point p);
     }
 }

@@ -1,5 +1,0 @@
-C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.NET\bin\Debug\Pilot.NET.dll
-C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.NET\bin\Debug\Pilot.NET.pdb
-C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.NET\obj\Debug\Pilot.NET.csprojResolveAssemblyReference.cache
-C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.NET\obj\Debug\Pilot.NET.dll
-C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.NET\obj\Debug\Pilot.NET.pdb

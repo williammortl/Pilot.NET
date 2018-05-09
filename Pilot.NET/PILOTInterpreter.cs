@@ -20,7 +20,7 @@ namespace Pilot.NET
     /// <summary>
     /// Executes a PILOTProgram
     /// </summary>
-    public sealed class PILOTInterpreter : IDisposable
+    public sealed class iPilotnterpreter : IDisposable
     {
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Pilot.NET
         /// <summary>
         /// The interface to use for the PILOT translator to use for text IO and graphics output
         /// </summary>
-        private IPILOTExternalInterface pilotInterface;
+        private IPILOTExternalInterface iPilotnterface;
 
         /// <summary>
         /// String variables and their associated values
@@ -103,19 +103,19 @@ namespace Pilot.NET
         /// <summary>
         /// Constructor for the interpreter
         /// </summary>
-        /// <param name="pilotInterface">the interface to use for the PILOT translator to use for text IO and graphics output</param>
-        public PILOTInterpreter(IPILOTExternalInterface pilotInterface)
+        /// <param name="iPilotnterface">the interface to use for the PILOT translator to use for text IO and graphics output</param>
+        public iPilotnterpreter(IPILOTExternalInterface iPilotnterface)
         {
 
             // check to make sure that interface is not null
-            if (pilotInterface == null)
+            if (iPilotnterface == null)
             {
                 throw new PILOTException("Must provide a valid interface for the PILOT interpreter");
             }
 
             // attribute init
-            this.pilotInterface = pilotInterface;
-            this.graphicsSize = new Point(this.pilotInterface.GraphicsOutput.Width, this.pilotInterface.GraphicsOutput.Height);
+            this.iPilotnterface = iPilotnterface;
+            this.graphicsSize = new Point(this.iPilotnterface.GraphicsOutput.Width, this.iPilotnterface.GraphicsOutput.Height);
             this.ClearMemoryState();
         }
 
@@ -129,11 +129,11 @@ namespace Pilot.NET
 
             // turtle graphics init
             this.TurtlePosition = new Point(0, 0);
-            this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
-            this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
-            this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
-            this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, 1);
-            this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
+            this.SetNumericVar(iPilotnterpreter.X_VAR, 0);
+            this.SetNumericVar(iPilotnterpreter.Y_VAR, 0);
+            this.SetNumericVar(iPilotnterpreter.THETA_VAR, 0);
+            this.SetNumericVar(iPilotnterpreter.WIDTH_VAR, 1);
+            this.SetNumericVar(iPilotnterpreter.COLOR_VAR, (double)PenColors.YELLOW);
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace Pilot.NET
                                 }
                                 else if (statement is Accept)
                                 {
-                                    acceptBuffer = this.pilotInterface.ReadTextLine().Trim();
+                                    acceptBuffer = this.iPilotnterface.ReadTextLine().Trim();
                                     Accept a = (Accept)statement;
                                     if (a.VariableToSet != null)
                                     {
@@ -454,12 +454,12 @@ namespace Pilot.NET
                         carriageReturn = false;
                         textOut = textOut.Substring(0, textOut.Length - 1);
                     }
-                    this.pilotInterface.WriteText(textOut, carriageReturn);
+                    this.iPilotnterface.WriteText(textOut, carriageReturn);
                 }
                 else if (statement is TextClear)
                 {
                     TextClear tc = (TextClear)statement;
-                    this.pilotInterface.ClearText();
+                    this.iPilotnterface.ClearText();
                     String textOut = this.EvaluateStringExpression(tc.TextToDisplay).Trim();
                     Boolean carriageReturn = true;
                     if (textOut.EndsWith("\\") == true)
@@ -467,7 +467,7 @@ namespace Pilot.NET
                         carriageReturn = false;
                         textOut = textOut.Substring(0, textOut.Length - 1);
                     }
-                    this.pilotInterface.WriteText(textOut, carriageReturn);
+                    this.iPilotnterface.WriteText(textOut, carriageReturn);
                 }
                 else if (statement is TurtleGraphics)
                 {
@@ -487,7 +487,7 @@ namespace Pilot.NET
                     double frequency = SoundTranslation.Translate(note);
 
                     // actually play the note
-                    this.pilotInterface.PlaySound(frequency, durationMilliseconds);
+                    this.iPilotnterface.PlaySound(frequency, durationMilliseconds);
                 }
                 else if (statement is Pause)
                 {
@@ -554,8 +554,8 @@ namespace Pilot.NET
                 }
                 else if (numericalExpression is RandomNumber)
                 {
-                    int sign = ((PILOTInterpreter.randomGenerator.NextDouble() * 2.0) > 1) ? -1 : 1;
-                    double value = Math.Ceiling(PILOTInterpreter.randomGenerator.NextDouble() * ((sign > 0) ? 32767 : 32768));
+                    int sign = ((iPilotnterpreter.randomGenerator.NextDouble() * 2.0) > 1) ? -1 : 1;
+                    double value = Math.Ceiling(iPilotnterpreter.randomGenerator.NextDouble() * ((sign > 0) ? 32767 : 32768));
                     retVal = sign * value;
                 }
                 else if (numericalExpression is NumericVariable)
@@ -674,7 +674,7 @@ namespace Pilot.NET
                         {
 
                             // extract the variable name
-                            int puncLoc = PILOTInterpreter.FirstPunctuation(splitPart.Substring(1)) + 1;
+                            int puncLoc = iPilotnterpreter.FirstPunctuation(splitPart.Substring(1)) + 1;
                             String afterPunc = String.Empty;
                             if (puncLoc > 1)
                             {
@@ -726,39 +726,39 @@ namespace Pilot.NET
             {
                 if (graphicsExpression is ClearGraphics)
                 {
-                    this.pilotInterface.ClearGraphics();
-                    this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
-                    this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
-                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
-                    this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, 1);
-                    this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
+                    this.iPilotnterface.ClearGraphics();
+                    this.SetNumericVar(iPilotnterpreter.X_VAR, 0);
+                    this.SetNumericVar(iPilotnterpreter.Y_VAR, 0);
+                    this.SetNumericVar(iPilotnterpreter.THETA_VAR, 0);
+                    this.SetNumericVar(iPilotnterpreter.WIDTH_VAR, 1);
+                    this.SetNumericVar(iPilotnterpreter.COLOR_VAR, (double)PenColors.YELLOW);
                 }
                 else if (graphicsExpression is QuitGraphics)
                 {
-                    this.pilotInterface.CloseGraphicsWindow();
-                    this.SetNumericVar(PILOTInterpreter.X_VAR, 0);
-                    this.SetNumericVar(PILOTInterpreter.Y_VAR, 0);
-                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, 0);
-                    this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, 1);
-                    this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.YELLOW);
+                    this.iPilotnterface.CloseGraphicsWindow();
+                    this.SetNumericVar(iPilotnterpreter.X_VAR, 0);
+                    this.SetNumericVar(iPilotnterpreter.Y_VAR, 0);
+                    this.SetNumericVar(iPilotnterpreter.THETA_VAR, 0);
+                    this.SetNumericVar(iPilotnterpreter.WIDTH_VAR, 1);
+                    this.SetNumericVar(iPilotnterpreter.COLOR_VAR, (double)PenColors.YELLOW);
                 }
                 else if (graphicsExpression is PILOTPen)
                 {
                     PILOTPen pp = (PILOTPen)graphicsExpression;
                     if (pp.PenColorExpression == null)
                     {
-                        this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)pp.PenColor);
+                        this.SetNumericVar(iPilotnterpreter.COLOR_VAR, (double)pp.PenColor);
                     }
                     else
                     {
                         int colorVal = (int)this.EvaluateNumericExpression(pp.PenColorExpression);
                         if ((colorVal >= (int)PenColors.ERASE) && (colorVal <= (int)PenColors.WHITE))
                         {
-                            this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)colorVal);
+                            this.SetNumericVar(iPilotnterpreter.COLOR_VAR, (double)colorVal);
                         }
                         else
                         {
-                            this.SetNumericVar(PILOTInterpreter.COLOR_VAR, (double)PenColors.ERASE);
+                            this.SetNumericVar(iPilotnterpreter.COLOR_VAR, (double)PenColors.ERASE);
                         }
                     }
                 }
@@ -766,31 +766,31 @@ namespace Pilot.NET
                 {
                     Turn t = (Turn)graphicsExpression;
                     int turnAngle = (int)this.EvaluateNumericExpression(t.TurnAngle);
-                    int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
-                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, Convert.ToInt32((currentAngle + turnAngle) % 360));
+                    int currentAngle = (int)this.GetNumericVar(iPilotnterpreter.THETA_VAR);
+                    this.SetNumericVar(iPilotnterpreter.THETA_VAR, Convert.ToInt32((currentAngle + turnAngle) % 360));
                 }
                 else if (graphicsExpression is TurnTo)
                 {
                     TurnTo tt = (TurnTo)graphicsExpression;
                     int turnToAngle = (int)this.EvaluateNumericExpression(tt.TurnToAngle);
-                    this.SetNumericVar(PILOTInterpreter.THETA_VAR, Convert.ToInt32(turnToAngle % 360));
+                    this.SetNumericVar(iPilotnterpreter.THETA_VAR, Convert.ToInt32(turnToAngle % 360));
                 }
                 else if (graphicsExpression is Width)
                 {
                     Width w = (Width)graphicsExpression;
                     int penWidth = Math.Max(1, (int)this.EvaluateNumericExpression(w.PenWidth));
-                    this.SetNumericVar(PILOTInterpreter.WIDTH_VAR, penWidth);
+                    this.SetNumericVar(iPilotnterpreter.WIDTH_VAR, penWidth);
                 }
                 else
                 {
 
                     // var init
-                    Point currentPoint = new Point((int)this.GetNumericVar(PILOTInterpreter.X_VAR), (int)this.GetNumericVar(PILOTInterpreter.Y_VAR));
+                    Point currentPoint = new Point((int)this.GetNumericVar(iPilotnterpreter.X_VAR), (int)this.GetNumericVar(iPilotnterpreter.Y_VAR));
                     Point transStart = this.TranslatePoint(currentPoint);
                     Point endPoint = new Point(currentPoint.X, currentPoint.Y);
-                    float currentLineWidth = (float)this.GetNumericVar(PILOTInterpreter.WIDTH_VAR);
-                    PenColors currentColor = (PenColors)this.GetNumericVar(PILOTInterpreter.COLOR_VAR);
-                    int currentAngle = (int)this.GetNumericVar(PILOTInterpreter.THETA_VAR);
+                    float currentLineWidth = (float)this.GetNumericVar(iPilotnterpreter.WIDTH_VAR);
+                    PenColors currentColor = (PenColors)this.GetNumericVar(iPilotnterpreter.COLOR_VAR);
+                    int currentAngle = (int)this.GetNumericVar(iPilotnterpreter.THETA_VAR);
 
                     // parse commands that actually draw
                     if (graphicsExpression is Draw)
@@ -798,13 +798,13 @@ namespace Pilot.NET
 
                         // var init & calculations
                         Draw d = (Draw)graphicsExpression;
-                        endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(d.DrawDistance));
+                        endPoint = iPilotnterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(d.DrawDistance));
                         Point transEnd = this.TranslatePoint(endPoint);
 
                         // plot
-                        lock (this.pilotInterface.GraphicsOutput)
+                        lock (this.iPilotnterface.GraphicsOutput)
                         {
-                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            using (Graphics g = Graphics.FromImage(this.iPilotnterface.GraphicsOutput))
                             {
                                 using (Pen p = new Pen(EnumMethods.PenColorToColor(currentColor), currentLineWidth))
                                 {
@@ -822,9 +822,9 @@ namespace Pilot.NET
                         Point transEnd = this.TranslatePoint(endPoint);
 
                         // plot
-                        lock (this.pilotInterface.GraphicsOutput)
+                        lock (this.iPilotnterface.GraphicsOutput)
                         {
-                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            using (Graphics g = Graphics.FromImage(this.iPilotnterface.GraphicsOutput))
                             {
                                 using (Pen p = new Pen(EnumMethods.PenColorToColor(currentColor), currentLineWidth))
                                 {
@@ -844,13 +844,13 @@ namespace Pilot.NET
 
                         // var init & calculations
                         Go go = (Go)graphicsExpression;
-                        endPoint = PILOTInterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(go.GoDistance));
+                        endPoint = iPilotnterpreter.DrawDistanceAngle(currentPoint, currentAngle, (int)this.EvaluateNumericExpression(go.GoDistance));
                         Point transEnd = this.TranslatePoint(endPoint);
 
                         // plot
-                        lock (this.pilotInterface.GraphicsOutput)
+                        lock (this.iPilotnterface.GraphicsOutput)
                         {
-                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            using (Graphics g = Graphics.FromImage(this.iPilotnterface.GraphicsOutput))
                             {
                                 using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(currentColor)))
                                 {
@@ -868,9 +868,9 @@ namespace Pilot.NET
                         Point transEnd = this.TranslatePoint(endPoint);
 
                         // plot
-                        lock (this.pilotInterface.GraphicsOutput)
+                        lock (this.iPilotnterface.GraphicsOutput)
                         {
-                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            using (Graphics g = Graphics.FromImage(this.iPilotnterface.GraphicsOutput))
                             {
                                 using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(currentColor)))
                                 {
@@ -888,9 +888,9 @@ namespace Pilot.NET
                         int height = (int)this.EvaluateNumericExpression(b.BoxHeight);
 
                         // plot
-                        lock (this.pilotInterface.GraphicsOutput)
+                        lock (this.iPilotnterface.GraphicsOutput)
                         {
-                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            using (Graphics g = Graphics.FromImage(this.iPilotnterface.GraphicsOutput))
                             {
                                 using (Pen p = new Pen(EnumMethods.PenColorToColor(currentColor), currentLineWidth))
                                 {
@@ -909,9 +909,9 @@ namespace Pilot.NET
                         int height = (int)this.EvaluateNumericExpression(bf.BoxHeight);
 
                         // plot
-                        lock (this.pilotInterface.GraphicsOutput)
+                        lock (this.iPilotnterface.GraphicsOutput)
                         {
-                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            using (Graphics g = Graphics.FromImage(this.iPilotnterface.GraphicsOutput))
                             {
                                 using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(currentColor)))
                                 {
@@ -930,9 +930,9 @@ namespace Pilot.NET
                         int verticalRadius = (int)this.EvaluateNumericExpression(e.VerticalRadius);
 
                         // plot
-                        lock (this.pilotInterface.GraphicsOutput)
+                        lock (this.iPilotnterface.GraphicsOutput)
                         {
-                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            using (Graphics g = Graphics.FromImage(this.iPilotnterface.GraphicsOutput))
                             {
                                 using (Pen p = new Pen(EnumMethods.PenColorToColor(currentColor), currentLineWidth))
                                 {
@@ -951,9 +951,9 @@ namespace Pilot.NET
                         int verticalRadius = (int)this.EvaluateNumericExpression(ef.VerticalRadius);
 
                         // plot
-                        lock (this.pilotInterface.GraphicsOutput)
+                        lock (this.iPilotnterface.GraphicsOutput)
                         {
-                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            using (Graphics g = Graphics.FromImage(this.iPilotnterface.GraphicsOutput))
                             {
                                 using (SolidBrush b = new SolidBrush(EnumMethods.PenColorToColor(currentColor)))
                                 {
@@ -972,9 +972,9 @@ namespace Pilot.NET
                         int size = (int)this.EvaluateNumericExpression(p.TextSize);
 
                         // plot
-                        lock (this.pilotInterface.GraphicsOutput)
+                        lock (this.iPilotnterface.GraphicsOutput)
                         {
-                            using (Graphics g = Graphics.FromImage(this.pilotInterface.GraphicsOutput))
+                            using (Graphics g = Graphics.FromImage(this.iPilotnterface.GraphicsOutput))
                             {
                                 using (Font f = new Font("System", size))
                                 {
@@ -988,11 +988,11 @@ namespace Pilot.NET
                     }
 
                     // update current point
-                    this.SetNumericVar(PILOTInterpreter.X_VAR, endPoint.X);
-                    this.SetNumericVar(PILOTInterpreter.Y_VAR, endPoint.Y);
+                    this.SetNumericVar(iPilotnterpreter.X_VAR, endPoint.X);
+                    this.SetNumericVar(iPilotnterpreter.Y_VAR, endPoint.Y);
 
                     // redraw
-                    this.pilotInterface.RedrawGraphics();
+                    this.iPilotnterface.RedrawGraphics();
                 }
             }
             catch (Exception e)
@@ -1008,7 +1008,7 @@ namespace Pilot.NET
         {
         
             // dispose the interface
-            pilotInterface.Dispose();
+            iPilotnterface.Dispose();
         }
 
         /// <summary>
@@ -1147,35 +1147,35 @@ namespace Pilot.NET
                 }
                 else if (angle < 90)
                 {
-                    retVal.X += (int)(Math.Sin(PILOTInterpreter.DegreesToRadians(angle)) * distance);
-                    retVal.Y += (int)(Math.Cos(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.X += (int)(Math.Sin(iPilotnterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.Y += (int)(Math.Cos(iPilotnterpreter.DegreesToRadians(angle)) * distance);
                 }
                 else if (angle < 180)
                 {
                     angle -= 90;
-                    retVal.X += (int)(Math.Cos(PILOTInterpreter.DegreesToRadians(angle)) * distance);
-                    retVal.Y -= (int)(Math.Sin(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.X += (int)(Math.Cos(iPilotnterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.Y -= (int)(Math.Sin(iPilotnterpreter.DegreesToRadians(angle)) * distance);
                 }
                 else if (angle < 270)
                 {
                     angle -= 180;
-                    retVal.X -= (int)(Math.Sin(PILOTInterpreter.DegreesToRadians(angle)) * distance);
-                    retVal.Y -= (int)(Math.Cos(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.X -= (int)(Math.Sin(iPilotnterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.Y -= (int)(Math.Cos(iPilotnterpreter.DegreesToRadians(angle)) * distance);
                 }
                 else
                 {
                     angle -= 270;
-                    retVal.X -= (int)(Math.Cos(PILOTInterpreter.DegreesToRadians(angle)) * distance);
-                    retVal.Y += (int)(Math.Sin(PILOTInterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.X -= (int)(Math.Cos(iPilotnterpreter.DegreesToRadians(angle)) * distance);
+                    retVal.Y += (int)(Math.Sin(iPilotnterpreter.DegreesToRadians(angle)) * distance);
                 }
             }
             else if (angle > 360)
             {
-                retVal = PILOTInterpreter.DrawDistanceAngle(start, angle % 360, distance);
+                retVal = iPilotnterpreter.DrawDistanceAngle(start, angle % 360, distance);
             }
             else
             {
-                retVal = PILOTInterpreter.DrawDistanceAngle(start, 360 + angle, distance);
+                retVal = iPilotnterpreter.DrawDistanceAngle(start, 360 + angle, distance);
             }
 
             return retVal;
@@ -1193,7 +1193,7 @@ namespace Pilot.NET
                 newLine = false;
                 pilotOutput = pilotOutput.Substring(0, pilotOutput.Length - 1);
             }
-            this.pilotInterface.WriteText(pilotOutput, newLine);
+            this.iPilotnterface.WriteText(pilotOutput, newLine);
         }
 
         /// <summary>
@@ -1216,11 +1216,11 @@ namespace Pilot.NET
             }
             else if (degrees < 0)
             {
-                retVal = PILOTInterpreter.DegreesToRadians(360 + degrees);
+                retVal = iPilotnterpreter.DegreesToRadians(360 + degrees);
             }
             else
             {
-                retVal = PILOTInterpreter.DegreesToRadians(degrees % 360);
+                retVal = iPilotnterpreter.DegreesToRadians(degrees % 360);
             }
 
             return retVal;

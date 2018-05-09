@@ -1,8 +1,8 @@
 ﻿namespace Pilot.NET
 {
-    using Pilot.NET.ExternalInterfaces;
     using Pilot.NET.Lang.Enums;
     using Pilot.NET.PILOTExceptions;
+    using Pilot.NET.iPilotnterop;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
@@ -40,11 +40,6 @@
         private const String WIDTH_VAR = "%W";
 
         /// <summary>
-        /// For the random number generator
-        /// </summary>
-        private static Random randomGenerator = new Random();
-
-        /// <summary>
         /// String variables and their associated values
         /// </summary>
         private Dictionary<String, String> stringVariables;
@@ -55,10 +50,10 @@
         private Dictionary<String, double> numericVariables;
 
         /// <summary>
-        /// A reference to an external interface for PILOT to interact with 
+        /// A reference to a way for PILOT to interop with the outside world 
         /// with the program
         /// </summary>
-        public IPILOTExternalInterface ExternalInterface { get; private set; }
+        public IiPilotnterop Interop { get; private set; }
 
         /// <summary>
         /// List of the name of string variables
@@ -85,24 +80,13 @@
         /// <summary>
         /// The turtle's position
         /// </summary>
-        public Point TurtlePosition { get; private set; }
-
-        /// <summary>
-        /// Random number generator
-        /// </summary>
-        public Random RandomGenerator
-        {
-            get
-            {
-                return PILOTState.randomGenerator;
-            }
-        }
+        public Point Turtle { get; private set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="externalInterface">external interface to use</param>
-        public PILOTState(IPILOTExternalInterface externalInterface)
+        public PILOTState(IiPilotnterop externalInterface)
         {
             // check to make sure that interface is not null
             if (externalInterface == null)
@@ -111,7 +95,7 @@
             }
 
             // create objects
-            this.ExternalInterface = externalInterface;
+            this.Interop = externalInterface;
             this.stringVariables = new Dictionary<string, string>();
             this.numericVariables = new Dictionary<string, double>();
             this.TurtlePosition = new Point(0, 0);
@@ -256,14 +240,14 @@
         public Point TranslateZeroCenteredPointToNET(Point p)
         {
             // if no image in ExternalInterface, just return the point
-            if (this.ExternalInterface.GraphicsOutput == null)
+            if (this.Interop.GraphicsOutput == null)
             {
                 return p;
             }
             
             // translate the point
-            return new Point(Convert.ToInt32(.5 * this.ExternalInterface.GraphicsOutput.Size.Width) + p.X,
-                             Convert.ToInt32(.5 * this.ExternalInterface.GraphicsOutput.Size.Height) - p.Y);
+            return new Point(Convert.ToInt32(.5 * this.Interop.GraphicsOutput.Size.Width) + p.X,
+                             Convert.ToInt32(.5 * this.Interop.GraphicsOutput.Size.Height) - p.Y);
         }
     }
 }

@@ -1,0 +1,7 @@
+C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.Compiler\bin\Debug\Pilot.Compiler.exe.config
+C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.Compiler\bin\Debug\Pilot.Compiler.exe
+C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.Compiler\bin\Debug\Pilot.Compiler.pdb
+C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.Compiler\obj\Debug\cPilot.csprojResolveAssemblyReference.cache
+C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.Compiler\obj\Debug\cPilot.csproj.CoreCompileInputs.cache
+C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.Compiler\obj\Debug\Pilot.Compiler.exe
+C:\Users\mortl\Documents\Code\Pilot.NET\Pilot.Compiler\obj\Debug\Pilot.Compiler.pdb

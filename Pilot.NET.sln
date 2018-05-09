@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilot.NET", "Pilot.NET\Pilot.NET.csproj", "{1617770A-B3ED-44BB-A63E-D94986EE90E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PILOTi", "PILOTi\PILOTi.csproj", "{887B0711-8CC6-41E9-8D10-1202633F4E29}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pilot Examples", "Pilot Examples", "{F985134D-013F-4409-8A12-9D15F2383079}"
 	ProjectSection(SolutionItems) = preProject
 		Pilot Examples\coinflip.pilot = Pilot Examples\coinflip.pilot
@@ -26,6 +24,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{46A12CD3-1
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iPilot", "iPilot\iPilot.csproj", "{887B0711-8CC6-41E9-8D10-1202633F4E29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilot.Graphics", "Pilot.Graphics\Pilot.Graphics.csproj", "{B35BF542-AF6E-40F5-8EFC-D899E9F54095}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cPilot", "cPilot\cPilot.csproj", "{A3DF33E2-DD2F-4321-B673-30EC97649B0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,8 +44,19 @@ Global
 		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{887B0711-8CC6-41E9-8D10-1202633F4E29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B35BF542-AF6E-40F5-8EFC-D899E9F54095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B35BF542-AF6E-40F5-8EFC-D899E9F54095}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B35BF542-AF6E-40F5-8EFC-D899E9F54095}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B35BF542-AF6E-40F5-8EFC-D899E9F54095}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3DF33E2-DD2F-4321-B673-30EC97649B0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3DF33E2-DD2F-4321-B673-30EC97649B0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3DF33E2-DD2F-4321-B673-30EC97649B0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3DF33E2-DD2F-4321-B673-30EC97649B0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BCD58532-AEF2-48B7-920E-3124F516AD25}
 	EndGlobalSection
 EndGlobal

@@ -82,7 +82,7 @@
         /// <param name="wFlags">flags</param>
         /// <returns></returns>
         [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
-        public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
+        private static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
 
         /// <summary>
         /// Main entry point of the application
@@ -95,17 +95,10 @@
             if (args.Length <= 0)
             {
 
-                // get the current console colors
-                ConsoleColor origBackground = Console.BackgroundColor;
-                ConsoleColor origForeground = Console.ForegroundColor;
-
-                // init the console including console colors
+                // init the console
                 Console.Title = Program.PILOT_TITLE;
                 Console.WindowLeft = 0;
                 Console.WindowTop = 0;
-                Console.BackgroundColor = ConsoleColor.Blue;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Clear();
                 IntPtr consoleWindowHandle = GetConsoleWindow();
                 Program.SetWindowPos(consoleWindowHandle, 0, Program.INIT_X, Program.INIT_Y, Program.INIT_WIDTH, Program.INIT_HEIGHT, 0);
 
@@ -114,11 +107,6 @@
 
                 // run the shell
                 Program.PilotShell();
-
-                // set the colors back to what they were
-                Console.BackgroundColor = origBackground;
-                Console.ForegroundColor = origForeground;
-                Console.Clear();
             }
             else if ((args[0].Trim() == "/?") || (File.Exists(args[0].Trim()) == false))
             {

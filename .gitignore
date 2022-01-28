@@ -1,0 +1,14 @@
+# ignore directories
+/.vs
+/PILOTi/obj
+/PILOTi/bin
+/Pilot.NET/obj
+/Pilot.NET/bin
+/Pilot.NET.Test/obj
+/Pilot.NET.Test/bin
+
+# ignore file types
+*.exe
+*.dll
+*.obj
+*.pdb

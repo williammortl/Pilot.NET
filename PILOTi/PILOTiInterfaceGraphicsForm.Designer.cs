@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PILOTiInterfaceGraphicsForm));
             this.graphicsBox = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,7 +41,7 @@
             // 
             this.graphicsBox.BackColor = System.Drawing.Color.Black;
             this.graphicsBox.Location = new System.Drawing.Point(0, 29);
-            this.graphicsBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.graphicsBox.Margin = new System.Windows.Forms.Padding(2);
             this.graphicsBox.Name = "graphicsBox";
             this.graphicsBox.Size = new System.Drawing.Size(252, 217);
             this.graphicsBox.TabIndex = 0;
@@ -74,7 +75,7 @@
             this.saveImage.Text = "Save Image...";
             this.saveImage.Click += new System.EventHandler(this.saveImage_Click);
             // 
-            // DefaultInterpreterInterfaceGraphicsForm
+            // PILOTiInterfaceGraphicsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -82,11 +83,12 @@
             this.Controls.Add(this.graphicsBox);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "DefaultInterpreterInterfaceGraphicsForm";
+            this.Name = "PILOTiInterfaceGraphicsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Pilot.NET - Graphics";
             this.Load += new System.EventHandler(this.DefaultInterpreterInterfaceGraphicsForm_Load);

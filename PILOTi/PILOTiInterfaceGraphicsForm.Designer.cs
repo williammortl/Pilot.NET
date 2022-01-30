@@ -40,10 +40,10 @@
             // graphicsBox
             // 
             this.graphicsBox.BackColor = System.Drawing.Color.Black;
-            this.graphicsBox.Location = new System.Drawing.Point(0, 29);
+            this.graphicsBox.Location = new System.Drawing.Point(0, 33);
             this.graphicsBox.Margin = new System.Windows.Forms.Padding(2);
             this.graphicsBox.Name = "graphicsBox";
-            this.graphicsBox.Size = new System.Drawing.Size(252, 217);
+            this.graphicsBox.Size = new System.Drawing.Size(294, 250);
             this.graphicsBox.TabIndex = 0;
             this.graphicsBox.TabStop = false;
             this.graphicsBox.Paint += new System.Windows.Forms.PaintEventHandler(this.graphicsBox_Paint);
@@ -55,8 +55,8 @@
             this.fileMenu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(3, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(584, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.menuStrip1.Size = new System.Drawing.Size(681, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -77,9 +77,9 @@
             // 
             // PILOTiInterfaceGraphicsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 316);
+            this.ClientSize = new System.Drawing.Size(681, 365);
             this.Controls.Add(this.graphicsBox);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

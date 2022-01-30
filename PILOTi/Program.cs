@@ -466,7 +466,7 @@
                                     Console.WriteLine("UNARY OPERATORS:");
                                     Console.WriteLine("----------------");
                                     NumericUnaryOperators[] unaryOperators = (NumericUnaryOperators[])Enum.GetValues(typeof(NumericUnaryOperators));
-                                    foreach (NumericUnaryOperators op in numericOperators)
+                                    foreach (NumericUnaryOperators op in unaryOperators)
                                     {
                                         FieldInfo fi = op.GetType().GetField(op.ToString());
                                         DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);

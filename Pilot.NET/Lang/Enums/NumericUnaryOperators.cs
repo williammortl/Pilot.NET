@@ -66,6 +66,12 @@
         /// Convert $A -> #A
         /// </summary>
         [Description("CONVERT $ TO #      - CONV")]
-        CONV
+        CONV,
+
+        /// <summary>
+        /// Absolute value
+        /// </summary>
+        [Description("ABSOLUTE VAL        - ABS")]
+        ABS
     }
 }

@@ -70,7 +70,7 @@
     <Compile Include="Lang\Expressions\GraphicsExpressions\Turn.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\TurnTo.cs" />
     <Compile Include="Lang\Expressions\GraphicsExpressions\Width.cs" />
-    <Compile Include="Lang\Expressions\NumericExpressions\UnaryExpression.cs" />
+    <Compile Include="Lang\Expressions\NumericExpressions\NumericUnaryOperation.cs" />
     <Compile Include="Lang\Statements\Sound.cs" />
     <Compile Include="Lang\Statements\TextClear.cs" />
     <Compile Include="Lang\Statements\TurtleGraphics.cs" />

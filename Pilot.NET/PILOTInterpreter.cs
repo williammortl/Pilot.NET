@@ -561,6 +561,65 @@
                     NumericVariable numVar = (NumericVariable)numericalExpression;
                     retVal = (this.VarExists(numVar.VariableName) == true) ? this.GetNumericVar(numVar.VariableName) : 0;
                 }
+                else if (numericalExpression is NumericUnaryOperation)
+                {
+                    NumericUnaryOperation opExpression = (NumericUnaryOperation)numericalExpression;
+                    double rightResult = this.EvaluateNumericExpression(opExpression.Right);
+                    switch(opExpression.Operator)
+                    {
+                        case NumericUnaryOperators.ABS:
+                        {
+                            retVal = Math.Abs(rightResult);
+                            break;
+                        }
+                        case NumericUnaryOperators.ACOS:
+                        {
+                            retVal = Math.Acos(rightResult);
+                            break;
+                        }
+                        case NumericUnaryOperators.ASIN:
+                        {
+                            break;
+                        }
+                        case NumericUnaryOperators.ATAN:
+                        {
+                            break;
+                        }
+                        case NumericUnaryOperators.CEIL:
+                        {
+                            break;
+                        }
+                        case NumericUnaryOperators.CONV:
+                        {
+                            break;
+                        }
+                        case NumericUnaryOperators.COS:
+                        {
+                            break;
+                        }
+                        case NumericUnaryOperators.FLOOR:
+                        {
+                            break;
+                        }
+                        case NumericUnaryOperators.RND:
+                        {
+                            break;
+                        }
+                        case NumericUnaryOperators.SIN:
+                        {
+                            break;
+                        }
+                        case NumericUnaryOperators.TAN:
+                        {
+                            break;
+                        }
+                    }
+                    if (opExpression.Operator == NumericUnaryOperators.ABS)
+                    {
+
+                    }
+
+                }
                 else if (numericalExpression is NumericBinaryOperation)
                 {
                     NumericBinaryOperation opExpression = (NumericBinaryOperation)numericalExpression;
